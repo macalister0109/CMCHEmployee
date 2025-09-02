@@ -10,3 +10,12 @@ form {
     margin: 20px auto; 
     display: inline-block; 
 }
+.error {
+    color: #fff;
+    background: #d32f2f;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    display: inline-block;
+}

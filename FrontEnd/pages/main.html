@@ -7,7 +7,14 @@
     <link rel="icon" href="/assets/img/logo.png" type="image/png">
 </head>
 <body>
-    <h1>Bienvenido a CMCHEmployee</h1>
-    <a href="/login">Iniciar Sesión</a> | <a href="/register">Registrarse</a>
+    {% if nombre and apellido %}
+        <h1>Bienvenido {{ nombre }} {{ apellido }}</h1>
+        <form action="/logout" method="post" style="margin-bottom: 20px;">
+            <button type="submit">Cerrar sesión</button>
+        </form>
+    {% else %}
+        <h1>Bienvenido a CMCHEmployee</h1>
+        <a href="/login">Iniciar Sesión</a> | <a href="/register">Registrarse</a>
+    {% endif %}
 </body>
 </html>
