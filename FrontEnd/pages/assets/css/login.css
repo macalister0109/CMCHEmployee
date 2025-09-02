@@ -1,0 +1,12 @@
+body { 
+    font-family: Arial, sans-serif; 
+    background: #5d7aca; 
+    text-align: center; 
+}
+h2 { 
+    color: #b56b6b; 
+}
+form { 
+    margin: 20px auto; 
+    display: inline-block; 
+}
