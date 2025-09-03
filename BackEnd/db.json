@@ -1,0 +1,45 @@
+{
+  "alumnos": [
+    {
+      "rut": "111111111",
+      "nombre": "Juan",
+      "apellido": "Yañes",
+      "password": "scrypt:32768:8:1$p5fcT73lCHBB1VgK$e06e2489e09545c3bf7b5257c1225234f187a6f2ca6db9b65e5b3f4e0f6f00588bc264cd7d859d33012cafae37a2950fe149e8d2faa246ad5fd8a761b2071644"
+    },
+    {
+      "rut": "22222222",
+      "nombre": "Luis",
+      "apellido": "Gonzalez",
+      "password": "scrypt:32768:8:1$7qyV2VExs0uIJ0BI$498d6873be3c6058bdd37dabd11139bade13c586df3808946590aa75ac018e20fc80b7d2ad8eaef457f72b16ab638695ca456e5fe7ff9a8c310b95683ecc8836"
+    },
+    {
+      "rut": "33333333",
+      "nombre": "Gabriel",
+      "apellido": "Pedreros",
+      "password": "scrypt:32768:8:1$dikQNCF57HulkjNU$43fc3b4a12d7c99c36a887fd11fc7818a55f8a76f2d04abc83b1826785da0a6eeb0186541477f489765fa9b939b41e2237b65cc7dd7cb6a0ff1e2e7d8fd4224e"
+    },
+    {
+      "rut": "44444444",
+      "nombre": "Vicente",
+      "apellido": "Soto",
+      "password": "scrypt:32768:8:1$ZghmtRZLPAs6zD04$6a85d4a686b6fdf9d6428569faf95aecab3afe8c8fbb3686ff21cd19ebc3037233fc101551e98bbe71c2b517a7e63f8d6ec1a81188c9dcd9fef20e8940c1ec1e"
+    },
+    {
+      "rut": "223504841",
+      "nombre": "Luis Gonzalez",
+      "apellido": "",
+      "password": "scrypt:32768:8:1$mkwskcQMD1MgA0Uw$3d5c369b8565f8e57e122866d5fcc9746f8864b0597680bb289ea14b99cc40e7a6338d166de6e6eb738a3dd9f8f86678950ba6e405a8dbc7edcb58af32b6378f"
+    }
+  ],
+  "empresas": [
+    {
+      "nombre_empresa": "Xion In",
+      "nombre_encargado": "Luis Gonzalez",
+      "rut_empresa": "75584682k",
+      "rut_encargado": "223504841",
+      "direccion": "el fundador 14018",
+      "email": "adgo.637260@gmail.com",
+      "password": "scrypt:32768:8:1$y66rRiDpaMdN3TmH$bfb5ead09cbfd39fde8dbbf34b4ee01703287da6d28492cd84af2b44f527d7c461d81e787178d3e1d341f89d9a02a40532ff08d1c757c4b9fa339ee3dcbcb668"
+    }
+  ]
+}
