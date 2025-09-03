@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro Empresa</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/register_empresa.css">
+</head>
+<body>
+    <h2>Registro de Empresa</h2>
+    {% if error %}<div class="error">{{ error }}</div>{% endif %}
+    <form method="POST">
+        <label>Nombre de la empresa:</label>
+        <input type="text" name="nombre_empresa" required><br>
+        <label>Nombre del encargado:</label>
+        <input type="text" name="nombre_encargado" required><br>
+        <label>RUT empresa:</label>
+        <input type="text" name="rut_empresa" required><br>
+        <label>RUT encargado:</label>
+        <input type="text" name="rut_encargado"><br>
+        <label>Dirección:</label>
+        <input type="text" name="direccion" required><br>
+        <label>Email:</label>
+        <input type="email" name="email" required><br>
+        <label>Contraseña:</label>
+        <input type="password" name="password" required><br>
+        <button type="submit">Registrar Empresa</button>
+    </form>
+    <a href="/login">Volver al login</a>
+    <a href="/">Inicio</a>
+</body>
+</html>

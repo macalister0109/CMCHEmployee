@@ -12,9 +12,21 @@
         <form action="/logout" method="post" style="margin-bottom: 20px;">
             <button type="submit">Cerrar sesión</button>
         </form>
+    {% elif bienvenida %}
+        <h1>{{ bienvenida }}</h1>
+        <form action="/logout" method="post" style="margin-bottom: 20px;">
+            <button type="submit">Cerrar sesión</button>
+        </form>
     {% else %}
         <h1>Bienvenido a CMCHEmployee</h1>
-        <a href="/login">Iniciar Sesión</a> | <a href="/register">Registrarse</a>
+        <a href="/register_empresa">Cuenta Empresa</a> | <a href="/login_empresa">Iniciar Sesión Empresa</a> | <a href="/login">Iniciar Sesión</a> | <a href="/register">Crear Cuenta</a>
+    {% endif %}
+
+    {% if bienvenida %}
+        <div class="bienvenida">{{ bienvenida }}</div>
+    {% endif %}
+    {% if aviso %}
+        <div class="aviso">{{ aviso }}</div>
     {% endif %}
 </body>
 </html>

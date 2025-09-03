@@ -1,0 +1,21 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #5d7aca;
+    margin: 0;
+    padding: 0;
+}
+
+h2 {
+    color: #b56b6b;
+    text-align: center;
+    margin-top: 30px;
+}
+
+form {
+    background: #fff;
+    max-width: 400px;
+    margin: 30px auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Empresa</title>
+    <link rel="stylesheet" href="assets/css/register_empresa.css">
+    <link rel="stylesheet" href="assets/css/login_empresa.css">
+</head>
+<body>
+    <h2>Inicio de Sesión Empresa</h2>
+    {% if error %}<div class="error">{{ error }}</div>{% endif %}
+    <form method="POST">
+        <label>RUT Empresa:</label>
+        <input type="text" name="rut_empresa" required><br>
+        <label>Contraseña:</label>
+        <input type="password" name="password" required><br>
+        <button type="submit">Iniciar Sesión</button>
+    </form>
+    <a href="/register_empresa">Registrar empresa</a>
+    <a href="/">Inicio</a>
+</body>
+</html>

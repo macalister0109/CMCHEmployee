@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session
 from flask_sqlalchemy import SQLAlchemy
 import os
@@ -18,12 +17,85 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:2218@localhost/CMC
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+# Modelo para alumnos
 class Alumnos(db.Model):
-	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-	rut = db.Column(db.String(12), unique=True, nullable=False)
-	nombre = db.Column(db.String(100), nullable=False)
-	apellido = db.Column(db.String(100), nullable=False)
-	password = db.Column(db.String(255), nullable=False)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    rut = db.Column(db.String(12), unique=True, nullable=False)
+    nombre = db.Column(db.String(100), nullable=False)
+    apellido = db.Column(db.String(100), nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+
+# Modelo para empresas
+class Empresa(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    nombre_empresa = db.Column(db.String(100), nullable=False)
+    nombre_encargado = db.Column(db.String(100), nullable=False)
+    rut_empresa = db.Column(db.String(12), unique=True, nullable=False)
+    rut_encargado = db.Column(db.String(12))
+    direccion = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(100), nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+
+#Registro empresa 
+@app.route('/register_empresa', methods=['GET', 'POST'])
+def register_empresa():
+    if request.method == 'POST':
+        nombre_empresa = request.form.get('nombre_empresa')
+        nombre_encargado = request.form.get('nombre_encargado')
+        rut_empresa = request.form.get('rut_empresa')
+        rut_encargado = request.form.get('rut_encargado')
+        direccion = request.form.get('direccion')
+        email = request.form.get('email')
+        rut_empresa_normalizado = re.sub(r'[^0-9kK]', '', rut_empresa)
+        rut_encargado_normalizado = re.sub(r'[^0-9kK]', '', rut_encargado) if rut_encargado else None
+        # Verifica que el rut de empresa sea unico
+        if Empresa.query.filter_by(rut_empresa=rut_empresa_normalizado).first():
+            return render_template('register_empresa.html', error='El RUT de empresa ya está registrado')
+        # Verifica que el rut encargado exista en Alumnos, si no lo crea
+        aviso = None
+        if rut_encargado_normalizado:
+            user_encargado = Alumnos.query.filter_by(rut=rut_encargado_normalizado).first()
+            if not user_encargado:
+                password_pred = '012345A'
+                hashed_pred = generate_password_hash(password_pred)
+                nuevo_usuario = Alumnos(rut=rut_encargado_normalizado, nombre=nombre_encargado, apellido='', password=hashed_pred)
+                db.session.add(nuevo_usuario)
+                aviso = f"Usuario encargado creado con rut {rut_encargado_normalizado} y contraseña predeterminada: 012345A. Por favor cámbiala en modo usuario."
+        # La contraseña de empresa es obligatoria
+        password = request.form.get('password')
+        if not password or len(password) < 8:
+            return render_template('register_empresa.html', error='La contraseña de empresa debe tener al menos 8 caracteres')
+        hashed_password = generate_password_hash(password)
+        nueva_empresa = Empresa(
+            nombre_empresa=nombre_empresa,
+            nombre_encargado=nombre_encargado,
+            rut_empresa=rut_empresa_normalizado,
+            rut_encargado=rut_encargado_normalizado,
+            direccion=direccion,
+            email=email,
+            password=hashed_password
+        )
+        db.session.add(nueva_empresa)
+        db.session.commit()
+        bienvenida = f"Bienvenida empresa '{nombre_empresa}'"
+        return render_template('main.html', bienvenida=bienvenida, aviso=aviso)
+    return render_template('register_empresa.html')
+
+#login empresa
+@app.route('/login_empresa', methods=['GET', 'POST'])
+def login_empresa():
+    if request.method == 'POST':
+        rut_empresa = request.form.get('rut_empresa')
+        password = request.form.get('password')
+        rut_empresa_normalizado = re.sub(r'[^0-9kK]', '', rut_empresa)
+        empresa = Empresa.query.filter_by(rut_empresa=rut_empresa_normalizado).first()
+        if not empresa:
+            return render_template('login_empresa.html', error='RUT de empresa no registrado o incorrecto')
+        if not password or not check_password_hash(empresa.password, password):
+            return render_template('login_empresa.html', error='Contraseña incorrecta')
+        bienvenida = f"Bienvenida empresa '{empresa.nombre_empresa}'"
+        return render_template('main.html', bienvenida=bienvenida)
+    return render_template('login_empresa.html')
 
 # Ruta principal
 @app.route('/')
@@ -38,7 +110,7 @@ def login():
     if request.method == 'POST':
         rut = request.form.get('rut')
         password = request.form.get('password')
-        # Normalizar rut: quitar puntos y guiones, dejar solo números y dígito verificador
+        # hace que el rut se pueda ingresar sin puntos ni guiones
         rut_normalizado = re.sub(r'[^0-9kK]', '', rut)
         user = Alumnos.query.filter_by(rut=rut_normalizado).first()
         from werkzeug.security import check_password_hash
