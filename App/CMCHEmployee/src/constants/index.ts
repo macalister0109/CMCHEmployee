@@ -1,11 +1,10 @@
-// import { COLORS } from './colors';
+import { ESTUDENT_VIEW } from "./colors";
 import { SIZES } from "./sizes";
 import { FONT_SIZES, FONT_WEIGHTS } from "./typography";
 
-export const THEME = {
-    // colors: COLORS,
+export const THEME_ESTUDENT = {
     sizes: SIZES,
-    // routes: ROUTES,
     font_sizes: FONT_SIZES,
     font_weights: FONT_WEIGHTS,
+    colors: ESTUDENT_VIEW,
 };

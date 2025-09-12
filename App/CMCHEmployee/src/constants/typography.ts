@@ -1,6 +1,7 @@
 export const FONT_WEIGHTS = {
     regular: "400",
     bold: "700",
+    extraBold: "900",
 };
 
 export const FONT_SIZES = {
