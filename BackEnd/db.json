@@ -3,7 +3,7 @@
     {
       "rut": "111111111",
       "nombre": "Juan",
-      "apellido": "Yañes",
+      "apellido": "Yañez",
       "password": "scrypt:32768:8:1$p5fcT73lCHBB1VgK$e06e2489e09545c3bf7b5257c1225234f187a6f2ca6db9b65e5b3f4e0f6f00588bc264cd7d859d33012cafae37a2950fe149e8d2faa246ad5fd8a761b2071644"
     },
     {
