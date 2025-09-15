@@ -1,32 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Página Principal</title>
-    <link rel="stylesheet" href="/assets/css/main.css">
-    <link rel="icon" href="/assets/img/logo.png" type="image/png">
-</head>
-<body>
-    {% if nombre and apellido %}
-        <h1>Bienvenido {{ nombre }} {{ apellido }}</h1>
-        <form action="/logout" method="post" style="margin-bottom: 20px;">
-            <button type="submit">Cerrar sesión</button>
-        </form>
-    {% elif bienvenida %}
-        <h1>{{ bienvenida }}</h1>
-        <form action="/logout" method="post" style="margin-bottom: 20px;">
-            <button type="submit">Cerrar sesión</button>
-        </form>
-    {% else %}
-        <h1>Bienvenido a CMCHEmployee</h1>
-        <a href="/register_empresa">Cuenta Empresa</a> | <a href="/login_empresa">Iniciar Sesión Empresa</a> | <a href="/login">Iniciar Sesión</a> | <a href="/register">Crear Cuenta</a>
-    {% endif %}
-
-    {% if bienvenida %}
-        <div class="bienvenida">{{ bienvenida }}</div>
-    {% endif %}
-    {% if aviso %}
-        <div class="aviso">{{ aviso }}</div>
-    {% endif %}
-</body>
+    <link rel="stylesheet" href="/assets/css/main.css" />
+    <link rel="icon" href="/assets/img/logo.png" type="image/png" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+  
+  </body>
 </html>
