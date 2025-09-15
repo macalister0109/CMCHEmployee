@@ -1,0 +1,176 @@
+:root {
+    --red: #d92534;
+    --blue: #1F1273;
+    --dark-blue: #1B1259;
+    --yellow: #F2B705;
+    --light-gray: #F2F2F2;
+
+    --radius: 12px;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    margin: 0;
+    background: var(--dark-blue);
+    color: var(--light-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    max-width: 1100px;
+    background: var(--yellow);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    overflow: hidden;
+    opacity: 1;
+    transform: translateY(20px);
+    transition: opacity 1s ease, transform;
+}
+
+.container .fade-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.panel {
+    flex: 1;
+    background: var(--blue);
+    color: white;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    animation: slideInLeft 1s ease forwards;
+}
+
+.panel .logo {
+    max-width: 100px;
+    margin-bottom: 1.5rem;
+}
+
+.panel h1 {
+    margin: 0 0 1rem;
+    color: var(--yellow);
+}
+
+.panel p {
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.card {
+    flex: 1.2;
+    padding: 2rem;
+    background: var(--red);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    animation: slideInRight 1s ease forwards;
+}
+
+.card h2 {
+    margin-bottom: 1rem;
+    text-align: center;
+    color: var(--light-gray);
+}
+
+label {
+    display: block;
+    margin: 0.5rem 0 0.3rem;
+    font-weight: 600;
+}
+
+input {
+    width: 100%;
+    padding: 0.7rem;
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+    outline: none;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    border-color: var(--yellow);
+    box-shadow: 0 0 8px var(--yellow);
+}
+
+button.btn {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.9rem;
+    border: none;
+    border-radius: var(--radius);
+    font-weight: bold;
+    cursor: pointer;
+    background: var(--yellow);
+    color: var(--dark-blue);
+    transition: all 0.3s ease;
+
+}
+
+button.btn:hover {
+    background: var(--light-gray);
+    color: var(--red);
+    transform: scale(1.05);
+}
+
+.links {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.links a {
+    display: inline-block;
+    margin: 0 0.5rem;
+    color: var(--light-gray);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.links a:hover {
+    color: var(--yellow);
+}
+
+.error {
+    background: rgb(217, 37, 52, 0.15);
+    color: var(--light-gray);
+    border: 1px solid var(--light-gray);
+    padding: 0.5rem;
+    border-radius: var(--radius);
+    margin-bottom: 1rem;
+    text-align: center;
+    animation: shake 3s ease;
+}
+
+/* Animaciones */
+@keyframes slideInLeft {
+  from { transform: translateX(-50px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(50px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+}

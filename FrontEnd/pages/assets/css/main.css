@@ -1,11 +1,10 @@
-body { 
-    font-family: Arial, sans-serif; 
-    background: #5d7aca; 
-    text-align: center; 
-}
-h1 { 
-    color: #b56b6b; 
-}
-a { 
-    margin: 10px; 
+:root {
+    --red: #d92534;
+    --blue: #1F1273;
+    --dark-blue: #1B1259;
+    --yellow: #F2B705;
+    --light-gray: #F2F2F2;
+
+    --radius: 12px;
+    font-family: 'Inter', sans-serif;
 }
