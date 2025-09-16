@@ -6,5 +6,28 @@
     --light-gray: #F2F2F2;
 
     --radius: 12px;
-    font-family: 'Inter', sans-serif;
+   --font: font-family: 'Inter', sans-serif;
+}
+
+
+body {
+    margin: 0;
+    background: var(--dark-blue);
+    color: var(--light-gray);
+    font-family: var(--font);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    text-align: center;
+    max-width: 800px;
+    padding: 2rem;
+    background: var(--blue);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    transform: translateY(30px);
+    transition: all 0.8s ease;
 }
