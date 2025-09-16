@@ -1,33 +1,119 @@
 :root {
-    --red: #d92534;
-    --blue: #1F1273;
-    --dark-blue: #1B1259;
-    --yellow: #F2B705;
-    --light-gray: #F2F2F2;
+    --primary: #002855;
+    --secondary: #F28705;
+    --light: #ffffff;
+    --dark: #1a1a1a;
+    --gray: #f9f9f9;
 
     --radius: 12px;
-   --font: font-family: 'Inter', sans-serif;
+    --trasition: 0.3s ease;
+    font-family: 'inter', sans-serif;
 }
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 body {
-    margin: 0;
-    background: var(--dark-blue);
-    color: var(--light-gray);
-    font-family: var(--font);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    background: var(--gray);
+    color: var(--dark);
+    font-size: 16px;
+    line-height: 1.6;
 }
 
 .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.header {
+    background: var(--primary);
+    color: var(--light);
+    padding: 15px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.header-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header .logo {
+    height: 40px;
+}
+
+.nav a {
+    color: var(--light);
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: 500;
+    transition: var(--trasition);
+}
+
+.nav a:hover {
+    color: var(--secondary);
+}
+
+.hero {
+    background: linear-gradient(to right, var(--primary), #004080);
+    color: var(--light);
     text-align: center;
-    max-width: 800px;
-    padding: 2rem;
-    background: var(--blue);
+    padding: 100px 20px;
+}
+
+.hero h1 {
+    font-size: 2.8rem;
+    margin-bottom: 15px;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+}
+
+.btn, .btn-primary, .btn-secondary {
+    padding: 12px 24px;
     border-radius: var(--radius);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-    transform: translateY(30px);
-    transition: all 0.8s ease;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: var(--trasition);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.btn-primary {
+    background: var(--secondary);
+    color: var(--dark);
+}
+
+.btn-primary:hover {
+    background: var(--light);
+    color: var(--primary);
+}
+
+.btn-secondary {
+    background: var(--light);
+    color: var(--primary);
+}
+
+.btn-secondary:hover {
+    background: var(--secondary);
+    color: var(--dark);
+}
+
+.quick-links {
+    padding: 60px 20px;
+}
+
+.links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax)(240px, 1fr));
 }
