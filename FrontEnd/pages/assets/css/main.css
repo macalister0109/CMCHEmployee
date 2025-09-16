@@ -1,0 +1,89 @@
+:root {
+  --blue: #1f1273;     
+  --dark-blue: #0f0a3c;  
+  --gold: #f2b705;       
+  --white: #ffffff;
+  --gray: #f5f6fa;
+  --text-dark: #2c2c2c;
+
+  --radius: 12px;
+  --shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  --font: "Inter", sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font);
+    background: var(--gray);
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+.header {
+    background: var(--white);
+    border-bottom: 1px solid #eaeaea;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+}
+
+.brand {
+    font-size: 40px;
+    font-weight: 800;
+    color: var(--blue);
+}
+
+.nav a {
+    margin: 0 1rem;
+    text-decoration: none;
+    color: var(--text-dark);
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav a:hover {
+    color: var(--gold);
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-primary {
+    background: var(--blue);
+    color: var(--white);
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+
+.btn-primary:hover {
+    background: var(--gold);
+    color: var(--text-dark);
+}
