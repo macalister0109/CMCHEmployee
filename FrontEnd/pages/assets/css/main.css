@@ -175,9 +175,138 @@ body {
     border-radius: var(--radius);
     box-shadow: var(--shadow);
 }
-.footer {
-    background: var(--dark-blue);
-    color: var(--white);
+
+.especialidades {
+    padding: 4rem 2rem;
+    background: var(--gray);
     text-align: center;
-    padding: 2rem;
-    font-size: 0.9rem
+}
+
+.section-title h2 {
+    font-size: 2rem;
+    color: var(--blue);
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.section-title p {
+    color: #555;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+}
+
+.specialties-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.specialty-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 2rem 1.5rem;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.specialty-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.15);
+}
+
+.specialty-icon {
+    font-size: 2rem;
+    color: var(--gold);
+    margin-bottom: 1rem;
+}
+
+.specialty-content h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--blue);
+}
+
+.specialty-content p {
+    font-size: 0.95rem;
+    color: #444;
+    margin-bottom: 3rem;
+}
+
+.specialty-content  a {
+    color: var(--blue);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.specialty-content a:hover {
+    color: var(--gold);
+}
+
+.footer {
+  background: var(--dark-blue);
+  color: var(--white);
+  padding: 2rem 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.footer p {
+  margin: 0.5rem 0;
+  opacity: 0.8; /* más legible */
+}
+
+.footer-inner {
+  max-width: 1000px;
+  margin: auto;
+}
+
+.footer-links {
+  margin-top: 1rem;
+}
+
+.footer-links a {
+  color: var(--gold);
+  margin: 0 0.5rem;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: var(--white);
+}
+
+.footer-social {
+  margin-top: 1rem;
+}
+
+.footer-social a {
+  color: var(--gold);
+  margin: 0 0.5rem;
+  font-size: 1.2rem;
+  transition: color 0.3s ease;
+}
+
+.footer-social a:hover {
+  color: var(--white);
+}
+
+.back-to-top {
+  margin-top: 1.5rem;
+  background: var(--gold);
+  color: var(--dark-blue);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.back-to-top:hover {
+  background: var(--white);
+  color: var(--dark-blue);
+}
