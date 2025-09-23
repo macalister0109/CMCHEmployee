@@ -29,6 +29,12 @@
       "nombre": "Luis Gonzalez",
       "apellido": "",
       "password": "scrypt:32768:8:1$mkwskcQMD1MgA0Uw$3d5c369b8565f8e57e122866d5fcc9746f8864b0597680bb289ea14b99cc40e7a6338d166de6e6eb738a3dd9f8f86678950ba6e405a8dbc7edcb58af32b6378f"
+    },
+    {
+      "rut": "150835364",
+      "nombre": "Macarena",
+      "apellido": "Jamett",
+      "password": "scrypt:32768:8:1$FO3DVWVvL1xnRX0f$6da9714749a821fb50594f610b631c048dbe3168b58448453a8a693104ec301445a420d707b59ea2fa9d464cf5eaf546ce7fe0614a6715e6ecdc5571a637b180"
     }
   ],
   "empresas": [
@@ -40,6 +46,15 @@
       "direccion": "el fundador 14018",
       "email": "adgo.637260@gmail.com",
       "password": "scrypt:32768:8:1$y66rRiDpaMdN3TmH$bfb5ead09cbfd39fde8dbbf34b4ee01703287da6d28492cd84af2b44f527d7c461d81e787178d3e1d341f89d9a02a40532ff08d1c757c4b9fa339ee3dcbcb668"
+    },
+    {
+      "nombre_empresa": "Vichi",
+      "nombre_encargado": "Vicente soto",
+      "rut_empresa": "766666666",
+      "rut_encargado": "44444444",
+      "direccion": "Los fundadores 123",
+      "email": "vichi@gmail.com",
+      "password": "scrypt:32768:8:1$unYlgxCAjaMqGVs7$f233f71db9b80ba157a8832999ba68102e78ab1e5315e38f79b5825833c7a653c6044ec9b549ba95f73d4f03e196ce318a4a8c11852dee6ed6fbc6ec0765572a"
     }
   ]
 }
