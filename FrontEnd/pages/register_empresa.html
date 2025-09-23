@@ -24,7 +24,7 @@
         <h2>Formulario de Registro</h2>
 
         {% if error %}
-        <div class="error">{{ ERROR }}</div>
+        <div class="error">{{ error }}</div>
         {% endif %}
 
         <form method="post" class="register-form">
@@ -63,8 +63,8 @@
         </form>
 
         <div class="links">
-          <a href="login_empresa.html">Volver al login</a>
-          <a href="/">Inicio</a>
+          <a href="{{ url_for('login_empresa') }}">Volver al login</a>
+          <a href="{{ url_for('main') }}">Inicio</a>
         </div>
       </div>
     </div>

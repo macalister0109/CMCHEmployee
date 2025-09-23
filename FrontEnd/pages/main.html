@@ -5,34 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Legado TP Bolsa de Empleo</title>
     <link rel="stylesheet" href="assets/css/main.css" />
-    <link rel="icon" href="logo.png" type="image/png" />
+    <link rel="icon" href="assets/img/logo.png" type="image/png" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
       rel="stylesheet"
     />
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <base href="assets/img/" />
   </head>
   <body>
     <header class="header">
       <div class="container header-inner">
         <div class="logo-container">
-          <img src="logo.png" alt="Logo institucional" class="logo" />
+          <img src="assets/img/logo.png" alt="Logo institucional" class="logo" />
           <h1 class="brand">Legado TP</h1>
         </div>
 
         <nav class="nav">
-          <a href="#">Inicio</a>
-          <a href="#">Especialidades</a>
-          <a href="#">Empresas asociadas</a>
-          <a href="#"></a>
+          <a href="{{ url_for('main') }}">Inicio</a>
+          <a href="#especialidades">Especialidades</a>
+          <a href="#empresas">Empresas asociadas</a>
+          <a href="#contacto">Contacto</a>
         </nav>
         <div class="auth-buttons">
-          <a href="/FrontEnd/pages/register.html" class="btn-outline">Crear Cuenta</a>
-          <a href="/FrontEnd/pages/login.html" class="btn-primary">Ingresar</a>
+          <a href="{{ url_for('register') }}" class="btn-outline">Crear Cuenta</a>
+          <a href="{{ url_for('login') }}" class="btn-primary">Ingresar</a>
+          <a href="{{ url_for('login_empresa') }}" class="btn-outline">Empresas</a>
         </div>
       </div>
     </header>
+
+    <!-- Mensajes de bienvenida y avisos -->
+    {% if bienvenida %}
+    <div class="alert alert-success">
+      <div class="container">
+        <p>{{ bienvenida }}</p>
+        {% if aviso %}
+        <p class="aviso">{{ aviso }}</p>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+    {% if nombre and apellido %}
+    <div class="user-welcome">
+      <div class="container">
+        <p>Bienvenido, {{ nombre }} {{ apellido }}</p>
+        <form method="post" action="{{ url_for('logout') }}" style="display: inline;">
+          <button type="submit" class="btn-logout">Cerrar Sesión</button>
+        </form>
+      </div>
+    </div>
+    {% endif %}
 
     <section class="hero">
       <div class="container hero-inner">
@@ -64,7 +87,7 @@
         </div>
         <div class="hero-img">
           <img
-            src="marcelino.jpeg"
+            src="assets/img/marcelino.jpeg"
             alt="San Marcelino Champagnat"
             class="founder-img"
           />
@@ -72,7 +95,7 @@
       </div>
     </section>
 
-    <section class="especialidades">
+    <section class="especialidades" id="especialidades">
      <div class="section-title">
                 <h2>Nuestras Especialidades</h2>
                 <p>Ofrecemos oportunidades laborales en las seis especialidades de nuestro centro de formación</p>
@@ -148,7 +171,19 @@
         </div>
     </section>
 
-  <footer class="footer">
+    <section class="empresas" id="empresas">
+      <div class="container">
+        <div class="section-title">
+          <h2>Empresas Asociadas</h2>
+          <p>Conectamos con las mejores empresas para ofrecer oportunidades laborales a nuestros estudiantes y egresados</p>
+        </div>
+        <div class="empresas-info">
+          <p>Próximamente más información sobre nuestras empresas asociadas.</p>
+        </div>
+      </div>
+    </section>
+
+  <footer class="footer" id="contacto">
   <div class="container footer-inner">
     <p>&copy; 2025 Legado TP - Bolsa de Empleo</p>
     <p>Inspirados en San Marcelino Champagnat y en su hermosa misión.</p>
@@ -166,9 +201,9 @@
       <a href="#"><i class="fab fa-linkedin"></i></a>
     </div>
 
-    <button class="back-to-top">↑ Volver arriba</button>
+    <button class="back-to-top" onclick="scrollToTop()">↑ Volver arriba</button>
   </div>
 </footer>
-
+    <script src="assets/js/main.js"></script>
   </body>
 </html>

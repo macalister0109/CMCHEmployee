@@ -310,3 +310,53 @@ body {
   background: var(--white);
   color: var(--dark-blue);
 }
+
+/* Mensajes de alerta y bienvenida */
+.alert {
+  padding: 1rem 0;
+  margin: 0;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+}
+
+.alert p {
+  margin: 0;
+  font-weight: 600;
+}
+
+.aviso {
+  margin-top: 0.5rem !important;
+  font-weight: 400 !important;
+  font-style: italic;
+}
+
+.user-welcome {
+  background-color: var(--blue);
+  color: var(--white);
+  padding: 0.5rem 0;
+}
+
+.user-welcome p {
+  display: inline-block;
+  margin: 0;
+  margin-right: 1rem;
+}
+
+.btn-logout {
+  background: var(--gold);
+  color: var(--dark-blue);
+  border: none;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.3s ease;
+}
+
+.btn-logout:hover {
+  background: var(--white);
+}

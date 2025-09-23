@@ -24,7 +24,7 @@
         <h2>Registro de un usuario</h2>
 
         {% if error %}
-        <div class="error">{{ ERROR }}</div>
+        <div class="error">{{ error }}</div>
         {% endif %}
 
         <form method="post">
@@ -66,8 +66,8 @@
           <button type="submit">Registrarse</button>
         </form>
 
-        <a href="login.html">¿Ya tienes cuenta? Iniciar sesión</a>
-        <a href="/">Volver al inicio</a>
+        <a href="{{ url_for('login') }}">¿Ya tienes cuenta? Iniciar sesión</a>
+        <a href="{{ url_for('main') }}">Volver al inicio</a>
       </div>
     </div>
   </body>
