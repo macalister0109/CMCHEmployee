@@ -5,6 +5,7 @@
   --white: #ffffff;
   --gray: #f5f6fa;
   --text-dark: #2c2c2c;
+  --red: #ff0000;
 
   --radius: 12px;
   --shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
@@ -46,8 +47,8 @@ body {
 }
 
 .logo {
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 70px;
 }
 
 .brand {
@@ -185,6 +186,7 @@ body {
 .section-title h2 {
     font-size: 2rem;
     color: var(--blue);
+    text-align: center;
     font-weight: 800;
     margin-bottom: 0.5rem;
 }
@@ -197,7 +199,7 @@ body {
 
 .specialties-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(6, 1fr);
     gap: 2rem;
     max-width: 1200px;
     margin: auto;
@@ -245,6 +247,95 @@ body {
 .specialty-content a:hover {
     color: var(--gold);
 }
+.empresas {
+  background-color: var(--gray);
+
+}
+.carousel-container {
+  background-color: var(--gray);
+  position: relative;
+  width: 150%;
+  overflow: hidden;
+  max-width: 900px;
+  margin: auto;
+}
+
+.carousel {
+  background-color: var(--gray);
+  display: flex;
+  transition: transform 0.5s ease;
+}
+
+.company-card {
+  min-width: 250px;
+  margin: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+.company-card img {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+  border-radius: 5px;
+  transition: transform 0.3s;
+}
+
+.company-card:hover {
+  transform: scale(1.05);
+}
+button.prev, button.next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0,0,0,0.5);
+  border: none;
+  color: white;
+  padding: 20px;
+  cursor: pointer;
+  border-radius: 15%;
+  z-index: 10;
+}
+
+.view-all-container {
+  background: var(--gray);
+  text-align: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.view-all-btn {
+  display: inline-block;
+  padding: 0.8rem 1.8rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--blue);
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 3px solid transparent;
+  text-decoration: none;
+  position: relative;
+  cursor: pointer;
+    background-image: linear-gradient(var(--white), var(--white)), 
+                    linear-gradient(90deg, var(--gold), var(--blue), var(--dark-blue), var(--red));
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  transition: all 0.3s ease;
+}
+
+.view-all-btn:hover {
+  color: var(--gold);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+
+
+button.prev {left: 5px;}
+button.next { right: 5px;}
+
+
+
+
 
 .about-us-gradient {
   width: 100%;
@@ -321,12 +412,12 @@ body {
 }
 
 .about-right img {
-  width: 500px;       /* Tamaño del círculo */
+  width: 500px;  
   height: 500px;
-  object-fit: cover;  /* Ajusta la imagen sin deformarla */
-  border-radius: 50%; /* El truco del círculo */
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* Sombrita pro */
-  border: 6px solid #f2b705; /* Opcional: borde dorado */
+  object-fit: cover; 
+  border-radius: 50% 60% 50% 40% ; 
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); 
+  border: 6px solid #f2b705; 
 }
 
 
@@ -395,6 +486,49 @@ body {
 .back-to-top:hover {
   background: var(--white);
   color: var(--dark-blue);
+}
+
+.footer-language {
+  margin: 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--white);
+}
+
+.footer-language label {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.footer-language select {
+  appearance: none;
+  background: var(--dark-blue);
+  color: var(--white);
+  border: 2px solid var(--gold);
+  border-radius: 5px;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+}
+.footer-language select:hover,
+.footer-language select:focus {
+  border-color: var(--red);
+  background: rgba(255, 255, 255, 0.1);
+  outline: none;
+}
+
+.footer-language select::-ms-expand {
+  display: none;
+}
+
+.footer-language select {
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D'12'%20height%3D'12'%20viewBox%3D'0%200%2012%2012'%20xmlns%3D'http%3A//www.w3.org/2000/svg'%3E%3Cpath%20d%3D'M2%204l4%204%204-4'%20stroke%3D'%23fff'%20stroke-width%3D'2'%20fill%3D'none'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+  background-size: 12px 12px;
 }
 
 /* Mensajes de alerta y bienvenida */
