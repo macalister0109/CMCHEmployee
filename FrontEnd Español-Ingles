@@ -1,1 +1,9 @@
+ --white: #ffffff;
 
+
+  --gray: #f5f6fa;
+
+  --text-dark: #2c2c2c;
+
+
+  --red: #ff0000;
