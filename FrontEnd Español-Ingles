@@ -62,6 +62,81 @@ body {
 .nav a {
     margin: 0 1rem;
     text-decoration: none;
+    color: var(--text-dark);
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav a:hover {
+   color: var(--gold);
+} 
+
+.auth-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-primary {
+    background: var(--blue);
+    color: var(--white);
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.3;
+}
+
+.btn-primary:hover {
+    background: var(--gold);
+    color: var(--text-dark);
+}
+
+.btn-outline {
+    border: 2px solid var(--blue);
+    color: var(--blue);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-outline:hover {
+    background: var(--blue);
+    color: var(--white);
+}
+
+.btn-secondary {
+    background: var(--gold);
+    color: var(--dark-blue);
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.3;
+}
+
+.btn-secondary:hover {
+    background: #d9a404;
+}
+
+.hero {
+    background: liner-gradient(135deg, var(--blue), var(--dark-blue));
+    color: var(--white);
+    padding: 4rem 2rem;
+}
+
+.hero-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 3rem;
+    max-width: 1200px;
+    margin:auto;
+    flex-wrap: wrap;
+}
+
+
    
 
 
