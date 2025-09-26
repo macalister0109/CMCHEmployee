@@ -1,1 +1,418 @@
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.about-us-gradient {
+widht: 100%;
+display: flex;
+justify-content: center;
+background: linear-gradient(-150deg, var(--blue), var (--dark-blue));
+color: white;
+padding: 4rem 2rem;
+}
+
+.about-us-container {
+display: flex;
+flex-wrap: wrap;
+max-widht: 1200px;
+width: 100%;
+}
+
+.about-content-gradient {
+flex: 1;
+padding: 2rem;
+display: flex;
+flex-direction; column;
+justify-content: center;
+}
+
+.about-content-gradient h2 {
+font-size: 2.8rem;
+margin-bottom: 1.5rem;
+}
+
+.about-content-gradient p {
+font-size: 1.2rem;
+line-height: 1.7;
+margin-bottom: 1rem;
+}
+
+.btm-primary2, .btn-secondary2 {
+padding: 0.8rem 2rem;
+border-radius: 8px;
+font-weight: bold;
+margin-right: 1rem;
+margin-top: 1rem;
+display: inline-block;
+text-decoration: none;
+}
+
+.btn-primary2 {
+background: #f2b70583;
+color: var(--dark-blue);
+}
+
+.btn-primary2:hover {
+background: #d9a404;
+color: var(--text-dark);
+
+}
+
+.btn-secondary2 {
+background-color: #ffffff33;
+color: var(--dark-blue);
+}
+
+.btn-secondary2:hover {
+background-color: #ffffff;
+}
+
+
+.about-right {
+flex: 1;
+display: flex;
+justify-content: center;
+align-itemns: center;
+padding: 2rem;
+}
+
+.about-right img {
+width: 500px;       /*Tamaño del circulo*/
+width: 500px;
+height: 500px;
+}
