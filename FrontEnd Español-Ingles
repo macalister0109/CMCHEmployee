@@ -1,3 +1,68 @@
+:root {
+   --blue: #1f1273;
+   --dark-blue: #0f0ac3;
+   --gold: #f2b705;
+   --white: #ffffff;
+   --gray: #f5f6fa;
+   --text-dark: #2c2c2c;
+   --red: #ff0000;
+
+   --radius: 12px;
+   --shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+   --font: "Inter", sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font);
+    background: var(--white);
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+.header {
+    background: var(--white);
+    border-bottom: 1px solid #eaeaea;
+    position: sticky;
+    top: 0;
+    z-index;
+}
+
+.header-inner {
+    display: flex; 
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    width: 60px;
+    height: 70px;
+}
+
+.brand {
+    font-size: 40px;
+    font-weight: 800;
+    color: var(--blue);
+}
+
+.nav a {
+    margin: 0 1rem;
+    text-decoration: none;
+   
 
 
 
