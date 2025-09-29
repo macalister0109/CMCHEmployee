@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -213,9 +213,17 @@
    <section class="about-us-gradient" id="about">
   <div class="about-us-container">
     <div class="about-content-gradient">
-      <h2>Sobre Nosotros</h2>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime eligendi dolore nam assumenda dolor cumque debitis commodi iste hic, atque expedita sit libero possimus facere consequuntur necessitatibus explicabo. Veritatis, veniam.</p>
-      <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iusto atque cupiditate voluptates maiores dolores explicabo dolor odio aliquid earum hic. Quia consequuntur odio aliquid reprehenderit cum quos voluptatum? Eos, minus.</p>
+      <h2>Conócenos mejor</h2>
+      <p>Somos <strong>Legado TP</strong>, 
+        la plataforma desarrollada  por y para la comunidad educativa del colegio 
+        <strong>Marista Marcelino Champagnat.</strong> 
+        Nacimos del diagnostico real de las trayectorias de egresados (2021-2023)-sus desafios, sueños e historias- 
+        para transformar la transición <strong>colegio-mundo laboral</strong> y superior en una ruta clara, digna y segura</p>
+
+         <p>Nuestra misión es simple: <strong>conectar talento técnico con oportunidades justas, acompañar decisiones vocacionales y proteger las prácticas profesionales.</strong>
+        Lo hacemos con recursos prácticos, una bolsa de empleo responsable y una red de apoyo entre estudiantes y exalumnos.</p>
+        <h3>Valores</h3>
+        <p>&#8226; Dignidad laboral &#8226; Vocacion y pertinencia &#8226; comunidad y colaboracion &#8226; transparencia y proteccion de datos.</p>
       <a href="#especialidades" class="btn-primary2">Especialidades</a>
       <a href="#empresas" class="btn-secondary2">Empresas</a>
     </div>
@@ -244,19 +252,20 @@
     </div>
 
     <!-- Select de idiomas con banderas -->
-    <div class="footer-language">
-      <label for="language-select">Idioma:</label>
-      <select id="language-select" onchange="changeLanguage(this.value)">
-        <option value="es" selected>🇪🇸 Español</option>
-        <option value="en">🇺🇸 English</option>
-      </select>
-    </div>
+<div class="footer-language">
+  <label for="language-select">Idioma:</label>
+  <select id="language-select" onchange="cambiarIdioma(this.value)">
+    <option value="es" {% if lang == 'es' %}selected{% endif %}>🇪🇸 Español</option>
+    <option value="en" {% if lang == 'en' %}selected{% endif %}>🇺🇸 English</option>
+  </select>
+</div>
 
-    <button class="back-to-top" onclick="scrollToTop()">↑ Volver arriba</button>
-  </div>
-</footer>
+<script>
+  function cambiarIdioma(idioma) {
+    // Redirige a la misma ruta pero con parámetro lang
+    window.location.href = "/?lang=" + idioma;
+  }
+</script>
 
-    <script src="assets/js/main.js"></script>
-    <script src="assets/js/carousel.js"></script>
   </body>
 </html>
