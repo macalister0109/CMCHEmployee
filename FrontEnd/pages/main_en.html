@@ -45,22 +45,22 @@
     {% if bienvenida %}
     <div class="alert alert-success">
       <div class="container">
-        <p>{{ bienvenida }}</p>
+        <p>{{ Welcome }}</p>
         {% if aviso %}
-        <p class="aviso">{{ aviso }}</p>
+        <p class="aviso">{{ Alert }}</p>
         {% endif %}
       </div>
     </div>
     {% endif %} {% if nombre and apellido %}
     <div class="user-welcome">
       <div class="container">
-        <p>{{ nombre }} {{ apellido }}</p>
+        <p>{{ Name }} {{ Last Name }}</p>
         <form
           method="post"
           action="{{ url_for('logout') }}"
           style="display: inline"
         >
-          <button type="submit" class="btn-logout"></button>
+          <button type="submit" class="btn-logout">Log out of</button>
         </form>
       </div>
     </div>
@@ -69,8 +69,8 @@
     <section class="hero">
       <div class="container hero-inner">
         <div class="hero-text">
-          <h2></h2>
-          <p></p>
+          <h2>Connect with your future job</h2>
+          <p>More than 100 opportunities await students, graduates, and professionals in our fields</p>
           <form class="search-box">
             <input type="text" placeholder="" class="search-input" />
             <select class="search-select">
