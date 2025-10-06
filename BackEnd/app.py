@@ -4,38 +4,24 @@ import os
 import re
 from datetime import date
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy import text
 
-# Configuración de rutas de templates y estaticos
+# Rutas de templates y estáticos
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 FRONTEND_PAGES = os.path.join(BASE_DIR, '../FrontEnd/pages')
 STATIC_FOLDER = os.path.join(FRONTEND_PAGES, 'assets')
 
 app = Flask(__name__, template_folder=FRONTEND_PAGES, static_folder=STATIC_FOLDER)
 
-# Config desde entorno
 app.secret_key = os.environ.get('SECRET_KEY', 'ClaveSuperSecreta')
-DATABASE_URL = os.environ.get('DATABASE_URL', None)
-
-# Configurar SQLAlchemy si DATABASE_URL está definido, si no, fallará al intentar usar db
-if DATABASE_URL:
-    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    db = SQLAlchemy(app)
-else:
-    # Intenta usar configuración por defecto (puedes ajustar la password)
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('FALLBACK_DATABASE_URL', 'mysql+pymysql://root:2218@localhost/CMCHEmployee')
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    db = SQLAlchemy(app)
+DATABASE_URL = os.environ.get('DATABASE_URL', 'mysql+pymysql://root@localhost/CMCHEmployee')
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
 
 
-# --- Configuración de base de datos ---
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:2218@localhost/CMCHEmployee'
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# db = SQLAlchemy(app)
-# --- Configuración de base de datos ---
-
-# --- Modelos (basados en BD/diseniobasededatos.ddl) ---
+# Modelos (basados en BD/diseniobasededatos.ddl)
 class Pais(db.Model):
     __tablename__ = 'Pais'
     id_pais = db.Column(db.Integer, primary_key=True)
@@ -122,28 +108,17 @@ class Postulaciones(db.Model):
     fecha_postulacion = db.Column(db.Date, nullable=False)
     estado = db.Column(db.String(20))
 
-# --- Fin modelos ---
+# Utilidades de base de datos
+def test_db_connection():
+    """Ejecuta una consulta ligera para probar la conexión."""
+    try:
+        with db.engine.connect() as conn:
+            conn.execute(text('SELECT 1'))
+    except Exception:
+        raise
 
-
-
-# --- Modelos ---
-# class Alumnos(db.Model):
-#     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-#     rut = db.Column(db.String(12), unique=True, nullable=False)
-#     nombre = db.Column(db.String(100), nullable=False)
-#     apellido = db.Column(db.String(100), nullable=False)
-#     password = db.Column(db.String(255), nullable=False)
-#
-# class Empresa(db.Model):
-#     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-#     nombre_empresa = db.Column(db.String(100), nullable=False)
-#     nombre_encargado = db.Column(db.String(100), nullable=False)
-#     rut_empresa = db.Column(db.String(12), unique=True, nullable=False)
-#     rut_encargado = db.Column(db.String(12))
-#     direccion = db.Column(db.String(255), nullable=False)
-#     email = db.Column(db.String(100), nullable=False)
-#     password = db.Column(db.String(255), nullable=False)
-# --- Modelos ---
+def ensure_db_created():
+    db.create_all()
 
 #Registro empresa 
 @app.route('/register_empresa', methods=['GET', 'POST'])
@@ -435,4 +410,20 @@ def logout():
     return redirect(url_for('main'))
 
 if __name__ == '__main__':
+    # Antes de iniciar, probamos la conexión y creamos tablas si todo está OK
+    try:
+        with app.app_context():
+            test_db_connection()
+            ensure_db_created()
+        print('Conexión a la base de datos OK. Tablas creadas/comprobadas.')
+    except Exception as e:
+        print('ERROR: No se pudo conectar a la base de datos. Revisa DATABASE_URL y que el servidor MySQL esté activo.')
+        print('Detalle:', e)
+        # Si la variable ALLOW_NO_DB está establecida, arrancamos en modo degradado (sin DB)
+        allow_no_db = os.environ.get('ALLOW_NO_DB', '0')
+        if allow_no_db in ('1', 'true', 'True'):
+            print('ALERT: Se iniciará la aplicación sin conexión a la base de datos por ALLOW_NO_DB.')
+        else:
+            # Salimos para evitar comportamientos inesperados
+            raise
     app.run(debug=True)
