@@ -76,6 +76,7 @@ class Empresas(db.Model):
     estado_empresa = db.Column(db.String(50), nullable=False)
     descripcion_empresa = db.Column(db.String(1000), nullable=False)
     tipo_empresa = db.Column(db.String(20), nullable=False)
+    password_empresa = db.Column(db.String(300), nullable=False)
     Pais_id_pais = db.Column(db.Integer, db.ForeignKey('Pais.id_pais'), nullable=False)
     Empresarios_id_usuario = db.Column(db.Integer, db.ForeignKey('Empresarios.id_usuario'), nullable=False)
 
@@ -120,16 +121,35 @@ def test_db_connection():
 def ensure_db_created():
     db.create_all()
 
+
+def get_default_pais_id():
+    """Return an existing Pais id for 'Chile' or the first Pais id; create 'Chile' if no Pais exists."""
+    pais = Pais.query.filter_by(nombre_pais='Chile').first()
+    if pais:
+        return pais.id_pais
+    # if no 'Chile', try to get any pais
+    any_pais = Pais.query.first()
+    if any_pais:
+        return any_pais.id_pais
+    # create Chile as fallback
+    new_pais = Pais(nombre_pais='Chile')
+    db.session.add(new_pais)
+    db.session.commit()
+    return new_pais.id_pais
+
 #Registro empresa 
 @app.route('/register_empresa', methods=['GET', 'POST'])
 def register_empresa():
     if request.method == 'POST':
         nombre_empresa = request.form.get('nombre_empresa')
         nombre_encargado = request.form.get('nombre_encargado')
+        apellido_encargado = request.form.get('apellido_encargado')
         rut_empresa = request.form.get('rut_empresa')
         rut_encargado = request.form.get('rut_encargado')
         direccion = request.form.get('direccion')
         email = request.form.get('email')
+        rubro = request.form.get('rubro') or '-'
+        sitio_web = request.form.get('sitio_web') or '-'
         rut_empresa_normalizado = re.sub(r'[^0-9kK]', '', rut_empresa)
         rut_encargado_normalizado = re.sub(r'[^0-9kK]', '', rut_encargado) if rut_encargado else None
         # Verifica que el rut de empresa sea unico
@@ -152,7 +172,7 @@ def register_empresa():
                 db.session.add(new_auth)
                 db.session.flush()
                 hashed_pred = generate_password_hash('012345A')
-                new_user = Usuarios(nombre=nombre_encargado or 'Encargado', apellido='', password=hashed_pred, correo=f'encargado_{rut_encargado_normalizado}@example.com', telefono='000000000', Pais_id_pais=1, UsuarioAutorizado_ID=new_auth.id_usuario_autorizado)
+                new_user = Usuarios(nombre=nombre_encargado or 'Encargado', apellido=apellido_encargado or '', password=hashed_pred, correo=f'encargado_{rut_encargado_normalizado}@example.com', telefono='000000000', Pais_id_pais=get_default_pais_id(), UsuarioAutorizado_ID=new_auth.id_usuario_autorizado)
                 db.session.add(new_user)
                 db.session.flush()
                 new_empresario = Empresarios(id_usuario=new_user.id_usuario, empresa_principal=nombre_empresa, cargo='Encargado')
@@ -166,7 +186,7 @@ def register_empresa():
             db.session.add(placeholder_auth)
             db.session.flush()
             hashed_pred = generate_password_hash('changeMe123')
-            placeholder_user = Usuarios(nombre=f'{nombre_empresa} Admin', apellido='', password=hashed_pred, correo=f'admin_{nombre_empresa.replace(" ","").lower()}@example.com', telefono='000000000', Pais_id_pais=1, UsuarioAutorizado_ID=placeholder_auth.id_usuario_autorizado)
+            placeholder_user = Usuarios(nombre=f'{nombre_empresa} Admin', apellido=apellido_encargado or '', password=hashed_pred, correo=f'admin_{nombre_empresa.replace(" ","").lower()}@example.com', telefono='000000000', Pais_id_pais=get_default_pais_id(), UsuarioAutorizado_ID=placeholder_auth.id_usuario_autorizado)
             db.session.add(placeholder_user)
             db.session.flush()
             placeholder_emp = Empresarios(id_usuario=placeholder_user.id_usuario, empresa_principal=nombre_empresa, cargo='Administrador')
@@ -181,17 +201,18 @@ def register_empresa():
         # crear empresa y relaciones
         empresa = Empresas(
             nombre_empresa=nombre_empresa,
-            rubro='-',
+            rubro=rubro,
             direccion=direccion,
             telefono='000000000',
             correo_contacto=email,
             cantidad_empleados=0,
             logo='-',
-            sitio_web='-',
+            sitio_web=sitio_web,
             estado_empresa='Activa',
             descripcion_empresa='-',
             tipo_empresa='Nacional',
-            Pais_id_pais=1,
+            password_empresa=hashed_password,
+            Pais_id_pais=get_default_pais_id(),
             Empresarios_id_usuario=empresario_obj.id_usuario
         )
         db.session.add(empresa)
@@ -210,17 +231,42 @@ def login_empresa():
     if request.method == 'POST':
         rut_empresa = request.form.get('rut_empresa')
         password = request.form.get('password')
-        rut_empresa_normalizado = re.sub(r'[^0-9kK]', '', rut_empresa)
-        # Buscar empresa por rut
+        # Validaciones básicas
+        if not rut_empresa:
+            return render_template('login_empresa.html', error='Ingrese el RUT de la empresa')
+        if not password:
+            return render_template('login_empresa.html', error='Ingrese la contraseña')
+        # Normaliza el RUT y busca la entidad
+        rut_empresa_normalizado = re.sub(r'[^0-9kK]', '', str(rut_empresa))
         emp_nac = EmpresaNacional.query.filter_by(rut_empresa=rut_empresa_normalizado).first()
         if not emp_nac:
             return render_template('login_empresa.html', error='RUT de empresa no registrado o incorrecto')
         empresa = Empresas.query.get(emp_nac.id_empresa)
-        # no tenemos password en Empresas (según DDL), se asume login por usuario empresario
-        # buscar empresario y usuario asociado
-        empresario = Empresarios.query.get(empresa.Empresarios_id_usuario)
-        user = Usuarios.query.get(empresario.id_usuario) if empresario else None
-        if not user or not password or not check_password_hash(user.password, password):
+        # Primero intentar validar con la contraseña de la empresa
+        if empresa and empresa.password_empresa:
+            try:
+                if check_password_hash(empresa.password_empresa, password):
+                    bienvenida = f"Bienvenida empresa '{empresa.nombre_empresa}'"
+                    # set session as empresa administrador placeholder (no user id)
+                    session['nombre'] = empresa.nombre_empresa
+                    session['apellido'] = ''
+                    session['user_id'] = None
+                    return render_template('main.html', bienvenida=bienvenida)
+            except Exception:
+                # Si hay cualquier error al chequear hash, continuamos con el flujo antiguo
+                pass
+        if not empresa:
+            return render_template('login_empresa.html', error='Empresa asociada no encontrada')
+        # buscar empresario y usuario asociado (login por usuario empresario)
+        empresario = None
+        if empresa.Empresarios_id_usuario:
+            empresario = Empresarios.query.get(empresa.Empresarios_id_usuario)
+        user = None
+        if empresario and empresario.id_usuario:
+            user = Usuarios.query.get(empresario.id_usuario)
+        if not user:
+            return render_template('login_empresa.html', error='Usuario empresario no disponible para esta empresa')
+        if not check_password_hash(user.password, password):
             return render_template('login_empresa.html', error='Contraseña incorrecta')
         bienvenida = f"Bienvenida empresa '{empresa.nombre_empresa}'"
         session['nombre'] = user.nombre
@@ -279,7 +325,7 @@ def register():
         db.session.add(new_auth)
         db.session.flush()
         hashed_password = generate_password_hash(password)
-        new_user = Usuarios(nombre=nombre, apellido=apellido, password=hashed_password, correo=f'user_{rut_normalizado}@example.com', telefono='000000000', Pais_id_pais=1, UsuarioAutorizado_ID=new_auth.id_usuario_autorizado)
+        new_user = Usuarios(nombre=nombre, apellido=apellido, password=hashed_password, correo=f'user_{rut_normalizado}@example.com', telefono='000000000', Pais_id_pais=get_default_pais_id(), UsuarioAutorizado_ID=new_auth.id_usuario_autorizado)
         db.session.add(new_user)
         db.session.flush()
         new_alumno = Alumnos(id_usuario=new_user.id_usuario, carrera='Sin especificar', anio_ingreso=date.today().year, experiencia_laboral='')

@@ -395,6 +395,25 @@ button.next { right: 5px;}
 
 }
 
+/* Estilo para botón de cerrar sesión: usa la variante outline por defecto */
+.btn-logout {
+    display: inline-block;
+    padding: 0.45rem 0.9rem;
+    border-radius: calc(var(--radius) - 4px);
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    border: 2px solid var(--blue);
+    color: var(--blue);
+    background: transparent;
+}
+
+.btn-logout:hover {
+    background: var(--blue);
+    color: var(--white);
+}
+
 .btn-secondary2 {
   background-color: #ffffff33;
   color: var(--dark-blue);

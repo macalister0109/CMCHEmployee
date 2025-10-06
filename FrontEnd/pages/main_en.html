@@ -55,16 +55,17 @@
         {% endif %}
       </div>
     </div>
-    {% endif %} {% if nombre and apellido %}
+    {% endif %}
+    {% if nombre %}
     <div class="user-welcome">
       <div class="container">
-        <p>{{ Name }} {{ Last Name }}</p>
-        <form
+        <p>{{ Name }}{% if Last Name %} {{ Last Name }}{% endif %}</p>
+          <form
           method="post"
           action="{{ url_for('logout') }}"
           style="display: inline"
         >
-          <button type="submit" class="btn-logout">Log out of</button>
+          <button type="submit" class="btn-outline btn-logout">Log out</button>
         </form>
       </div>
     </div>
