@@ -13,7 +13,10 @@ export default function GradientBackground({
 }: GradientBackgroundProps) {
     return (
         <LinearGradient
-            colors={[THEME_ESTUDENT.colors.primary, "#4425C7"]}
+            colors={[
+                THEME_ESTUDENT.colors.primary_1,
+                THEME_ESTUDENT.colors.primary_2,
+            ]}
             start={{ x: 0, y: 0.5 }}
             end={{ x: 1, y: 0.5 }}
             style={styles.linearGradient}>
