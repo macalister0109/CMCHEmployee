@@ -1,4 +1,14 @@
 -- -----------------------------------------------------
+-- Creacion de la Base de datos
+-- -----------------------------------------------------
+CREATE DATABASE CMCHEmployee CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+
+-- -----------------------------------------------------
+-- Se utiliza CMCHEmployee como Base de datos Principal
+-- -----------------------------------------------------
+USE CMCHEmployee;
+
+-- -----------------------------------------------------
 -- Configuración inicial
 -- -----------------------------------------------------
 SET default_storage_engine = INNODB;
