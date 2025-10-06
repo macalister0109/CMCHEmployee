@@ -1,3 +1,4 @@
+import { Dimensions } from 'react-native';
 type width =
     | "10%"
     | "20%"
@@ -22,3 +23,12 @@ export const WIDTH: Record<width, number> = {
     "90%": 0.9,
     "100%": 1,
 };
+
+
+// Obtiene el ancho de la pantalla UNA SOLA VEZ al iniciar la app
+export const DEVICE_WIDTH = Dimensions.get('window').width;
+export const DEVICE_HEIGHT = Dimensions.get('window').height;
+
+export const BASE_WIDTH = 375; // Por ejemplo, el ancho de un iPhone SE
+
+export const scale = (size: number): number => (DEVICE_WIDTH / BASE_WIDTH) * size;
