@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import os
 import re
 from datetime import date
+import json
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import text
 
@@ -44,6 +45,7 @@ class Usuarios(db.Model):
     correo = db.Column(db.String(100), nullable=False, unique=True)
     telefono = db.Column(db.String(20), nullable=False)
     Pais_id_pais = db.Column(db.Integer, db.ForeignKey('Pais.id_pais'), nullable=False)
+    Rut_usuario = db.Column(db.String(30), db.ForeignKey('UsuarioAutorizado.numero_documento'), nullable=False)
     UsuarioAutorizado_ID = db.Column(db.Integer, db.ForeignKey('UsuarioAutorizado.id_usuario_autorizado'), nullable=False)
 
 
@@ -172,7 +174,7 @@ def register_empresa():
                 db.session.add(new_auth)
                 db.session.flush()
                 hashed_pred = generate_password_hash('012345A')
-                new_user = Usuarios(nombre=nombre_encargado or 'Encargado', apellido=apellido_encargado or '', password=hashed_pred, correo=f'encargado_{rut_encargado_normalizado}@example.com', telefono='000000000', Pais_id_pais=get_default_pais_id(), UsuarioAutorizado_ID=new_auth.id_usuario_autorizado)
+                new_user = Usuarios(nombre=nombre_encargado or 'Encargado', apellido=apellido_encargado or '', password=hashed_pred, correo=f'encargado_{rut_encargado_normalizado}@example.com', telefono='000000000', Pais_id_pais=get_default_pais_id(), Rut_usuario=new_auth.numero_documento, UsuarioAutorizado_ID=new_auth.id_usuario_autorizado)
                 db.session.add(new_user)
                 db.session.flush()
                 new_empresario = Empresarios(id_usuario=new_user.id_usuario, empresa_principal=nombre_empresa, cargo='Encargado')
@@ -186,7 +188,7 @@ def register_empresa():
             db.session.add(placeholder_auth)
             db.session.flush()
             hashed_pred = generate_password_hash('changeMe123')
-            placeholder_user = Usuarios(nombre=f'{nombre_empresa} Admin', apellido=apellido_encargado or '', password=hashed_pred, correo=f'admin_{nombre_empresa.replace(" ","").lower()}@example.com', telefono='000000000', Pais_id_pais=get_default_pais_id(), UsuarioAutorizado_ID=placeholder_auth.id_usuario_autorizado)
+            placeholder_user = Usuarios(nombre=f'{nombre_empresa} Admin', apellido=apellido_encargado or '', password=hashed_pred, correo=f'admin_{nombre_empresa.replace(" ","").lower()}@example.com', telefono='000000000', Pais_id_pais=get_default_pais_id(), Rut_usuario=placeholder_auth.numero_documento, UsuarioAutorizado_ID=placeholder_auth.id_usuario_autorizado)
             db.session.add(placeholder_user)
             db.session.flush()
             placeholder_emp = Empresarios(id_usuario=placeholder_user.id_usuario, empresa_principal=nombre_empresa, cargo='Administrador')
@@ -316,16 +318,43 @@ def register():
         # Verifica el largo de la contraseña
         if not password or len(password) < 8:
             return render_template('register.html', error='La contraseña debe tener al menos 8 caracteres')
-        # Verifica que el rut no exista (UsuarioAutorizado.numero_documento)
+        # Verifica que el RUT esté autorizado en UsuarioAutorizado
         existing_auth = UsuarioAutorizado.query.filter_by(numero_documento=rut_normalizado).first()
-        if existing_auth:
+        if not existing_auth:
+            # Guardar la solicitud en JSON para revisión posterior
+            pending_path = os.path.join(BASE_DIR, 'pending_registrations.json')
+            try:
+                pending_list = []
+                if os.path.exists(pending_path):
+                    with open(pending_path, 'r', encoding='utf-8') as pf:
+                        pending_list = json.load(pf)
+            except Exception:
+                pending_list = []
+            hashed_pw_for_pending = generate_password_hash(password)
+            pending_entry = {
+                'rut': rut_normalizado,
+                'nombre': nombre,
+                'apellido': apellido,
+                'correo': f'user_{rut_normalizado}@example.com',
+                'telefono': '000000000',
+                'hashed_password': hashed_pw_for_pending,
+                'fecha_solicitud': date.today().isoformat()
+            }
+            pending_list.append(pending_entry)
+            try:
+                with open(pending_path, 'w', encoding='utf-8') as pf:
+                    json.dump(pending_list, pf, ensure_ascii=False, indent=2)
+            except Exception:
+                # Si no se puede escribir el archivo, seguimos sin fallo crítico
+                pass
+            return render_template('register.html', error='No estás autorizado a crear la cuenta. Tu solicitud ha sido guardada para revisión.')
+        # Si el RUT está autorizado, verificar que aún no tenga usuario asociado
+        user_exists = Usuarios.query.filter_by(UsuarioAutorizado_ID=existing_auth.id_usuario_autorizado).first()
+        if user_exists:
             return render_template('register.html', error='El RUT ya está registrado')
-        # crear UsuarioAutorizado y Usuarios y Alumnos
-        new_auth = UsuarioAutorizado(tipo_documento='RUT', numero_documento=rut_normalizado)
-        db.session.add(new_auth)
-        db.session.flush()
+        # Crear Usuarios y Alumnos vinculados al UsuarioAutorizado existente
         hashed_password = generate_password_hash(password)
-        new_user = Usuarios(nombre=nombre, apellido=apellido, password=hashed_password, correo=f'user_{rut_normalizado}@example.com', telefono='000000000', Pais_id_pais=get_default_pais_id(), UsuarioAutorizado_ID=new_auth.id_usuario_autorizado)
+        new_user = Usuarios(nombre=nombre, apellido=apellido, password=hashed_password, correo=f'user_{rut_normalizado}@example.com', telefono='000000000', Pais_id_pais=get_default_pais_id(), Rut_usuario=existing_auth.numero_documento, UsuarioAutorizado_ID=existing_auth.id_usuario_autorizado)
         db.session.add(new_user)
         db.session.flush()
         new_alumno = Alumnos(id_usuario=new_user.id_usuario, carrera='Sin especificar', anio_ingreso=date.today().year, experiencia_laboral='')

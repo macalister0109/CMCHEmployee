@@ -1,0 +1,38 @@
+[
+  {
+    "rut": "70000025",
+    "nombre": "Luis",
+    "apellido": "Gonzalez",
+    "correo": "user_70000025@example.com",
+    "telefono": "000000000",
+    "hashed_password": "pbkdf2:sha256:600000$DQN5AV1fXTSBfJ2w$a697b74f790eec31bebd126aece0ae5f5b573b745962fe625637d542cbd305c4",
+    "fecha_solicitud": "2025-10-06"
+  },
+  {
+    "rut": "150835364",
+    "nombre": "Macarena",
+    "apellido": "Jamett",
+    "correo": "user_150835364@example.com",
+    "telefono": "000000000",
+    "hashed_password": "pbkdf2:sha256:600000$lyuDHKWkyO3aYrgx$8e623aac5431a7a4800e72cb22388315ab912f6fdfd642e40e1337b3e6393d2d",
+    "fecha_solicitud": "2025-10-06"
+  },
+  {
+    "rut": "129028718",
+    "nombre": "Luis",
+    "apellido": "Lopes",
+    "correo": "user_129028718@example.com",
+    "telefono": "000000000",
+    "hashed_password": "pbkdf2:sha256:600000$ET8v8jl4VIahZ7zl$2ff24e5644f34b5536a44021a2af285c800565da6acc355319ab69b194a0bb77",
+    "fecha_solicitud": "2025-10-06"
+  },
+  {
+    "rut": "22222222",
+    "nombre": "kingxion69",
+    "apellido": "Lopes",
+    "correo": "user_22222222@example.com",
+    "telefono": "000000000",
+    "hashed_password": "pbkdf2:sha256:600000$HBZc1GdS2mz72bXd$c21903e99449795d03238d43482cd819b4d955871c615fd00f50a401c74aedd9",
+    "fecha_solicitud": "2025-10-06"
+  }
+]

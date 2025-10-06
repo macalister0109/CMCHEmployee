@@ -184,12 +184,14 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   `correo` varchar(100) NOT NULL,
   `telefono` varchar(20) NOT NULL,
   `Pais_id_pais` int(10) unsigned NOT NULL,
+  `Rut_usuario` varchar(30) NOT NULL,
   `UsuarioAutorizado_ID` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id_usuario`),
   UNIQUE KEY `correo` (`correo`),
   UNIQUE KEY `UQ_UsuarioAutorizado_ID` (`UsuarioAutorizado_ID`),
   KEY `FK_Usuarios_Pais` (`Pais_id_pais`),
-  CONSTRAINT `FK_Usuarios_Auth` FOREIGN KEY (`UsuarioAutorizado_ID`) REFERENCES `usuarioautorizado` (`id_usuario_autorizado`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_Usuarios_UsuarioAutorizado` FOREIGN KEY (`UsuarioAutorizado_ID`) REFERENCES `usuarioautorizado` (`id_usuario_autorizado`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_Usuarios_Rut` FOREIGN KEY (`Rut_usuario`) REFERENCES `usuarioautorizado` (`numero_documento`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_Usuarios_Pais` FOREIGN KEY (`Pais_id_pais`) REFERENCES `pais` (`id_pais`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
