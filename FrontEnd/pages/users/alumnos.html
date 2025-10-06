@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Legado TP Bolsa de Empleo</title>
+    <link rel="stylesheet" href="../assets/css/main.css" />
+    <link rel="icon" href="assets/img/logo.png" type="image/png" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header class="header">
+      <div class="container header-inner">
+        <div class="logo-container">
+          <img
+            src="../assets/img/logo.png"
+            alt="Logo institucional"
+            class="logo"
+          />
+          <h1 class="brand">レガド-TP</h1>
+        </div>
+
+        <nav class="nav">
+          <a href="{{ url_for('main') }}">Inicio</a>
+          <a href="#especialidades">Especialidades</a>
+          <a href="#empresas">Empresas asociadas</a>
+          <a href="#about">Sobre Nosotros</a>
+          <a href="#contacto">Contacto</a>
+        </nav>
+        {% if nombre %}
+        <div class="user-welcome">
+          <div class="container">
+            <p>Bienvenido, {{ nombre }}{% if apellido %} {{ apellido }}{% endif %}</p>
+            <form method="post" action="{{ url_for('logout') }}" style="display: inline">
+              <button type="submit" class="btn-outline btn-logout">Cerrar Sesión</button>
+            </form>
+          </div>
+        </div>
+        {% endif %}

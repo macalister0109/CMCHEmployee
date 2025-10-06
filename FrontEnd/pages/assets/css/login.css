@@ -1,21 +1,144 @@
-body { 
-    font-family: Arial, sans-serif; 
-    background: #5d7aca; 
-    text-align: center; 
+:root {
+    --red: #d92534;
+    --blue: #1F1273;
+    --dark-blue: #1B1259;
+    --yellow: #F2B705;
+    --light-gray: #F2F2F2;
+
+    --radius: 12px;
+    font-family: 'Inter', sans-serif;
 }
-h2 { 
-    color: #b56b6b; 
+
+body {
+    margin: 0;
+    background: var(--dark-blue);
+    color: var(--light-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
 }
-form { 
-    margin: 20px auto; 
-    display: inline-block; 
+
+.container {
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    max-width: 1000px;
+    background: var(--blue);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    overflow: hidden;
 }
-.error {
-    color: #fff;
-    background: #d32f2f;
-    padding: 10px;
-    margin-bottom: 15px;
-    border-radius: 5px;
+
+.panel {
+    flex: 1;
+    background: var(--red);
+    color: white;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.panel .logo {
+    max-width: 80px;
+    margin-bottom: 1rem;
+}
+
+.panel h1 {
+    margin: 0 0 1rem;
+    color: var(--light-gray);
+}
+
+.panel p {
+    line-height: 1.5;
+}
+
+.card {
+    flex: 1;
+    padding: 2rem;
+    background: var(--blue);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.card h2 {
+   margin: 0 0 1rem;
+   text-align: center;
+   color: var(--yellow); 
+}
+
+label {
+    display: block;
+    margin: 0.5rem 0 0 0.2rem;
+    font-weight: 600;
+}
+
+input {
+    width: 100%;
+    padding: 0.7rem;
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+    outline: none;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+input:focus {
+    border-color: var(--yellow);
+    box-shadow: 0 0 8px var(--yellow);
+}
+
+button {
+    width: 100%;
+    margin-top:1rem ;
+    padding: 0.8rem;
+    border: none;
+    border-radius: var(--radius);
     font-weight: bold;
-    display: inline-block;
+    cursor: pointer;
+    background: var(--yellow);
+    color: var(--dark-blue);
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background: var(--red);
+    color: var(--light-gray);
+}
+
+a {
+    display: block;
+    text-align: center;
+    margin-top: 1rem;
+    color: var(--light-gray);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--yellow);
+}
+
+.error {
+    background: rgba(217, 37, 52, 0.15);
+    color: var(--red);
+    border: 1px solid var(--red);
+    padding: 0.5rem;
+    border-radius: var(--radius);
+    margin-bottom: 1rem;
+    text-align: center;
+
+}
+
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .panel .card {
+        flex: unset;
+        width: 100%;
+    }
 }
