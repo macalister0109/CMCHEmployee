@@ -2,55 +2,98 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <title>Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Iniciar Sesión</title>
     <link rel="stylesheet" href="assets/css/login.css" />
-    <link rel="icon" href="assets/img/logo.png" type="image/png" />
-      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   </head>
   <body>
     <div class="container">
-      <div class="panel">
-        <img src="assets/img/logo.png" alt="logo institucional" class="logo" />
-        <h1>Legado TP</h1>
-        <p>
-          Bienvenido a la plataforma de empleabilidad del colegio marista
-          marcelino champagnat Conectate con empresas, postula a ofertas y haz
-          crecer tu futuro
-        </p>
+      <div class="container-form">
+        <form class="sign-in">
+          <h2>Iniciar Sesión</h2>
+          {% if error %}
+          <div class="error">{{ error }}</div>
+          {% endif %}
+
+          <div class="container-input">
+            <ion-icon name="id-card-outline"></ion-icon>
+            <input
+              type="text"
+              name="rut"
+              id="rut"
+              placeholder="Ingrese su RUT"
+              required
+            />
+          </div>
+
+          <div class="container-input">
+            <ion-icon name="lock-closed-outline"></ion-icon>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              placeholder="password"
+              required
+            />
+          </div>
+          <a href="#">¿Olvidaste tu contraseña?</a>
+          <button class="button">Iniciar sesión</button>
+        </form>
+      </div>
+      <div class="container-form" >
+        <form class="sign-up">
+          <h2>Registrarse</h2>
+          <div class="container-input">
+            <ion-icon name="person-outline"></ion-icon>
+            <input type="text" placeholder="Nombre" />
+          </div>
+          <div class="container-input">
+            <ion-icon name="person-outline"></ion-icon>
+            <input type="text" placeholder="Apellido" />
+          </div>
+
+          <div class="container-input">
+            <ion-icon name="id-card-outline"></ion-icon>
+            <input type="text" placeholder="Ingrese su RUT" />
+          </div>
+
+          <div class="container-input">
+            <ion-icon name="lock-closed-outline"></ion-icon>
+            <input type="password" placeholder="Password" />
+          </div>
+          <button class="button">registrarse</button>
+        </form>
       </div>
 
-      <div class="card">
-        <h2>Iniciar Sesión</h2>
-        {% if error %}
-        <div class="error">{{ error }}</div>
-        {% endif %}
-
-        <form method="post">
-          <label for="rut">RUT:</label>
-          <input
-            type="text"
-            name="rut"
-            id="rut"
-            placeholder="12.345.678-9"
-            required
-          />
-
-          <label for="password">Contraseña:</label>
-          <input
-            type="password"
-            name="password"
-            id="password"
-            placeholder="********"
-            required
-          />
-
-          <button type="submit">Entrar</button>
-        </form>
-
-        <a href="{{ url_for('register') }}">¿No tienes cuenta? Registrate</a>
-        <a href="{{ url_for('main') }}">Volver al inicio</a>
+      <div class="container-welcome">
+        <div class="welcome-sign-up welcome">
+          <h3>bienvenido</h3>
+          <p>
+            Bienvenido a la plataforma de empleabilidad del colegio marista
+            marcelino champagnat Conectate con empresas, postula a ofertas y haz
+            crecer tu futuro
+          </p>
+          <button class="button" id="btn-sign-up">Registrarse</button>
+        </div>
+        <div class="welcome-sign-in welcome">
+          <h3>!Hola¡</h3>
+          <p>
+            Crea tu cuenta para acceder a oportunidades laborales, conectar con
+            empresas y potenciar tu desarrollo profesional.
+          </p>
+          <button class="button" id="btn-sign-in">Iniciar sesión</button>
+        </div>
       </div>
     </div>
+
+    <script src="assets/js/login.js"></script>
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+    ></script>
   </body>
 </html>

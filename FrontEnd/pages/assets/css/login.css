@@ -1,144 +1,205 @@
-:root {
-    --red: #d92534;
-    --blue: #1F1273;
-    --dark-blue: #1B1259;
-    --yellow: #F2B705;
-    --light-gray: #F2F2F2;
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
-    --radius: 12px;
-    font-family: 'Inter', sans-serif;
+:root {
+  --red: #d92534;
+  --blue: #1F1273;
+  --dark-blue: #1B1259;
+  --yellow: #F2B705;
+  --light-gray: #F2F2F2;
+  --white: #ffffff;
+  --radius: 12px;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  --transition: 0.4s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Montserrat', sans-serif;
 }
 
 body {
-    margin: 0;
-    background: var(--dark-blue);
-    color: var(--light-gray);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(to left, var(--red), var(--dark-blue) 80%, var(--blue));
 }
 
 .container {
-    display: flex;
-    flex-direction: row;
-    width: 80%;
-    max-width: 1000px;
-    background: var(--blue);
-    border-radius: var(--radius);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-    overflow: hidden;
+  width: 800px;
+  max-width: 95%;
+  height: 500px;
+  display: flex;
+  position: relative;
+  background-color: var(--blue);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
 }
 
-.panel {
-    flex: 1;
-    background: var(--red);
-    color: white;
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+.container-form {
+  width: 100%;
+  overflow: hidden;
 }
 
-.panel .logo {
-    max-width: 80px;
-    margin-bottom: 1rem;
+.container-form form {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: transform var(--transition);
 }
 
-.panel h1 {
-    margin: 0 0 1rem;
-    color: var(--light-gray);
+.container-form h2 {
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: #fffdf9;
 }
 
-.panel p {
-    line-height: 1.5;
+.container-form span {
+  font-size: 13px;
+  margin-bottom: 15px;
+  color: var(--light-gray);
 }
 
-.card {
-    flex: 1;
-    padding: 2rem;
-    background: var(--blue);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+.container-input {
+  width: 300px;
+  height: 45px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 15px;
+  background-color: var(--white);
+  border-radius: 10px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+  transition: box-shadow var(--transition);
 }
 
-.card h2 {
-   margin: 0 0 1rem;
-   text-align: center;
-   color: var(--yellow); 
+.container-input input {
+  border: none;
+  outline: none;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  font-size: 14px;
 }
 
-label {
-    display: block;
-    margin: 0.5rem 0 0 0.2rem;
-    font-weight: 600;
+.container-input:focus-within {
+  box-shadow: 0 0 0 2px var(--yellow);
 }
 
-input {
-    width: 100%;
-    padding: 0.7rem;
-    border-radius: var(--radius);
-    border: 1px solid transparent;
-    outline: none;
-    font-size: 1rem;
-    margin-bottom: 1rem;
+.container-form a {
+  color: var(--light-gray);
+  font-size: 14px;
+  margin: 10px 0;
+  text-decoration: none;
+  transition: color var(--transition);
 }
 
-input:focus {
-    border-color: var(--yellow);
-    box-shadow: 0 0 8px var(--yellow);
+.container-form a:hover {
+  text-decoration: underline;
+  color: var(--yellow);
 }
 
-button {
-    width: 100%;
-    margin-top:1rem ;
-    padding: 0.8rem;
-    border: none;
-    border-radius: var(--radius);
-    font-weight: bold;
-    cursor: pointer;
-    background: var(--yellow);
-    color: var(--dark-blue);
-    transition: background 0.3s ease;
+.button {
+  width: 180px;
+  height: 45px;
+  font-size: 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+  background-color: #c5c2d6;
+  color: #000;
+  transition: background-color var(--transition), transform var(--transition);
 }
 
-button:hover {
-    background: var(--red);
-    color: var(--light-gray);
+.button:hover {
+  background-color: var(--yellow);
+  transform: scale(1.05);
 }
 
-a {
-    display: block;
-    text-align: center;
-    margin-top: 1rem;
-    color: var(--light-gray);
-    text-decoration: none;
+/* Animations */
+.sign-up {
+  transform: translateX(-100%);
 }
 
-a:hover {
-    color: var(--yellow);
+.container.toggle .sign-in {
+  transform: translateX(100%);
 }
 
-.error {
-    background: rgba(217, 37, 52, 0.15);
-    color: var(--red);
-    border: 1px solid var(--red);
-    padding: 0.5rem;
-    border-radius: var(--radius);
-    margin-bottom: 1rem;
-    text-align: center;
-
+.container.toggle .sign-up {
+  transform: translateX(0);
 }
 
+/* Welcome Panel */
+.container-welcome {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateX(100%);
+  background-color: #e63946;
+  transition: transform var(--transition), border-radius var(--transition);
+  overflow: hidden;
+  border-radius: 50% 0 0 50%;
+}
 
-@media (max-width: 768px) {
-    .container {
-        flex-direction: column;
-    }
+.container.toggle .container-welcome {
+  transform: translateX(0%);
+  border-radius: 0 50% 50% 0;
+}
 
-    .panel .card {
-        flex: unset;
-        width: 100%;
-    }
+.container-welcome .welcome {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 0 50px;
+  color: var(--white);
+  text-align: center;
+  transition: transform var(--transition);
+}
+
+.welcome-sign-in {
+  transform: translateX(100%);
+}
+
+.container.toggle .welcome-sign-in {
+  transform: translateX(0);
+}
+
+.container.toggle .welcome-sign-up {
+  transform: translateX(-100%);
+}
+
+.container-welcome h3 {
+  font-size: 42px;
+  font-weight: 700;
+}
+
+.container-welcome p {
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.container-welcome .button {
+  border: 2px solid var(--white);
+  background-color: transparent;
+  color: var(--white);
+}
+
+.container-welcome .button:hover {
+  background-color: var(--white);
+  color: var(--red);
 }
