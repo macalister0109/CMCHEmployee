@@ -2,10 +2,11 @@ from flask import Flask, render_template, request, redirect, url_for, send_from_
 from flask_sqlalchemy import SQLAlchemy
 import os
 import re
-from datetime import date
+from datetime import date, datetime
 import json
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import text
+from collections import defaultdict
 
 # Rutas de templates y estáticos
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -19,6 +20,37 @@ DATABASE_URL = os.environ.get('DATABASE_URL', 'mysql+pymysql://root@localhost/CM
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+# Sistema de seguimiento de IPs (en memoria)
+ip_tracker = defaultdict(lambda: {'count': 0, 'last_seen': None, 'pages': set()})
+
+def get_client_ip():
+    """Obtiene la IP real del cliente, incluso detrás de proxies"""
+    if request.headers.get('X-Forwarded-For'):
+        return request.headers.get('X-Forwarded-For').split(',')[0].strip()
+    elif request.headers.get('X-Real-IP'):
+        return request.headers.get('X-Real-IP')
+    return request.remote_addr or 'Unknown'
+
+@app.before_request
+def track_visitor():
+    """Registra cada visita de IP en la terminal"""
+    # Ignorar archivos estáticos para no llenar la terminal
+    if request.path.startswith('/assets/') or request.path.startswith('/static/'):
+        return
+    
+    ip = get_client_ip()
+    endpoint = request.endpoint or request.path
+    method = request.method
+    
+    # Actualizar tracker
+    ip_tracker[ip]['count'] += 1
+    ip_tracker[ip]['last_seen'] = datetime.now()
+    ip_tracker[ip]['pages'].add(endpoint)
+    
+    # Mostrar en terminal
+    timestamp = datetime.now().strftime('%H:%M:%S')
+    print(f"🌐 [{timestamp}] {ip} → {method} {endpoint} (visita #{ip_tracker[ip]['count']})")
 
 
 
@@ -483,6 +515,30 @@ def assets_files(filename):
 def logout():
     session.clear()
     return redirect(url_for('main'))
+
+# Endpoint para ver estadísticas de IPs (solo para desarrollo/admin)
+@app.route('/api/stats/visitors')
+def visitor_stats():
+    """Muestra estadísticas de visitantes - solo para admin"""
+    # En producción deberías proteger esto con autenticación de admin
+    stats = []
+    for ip, data in ip_tracker.items():
+        stats.append({
+            'ip': ip,
+            'visits': data['count'],
+            'last_seen': data['last_seen'].strftime('%Y-%m-%d %H:%M:%S') if data['last_seen'] else None,
+            'pages_visited': len(data['pages']),
+            'unique_pages': list(data['pages'])
+        })
+    
+    # Ordenar por número de visitas
+    stats.sort(key=lambda x: x['visits'], reverse=True)
+    
+    return jsonify({
+        'total_unique_visitors': len(ip_tracker),
+        'total_visits': sum(d['count'] for d in ip_tracker.values()),
+        'visitors': stats
+    })
 
 if __name__ == '__main__':
     # Antes de iniciar, probamos la conexión y creamos tablas si todo está OK
