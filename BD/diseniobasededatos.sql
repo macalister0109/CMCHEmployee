@@ -16,7 +16,7 @@
 
 
 -- Volcando estructura de base de datos para cmchemployee
-CREATE DATABASE IF NOT EXISTS `cmchemployee` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+CREATE DATABASE IF NOT EXISTS `cmchemployee` ;
 USE `cmchemployee`;
 
 -- Volcando estructura para tabla cmchemployee.alumnos
