@@ -14,13 +14,13 @@ export const styles = StyleSheet.create({
     },
     img_container: {
         width: THEME_ESTUDENT.device_width * THEME_ESTUDENT.width["70%"],
-        height: "90%",
+        height: "80%",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
     },
     img: {
         flex: 1,
-        width: 270,
+        width: 230,
     },
 });

@@ -23,7 +23,6 @@ export default function LoginForm() {
         }));
     };
     const handleLogin = () => {
-        // A. Validación Local Simple (ANTES de llamar a la API)
         if (!credentials.rut.includes("-") || credentials.password.length < 6) {
             Alert.alert(
                 "Error de Validación",
