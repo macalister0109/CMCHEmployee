@@ -32,4 +32,4 @@ export const ESTUDENT_VIEW: colors = {
     border: "#5D5F88",
     dark: "#151515ff",
     text_2: "#b9b9b9ff",
-};
+} as const;
