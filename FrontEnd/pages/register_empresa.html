@@ -70,10 +70,10 @@
     </div>
 
     <script>
-           document.addEventListener("DOMContentLoaded", () => {
+      document.addEventListener("DOMContentLoaded", () => {
         const inputs = document.querySelectorAll("input");
 
-        inputs.forEach(input => {
+        inputs.forEach((input) => {
           input.addEventListener("focus", () => {
             input.parentElement.classList.add("focused");
           });

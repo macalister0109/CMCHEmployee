@@ -2,26 +2,21 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Login</title>
+    <title>Login Page</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="assets/css/login.css" />
   </head>
   <body>
     <div class="container">
       <div class="container-form">
-        <form class="sign-in">
-          <h2>Iniciar Sesión</h2>
-          {% if error %}
-          <div class="error">{{ error }}</div>
-          {% endif %}
-
+        <form class="sign-in" method="post">
           <div class="container-input">
             <ion-icon name="id-card-outline"></ion-icon>
             <input
               type="text"
               name="rut"
               id="rut"
-              placeholder="Ingrese su RUT"
+              placeholder="Ingresa tu RUT"
               required
             />
           </div>
@@ -32,42 +27,75 @@
               type="password"
               name="password"
               id="password"
-              placeholder="password"
+              placeholder="Password"
               required
             />
           </div>
           <a href="#">¿Olvidaste tu contraseña?</a>
-          <button class="button">Iniciar sesión</button>
+          <button class="button" type="submit">Iniciar sesión</button>
         </form>
       </div>
-      <div class="container-form" >
-        <form class="sign-up">
-          <h2>Registrarse</h2>
+      <div class="container-form">
+        <form class="sign-up" method="post">
+          {% if error %}
+          <div class="error">{{ ERROR }}</div>
+          {% endif %}
+
           <div class="container-input">
             <ion-icon name="person-outline"></ion-icon>
-            <input type="text" placeholder="Nombre" />
+
+            <input
+              type="text"
+              name="nombre"
+              id="nombre"
+              placeholder="Tu nombre"
+              required
+            />
           </div>
           <div class="container-input">
             <ion-icon name="person-outline"></ion-icon>
-            <input type="text" placeholder="Apellido" />
+
+            <input
+              type="text"
+              name="apellido"
+              id="apellido"
+              placeholder="Tu apellido"
+              required
+            />
           </div>
 
           <div class="container-input">
             <ion-icon name="id-card-outline"></ion-icon>
-            <input type="text" placeholder="Ingrese su RUT" />
+
+            <input
+              type="text"
+              placeholder="Ingrese su RUT"
+              name="rut"
+              id="rut"
+              required
+            />
           </div>
 
           <div class="container-input">
             <ion-icon name="lock-closed-outline"></ion-icon>
-            <input type="password" placeholder="Password" />
+
+            <input
+              type="password"
+              placeholder="Password"
+              name="password"
+              id="password"
+              required
+            />
           </div>
-          <button class="button">registrarse</button>
+
+          <button class="button" type="submit">registrarse</button>
         </form>
       </div>
 
       <div class="container-welcome">
         <div class="welcome-sign-up welcome">
-          <h3>bienvenido</h3>
+          <h3>¡Iniciar Sesión!</h3>
+
           <p>
             Bienvenido a la plataforma de empleabilidad del colegio marista
             marcelino champagnat Conectate con empresas, postula a ofertas y haz
@@ -76,7 +104,7 @@
           <button class="button" id="btn-sign-up">Registrarse</button>
         </div>
         <div class="welcome-sign-in welcome">
-          <h3>!Hola¡</h3>
+          <h3>¡Registrate!</h3>
           <p>
             Crea tu cuenta para acceder a oportunidades laborales, conectar con
             empresas y potenciar tu desarrollo profesional.
