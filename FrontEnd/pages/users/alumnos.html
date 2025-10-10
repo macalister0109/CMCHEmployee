@@ -34,19 +34,13 @@
           <a href="#about">Sobre Nosotros</a>
           <a href="#contacto">Contacto</a>
         </nav>
+        {% if nombre %}
         <div class="user-welcome">
           <div class="container">
-            <p>Bienvenido, {{ nombre }} {{ apellido }}</p>
-            <form
-              method="post"
-              action="{{ url_for('logout') }}"
-              style="display: inline"
-            >
-              <button type="submit" class="btn-logout">Cerrar Sesión</button>
+            <p>Bienvenido, {{ nombre }}{% if apellido %} {{ apellido }}{% endif %}</p>
+            <form method="post" action="{{ url_for('logout') }}" style="display: inline">
+              <button type="submit" class="btn-outline btn-logout">Cerrar Sesión</button>
             </form>
           </div>
         </div>
-      </div>
-    </header>
-  </body>
-</html>
+        {% endif %}

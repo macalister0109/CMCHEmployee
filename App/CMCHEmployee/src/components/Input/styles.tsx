@@ -2,14 +2,16 @@
 import { StyleSheet } from "react-native";
 import { THEME_ESTUDENT } from "../../constants";
 
-export const styles = (width: number) =>
+export const styles = 
     StyleSheet.create({
         container: {
-            width: THEME_ESTUDENT.width["90%"] * width,
+            width: THEME_ESTUDENT.width["80%"] * THEME_ESTUDENT.device_width,
         },
         input: {
-            flex: 1,
             backgroundColor: THEME_ESTUDENT.colors.light,
             color: THEME_ESTUDENT.colors.primary,
+            width: THEME_ESTUDENT.width["80%"] * THEME_ESTUDENT.device_width,
+            fontWeight: THEME_ESTUDENT.font_weights.bold,
+            borderRadius: 5,
         },
     });

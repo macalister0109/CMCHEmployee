@@ -28,35 +28,28 @@
           <a href="#contacto">Contacto</a>
         </nav>
         <div class="auth-buttons">
-          <a href="{{ url_for('register') }}" class="btn-outline">Crear Cuenta</a>
-          <a href="{{ url_for('login') }}" class="btn-primary">Ingresar</a>
-          <a href="{{ url_for('login_empresa') }}" class="btn-outline">Empresas</a>
+          {% if nombre %}
+            <div class="welcome-header">
+              <span class="welcome-text">Bienvenido, {{ nombre }}{% if apellido %} {{ apellido }}{% endif %}</span>
+                <form method="post" action="{{ url_for('logout') }}" style="display:inline; margin-left:10px;">
+                  <button type="submit" class="btn-outline btn-logout">Cerrar Sesión</button>
+                </form>
+            </div>
+          {% elif bienvenida %}
+            <div class="welcome-header">
+              <span class="welcome-text">{{ bienvenida }}</span>
+              {% if aviso %}<span class="aviso">{{ aviso }}</span>{% endif %}
+            </div>
+          {% else %}
+            <a href="{{ url_for('register') }}" class="btn-outline">Crear Cuenta</a>
+            <a href="{{ url_for('login') }}" class="btn-primary">Ingresar</a>
+            <a href="{{ url_for('login_empresa') }}" class="btn-outline">Empresas</a>
+          {% endif %}
         </div>
       </div>
     </header>
 
-    <!-- Mensajes de bienvenida y avisos -->
-    {% if bienvenida %}
-    <div class="alert alert-success">
-      <div class="container">
-        <p>{{ bienvenida }}</p>
-        {% if aviso %}
-        <p class="aviso">{{ aviso }}</p>
-        {% endif %}
-      </div>
-    </div>
-    {% endif %}
-
-    {% if nombre and apellido %}
-    <div class="user-welcome">
-      <div class="container">
-        <p>Bienvenido, {{ nombre }} {{ apellido }}</p>
-        <form method="post" action="{{ url_for('logout') }}" style="display: inline;">
-          <button type="submit" class="btn-logout">Cerrar Sesión</button>
-        </form>
-      </div>
-    </div>
-    {% endif %}
+    <!-- Mensajes de bienvenida y avisos mostrados en el header -->
 
     <section class="hero">
       <div class="container hero-inner">

@@ -2,9 +2,11 @@ from flask import Flask, render_template, request, redirect, url_for, send_from_
 from flask_sqlalchemy import SQLAlchemy
 import os
 import re
-from datetime import date
+from datetime import date, datetime
+import json
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import text
+from collections import defaultdict
 
 # Rutas de templates y estáticos
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -18,6 +20,37 @@ DATABASE_URL = os.environ.get('DATABASE_URL', 'mysql+pymysql://root@localhost/CM
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+# Sistema de seguimiento de IPs (en memoria)
+ip_tracker = defaultdict(lambda: {'count': 0, 'last_seen': None, 'pages': set()})
+
+def get_client_ip():
+    """Obtiene la IP real del cliente, incluso detrás de proxies"""
+    if request.headers.get('X-Forwarded-For'):
+        return request.headers.get('X-Forwarded-For').split(',')[0].strip()
+    elif request.headers.get('X-Real-IP'):
+        return request.headers.get('X-Real-IP')
+    return request.remote_addr or 'Unknown'
+
+@app.before_request
+def track_visitor():
+    """Registra cada visita de IP en la terminal"""
+    # Ignorar archivos estáticos para no llenar la terminal
+    if request.path.startswith('/assets/') or request.path.startswith('/static/'):
+        return
+    
+    ip = get_client_ip()
+    endpoint = request.endpoint or request.path
+    method = request.method
+    
+    # Actualizar tracker
+    ip_tracker[ip]['count'] += 1
+    ip_tracker[ip]['last_seen'] = datetime.now()
+    ip_tracker[ip]['pages'].add(endpoint)
+    
+    # Mostrar en terminal
+    timestamp = datetime.now().strftime('%H:%M:%S')
+    print(f"🌐 [{timestamp}] {ip} → {method} {endpoint} (visita #{ip_tracker[ip]['count']})")
 
 
 
@@ -44,6 +77,7 @@ class Usuarios(db.Model):
     correo = db.Column(db.String(100), nullable=False, unique=True)
     telefono = db.Column(db.String(20), nullable=False)
     Pais_id_pais = db.Column(db.Integer, db.ForeignKey('Pais.id_pais'), nullable=False)
+    Rut_usuario = db.Column(db.String(30), db.ForeignKey('UsuarioAutorizado.numero_documento'), nullable=False)
     UsuarioAutorizado_ID = db.Column(db.Integer, db.ForeignKey('UsuarioAutorizado.id_usuario_autorizado'), nullable=False)
 
 
@@ -76,6 +110,7 @@ class Empresas(db.Model):
     estado_empresa = db.Column(db.String(50), nullable=False)
     descripcion_empresa = db.Column(db.String(1000), nullable=False)
     tipo_empresa = db.Column(db.String(20), nullable=False)
+    password_empresa = db.Column(db.String(300), nullable=False)
     Pais_id_pais = db.Column(db.Integer, db.ForeignKey('Pais.id_pais'), nullable=False)
     Empresarios_id_usuario = db.Column(db.Integer, db.ForeignKey('Empresarios.id_usuario'), nullable=False)
 
@@ -120,16 +155,35 @@ def test_db_connection():
 def ensure_db_created():
     db.create_all()
 
+
+def get_default_pais_id():
+    """Return an existing Pais id for 'Chile' or the first Pais id; create 'Chile' if no Pais exists."""
+    pais = Pais.query.filter_by(nombre_pais='Chile').first()
+    if pais:
+        return pais.id_pais
+    # if no 'Chile', try to get any pais
+    any_pais = Pais.query.first()
+    if any_pais:
+        return any_pais.id_pais
+    # create Chile as fallback
+    new_pais = Pais(nombre_pais='Chile')
+    db.session.add(new_pais)
+    db.session.commit()
+    return new_pais.id_pais
+
 #Registro empresa 
 @app.route('/register_empresa', methods=['GET', 'POST'])
 def register_empresa():
     if request.method == 'POST':
         nombre_empresa = request.form.get('nombre_empresa')
         nombre_encargado = request.form.get('nombre_encargado')
+        apellido_encargado = request.form.get('apellido_encargado')
         rut_empresa = request.form.get('rut_empresa')
         rut_encargado = request.form.get('rut_encargado')
         direccion = request.form.get('direccion')
         email = request.form.get('email')
+        rubro = request.form.get('rubro') or '-'
+        sitio_web = request.form.get('sitio_web') or '-'
         rut_empresa_normalizado = re.sub(r'[^0-9kK]', '', rut_empresa)
         rut_encargado_normalizado = re.sub(r'[^0-9kK]', '', rut_encargado) if rut_encargado else None
         # Verifica que el rut de empresa sea unico
@@ -152,7 +206,7 @@ def register_empresa():
                 db.session.add(new_auth)
                 db.session.flush()
                 hashed_pred = generate_password_hash('012345A')
-                new_user = Usuarios(nombre=nombre_encargado or 'Encargado', apellido='', password=hashed_pred, correo=f'encargado_{rut_encargado_normalizado}@example.com', telefono='000000000', Pais_id_pais=1, UsuarioAutorizado_ID=new_auth.id_usuario_autorizado)
+                new_user = Usuarios(nombre=nombre_encargado or 'Encargado', apellido=apellido_encargado or '', password=hashed_pred, correo=f'encargado_{rut_encargado_normalizado}@example.com', telefono='000000000', Pais_id_pais=get_default_pais_id(), Rut_usuario=new_auth.numero_documento, UsuarioAutorizado_ID=new_auth.id_usuario_autorizado)
                 db.session.add(new_user)
                 db.session.flush()
                 new_empresario = Empresarios(id_usuario=new_user.id_usuario, empresa_principal=nombre_empresa, cargo='Encargado')
@@ -166,7 +220,7 @@ def register_empresa():
             db.session.add(placeholder_auth)
             db.session.flush()
             hashed_pred = generate_password_hash('changeMe123')
-            placeholder_user = Usuarios(nombre=f'{nombre_empresa} Admin', apellido='', password=hashed_pred, correo=f'admin_{nombre_empresa.replace(" ","").lower()}@example.com', telefono='000000000', Pais_id_pais=1, UsuarioAutorizado_ID=placeholder_auth.id_usuario_autorizado)
+            placeholder_user = Usuarios(nombre=f'{nombre_empresa} Admin', apellido=apellido_encargado or '', password=hashed_pred, correo=f'admin_{nombre_empresa.replace(" ","").lower()}@example.com', telefono='000000000', Pais_id_pais=get_default_pais_id(), Rut_usuario=placeholder_auth.numero_documento, UsuarioAutorizado_ID=placeholder_auth.id_usuario_autorizado)
             db.session.add(placeholder_user)
             db.session.flush()
             placeholder_emp = Empresarios(id_usuario=placeholder_user.id_usuario, empresa_principal=nombre_empresa, cargo='Administrador')
@@ -181,17 +235,18 @@ def register_empresa():
         # crear empresa y relaciones
         empresa = Empresas(
             nombre_empresa=nombre_empresa,
-            rubro='-',
+            rubro=rubro,
             direccion=direccion,
             telefono='000000000',
             correo_contacto=email,
             cantidad_empleados=0,
             logo='-',
-            sitio_web='-',
+            sitio_web=sitio_web,
             estado_empresa='Activa',
             descripcion_empresa='-',
             tipo_empresa='Nacional',
-            Pais_id_pais=1,
+            password_empresa=hashed_password,
+            Pais_id_pais=get_default_pais_id(),
             Empresarios_id_usuario=empresario_obj.id_usuario
         )
         db.session.add(empresa)
@@ -210,17 +265,42 @@ def login_empresa():
     if request.method == 'POST':
         rut_empresa = request.form.get('rut_empresa')
         password = request.form.get('password')
-        rut_empresa_normalizado = re.sub(r'[^0-9kK]', '', rut_empresa)
-        # Buscar empresa por rut
+        # Validaciones básicas
+        if not rut_empresa:
+            return render_template('login_empresa.html', error='Ingrese el RUT de la empresa')
+        if not password:
+            return render_template('login_empresa.html', error='Ingrese la contraseña')
+        # Normaliza el RUT y busca la entidad
+        rut_empresa_normalizado = re.sub(r'[^0-9kK]', '', str(rut_empresa))
         emp_nac = EmpresaNacional.query.filter_by(rut_empresa=rut_empresa_normalizado).first()
         if not emp_nac:
             return render_template('login_empresa.html', error='RUT de empresa no registrado o incorrecto')
         empresa = Empresas.query.get(emp_nac.id_empresa)
-        # no tenemos password en Empresas (según DDL), se asume login por usuario empresario
-        # buscar empresario y usuario asociado
-        empresario = Empresarios.query.get(empresa.Empresarios_id_usuario)
-        user = Usuarios.query.get(empresario.id_usuario) if empresario else None
-        if not user or not password or not check_password_hash(user.password, password):
+        # Primero intentar validar con la contraseña de la empresa
+        if empresa and empresa.password_empresa:
+            try:
+                if check_password_hash(empresa.password_empresa, password):
+                    bienvenida = f"Bienvenida empresa '{empresa.nombre_empresa}'"
+                    # set session as empresa administrador placeholder (no user id)
+                    session['nombre'] = empresa.nombre_empresa
+                    session['apellido'] = ''
+                    session['user_id'] = None
+                    return render_template('main.html', bienvenida=bienvenida)
+            except Exception:
+                # Si hay cualquier error al chequear hash, continuamos con el flujo antiguo
+                pass
+        if not empresa:
+            return render_template('login_empresa.html', error='Empresa asociada no encontrada')
+        # buscar empresario y usuario asociado (login por usuario empresario)
+        empresario = None
+        if empresa.Empresarios_id_usuario:
+            empresario = Empresarios.query.get(empresa.Empresarios_id_usuario)
+        user = None
+        if empresario and empresario.id_usuario:
+            user = Usuarios.query.get(empresario.id_usuario)
+        if not user:
+            return render_template('login_empresa.html', error='Usuario empresario no disponible para esta empresa')
+        if not check_password_hash(user.password, password):
             return render_template('login_empresa.html', error='Contraseña incorrecta')
         bienvenida = f"Bienvenida empresa '{empresa.nombre_empresa}'"
         session['nombre'] = user.nombre
@@ -270,16 +350,43 @@ def register():
         # Verifica el largo de la contraseña
         if not password or len(password) < 8:
             return render_template('register.html', error='La contraseña debe tener al menos 8 caracteres')
-        # Verifica que el rut no exista (UsuarioAutorizado.numero_documento)
+        # Verifica que el RUT esté autorizado en UsuarioAutorizado
         existing_auth = UsuarioAutorizado.query.filter_by(numero_documento=rut_normalizado).first()
-        if existing_auth:
+        if not existing_auth:
+            # Guardar la solicitud en JSON para revisión posterior
+            pending_path = os.path.join(BASE_DIR, 'pending_registrations.json')
+            try:
+                pending_list = []
+                if os.path.exists(pending_path):
+                    with open(pending_path, 'r', encoding='utf-8') as pf:
+                        pending_list = json.load(pf)
+            except Exception:
+                pending_list = []
+            hashed_pw_for_pending = generate_password_hash(password)
+            pending_entry = {
+                'rut': rut_normalizado,
+                'nombre': nombre,
+                'apellido': apellido,
+                'correo': f'user_{rut_normalizado}@example.com',
+                'telefono': '000000000',
+                'hashed_password': hashed_pw_for_pending,
+                'fecha_solicitud': date.today().isoformat()
+            }
+            pending_list.append(pending_entry)
+            try:
+                with open(pending_path, 'w', encoding='utf-8') as pf:
+                    json.dump(pending_list, pf, ensure_ascii=False, indent=2)
+            except Exception:
+                # Si no se puede escribir el archivo, seguimos sin fallo crítico
+                pass
+            return render_template('register.html', error='No estás autorizado a crear la cuenta. Tu solicitud ha sido guardada para revisión.')
+        # Si el RUT está autorizado, verificar que aún no tenga usuario asociado
+        user_exists = Usuarios.query.filter_by(UsuarioAutorizado_ID=existing_auth.id_usuario_autorizado).first()
+        if user_exists:
             return render_template('register.html', error='El RUT ya está registrado')
-        # crear UsuarioAutorizado y Usuarios y Alumnos
-        new_auth = UsuarioAutorizado(tipo_documento='RUT', numero_documento=rut_normalizado)
-        db.session.add(new_auth)
-        db.session.flush()
+        # Crear Usuarios y Alumnos vinculados al UsuarioAutorizado existente
         hashed_password = generate_password_hash(password)
-        new_user = Usuarios(nombre=nombre, apellido=apellido, password=hashed_password, correo=f'user_{rut_normalizado}@example.com', telefono='000000000', Pais_id_pais=1, UsuarioAutorizado_ID=new_auth.id_usuario_autorizado)
+        new_user = Usuarios(nombre=nombre, apellido=apellido, password=hashed_password, correo=f'user_{rut_normalizado}@example.com', telefono='000000000', Pais_id_pais=get_default_pais_id(), Rut_usuario=existing_auth.numero_documento, UsuarioAutorizado_ID=existing_auth.id_usuario_autorizado)
         db.session.add(new_user)
         db.session.flush()
         new_alumno = Alumnos(id_usuario=new_user.id_usuario, carrera='Sin especificar', anio_ingreso=date.today().year, experiencia_laboral='')
@@ -408,6 +515,30 @@ def assets_files(filename):
 def logout():
     session.clear()
     return redirect(url_for('main'))
+
+# Endpoint para ver estadísticas de IPs (solo para desarrollo/admin)
+@app.route('/api/stats/visitors')
+def visitor_stats():
+    """Muestra estadísticas de visitantes - solo para admin"""
+    # En producción deberías proteger esto con autenticación de admin
+    stats = []
+    for ip, data in ip_tracker.items():
+        stats.append({
+            'ip': ip,
+            'visits': data['count'],
+            'last_seen': data['last_seen'].strftime('%Y-%m-%d %H:%M:%S') if data['last_seen'] else None,
+            'pages_visited': len(data['pages']),
+            'unique_pages': list(data['pages'])
+        })
+    
+    # Ordenar por número de visitas
+    stats.sort(key=lambda x: x['visits'], reverse=True)
+    
+    return jsonify({
+        'total_unique_visitors': len(ip_tracker),
+        'total_visits': sum(d['count'] for d in ip_tracker.values()),
+        'visitors': stats
+    })
 
 if __name__ == '__main__':
     # Antes de iniciar, probamos la conexión y creamos tablas si todo está OK

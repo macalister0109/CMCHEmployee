@@ -1,0 +1,11 @@
+[
+  {
+    "rut": "225269483",
+    "nombre": "Vicente",
+    "apellido": "Soto",
+    "correo": "user_225269483@example.com",
+    "telefono": "000000000",
+    "hashed_password": "pbkdf2:sha256:600000$qIeJ0k0Fz4BPQ62U$355396f6cb5dea5ab8cb627d8b9506b9e643bf900b8074ad75d8e02cb068f8ef",
+    "fecha_solicitud": "2025-10-07"
+  }
+]
