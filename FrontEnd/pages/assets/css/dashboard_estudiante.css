@@ -1,0 +1,233 @@
+:root {
+  --blue: #1f1273;
+  --dark-blue: #0f0a3c;
+  --gold: #f2b705;
+  --white: #ffffff;
+  --gray: #f5f6fa;
+  --text-dark: #2c2c2c;
+  --radius: 12px;
+  --shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  --font: "Inter", sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--gray);
+  color: var(--text-dark);
+  line-height: 1.6;
+}
+
+.dashboard-header {
+  background: var(--white);
+  border-bottom: 1px solid #e0e0e0;
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  width: 55px;
+  height: 55px;
+}
+
+.brand {
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: var(--blue);
+}
+
+.dashboard-nav a {
+  margin: 0 1rem;
+  text-decoration: none;
+  color: var(--text-dark);
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  transition: all 0.3s ease;
+}
+
+.dashboard-nav a:hover {
+  background: var(--blue);
+  color: var(--white);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-weight: 600;
+}
+
+.btn-logout {
+  border: 2px solid var(--blue);
+  color: var(--blue);
+  padding: 0.5rem 1rem;
+  border-radius: calc(var(--radius)-2px);
+  font-weight: 600;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-logout:hover {
+  background: var(--blue);
+  color: var(--white);
+}
+
+.dashboard-main {
+  max-width: 1300px;
+  margin: 2rem auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+  padding: 0 1rem;
+}
+
+.dashboard-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 2rem;
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.12);
+}
+
+.dashboard-card h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--blue);
+}
+
+.dashboard-card p {
+  font-size: 1rem;
+  color: #333;
+}
+
+.btn-primary, .btn-secondary2 {
+  padding: 0.6rem 1.5rem;
+  border-radius: var(--radius);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: var(--blue);
+  color: var(--white);
+}
+
+.btn-primary:hover {
+  background: var(--gold);
+  color: var(--text-dark);
+}
+
+.btn-secondary2 {
+  background-color: var(--white);
+  border: 2px solid var(--blue);
+  color: var(--blue);
+}
+
+.btn-secondary2:hover {
+  background-color: var(--blue);
+  color: var(--white);
+}
+
+.oferta-item, .post-item, .empresa-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius);
+  transition: all 0.2s;
+  background: #f9f9f9;
+}
+
+.oferta-item:hover, .post-item:hover, .empresa-item:hover {
+  background: #f1f1f1;
+  transform: translateY(-2px);
+}
+
+.oferta-item strong {
+  color: var(--blue);
+}
+
+.mobile-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: var(--white);
+  border-top: 1px solid #eaeaea;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0.5rem 0;
+  z-index: 9999;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+}
+
+.mobile-nav a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--text-dark);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s;
+}
+
+.mobile-nav a i {
+  font-size: 1.5rem;
+  margin-bottom: 3px;
+}
+
+.mobile-nav a:hover {
+  color: var(--blue);
+}
+
+@media screen and (max-width: 768px) {
+  .dashboard-nav {
+    display: none;
+  }
+  .mobile-nav {
+    display: flex;
+  }
+  .dashboard-main {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .mobile-nav {
+    display: none;
+  }
+}
