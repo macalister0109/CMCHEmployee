@@ -41,7 +41,6 @@
               {% if aviso %}<span class="aviso">{{ aviso }}</span>{% endif %}
             </div>
           {% else %}
-            <a href="{{ url_for('register') }}" class="btn-outline">Crear Cuenta</a>
             <a href="{{ url_for('login') }}" class="btn-primary">Ingresar</a>
             <a href="{{ url_for('login_empresa') }}" class="btn-outline">Empresas</a>
           {% endif %}
