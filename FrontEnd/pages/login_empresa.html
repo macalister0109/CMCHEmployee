@@ -2,60 +2,150 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <title>Login Empresa</title>
-    <link rel="stylesheet" href="assets/css/login_empresa.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Empresa | Plataforma de Empleabilidad CMCH</title>
+    <link rel="stylesheet" href="assets/css/login.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
       rel="stylesheet"
     />
   </head>
+
   <body>
     <div class="container">
-      <div class="panel">
-        <img src="assets/img/logo.png" alt="logo institucional" class="logo" />
-        <h1>Bienvenido</h1>
-        <p>
-          Accede con tu RUT y contraseña para gestionar tus publicaciones,
-          revisar postulaciones y conectar con talento.
-        </p>
+      <!-- FORMULARIO DE LOGIN -->
+      <div class="container-form">
+        <form
+          class="sign-in"
+          method="post"
+          action="{{ url_for('login_empresa') }}"
+        >
+          <h2>Iniciar Sesión</h2>
+          <h2>Empresa</h2>
+
+          {% if error %}
+          <div class="error">{{ error }}</div>
+          {% endif %}
+
+          <div class="container-input">
+            <ion-icon name="id-card-outline"></ion-icon>
+            <input
+              type="text"
+              name="rut_empresa"
+              id="login-rut"
+              placeholder="RUT de la empresa"
+              required
+            />
+          </div>
+
+          <div class="container-input">
+            <ion-icon name="lock-closed-outline"></ion-icon>
+            <input
+              type="password"
+              name="password"
+              id="login-password"
+              placeholder="Contraseña"
+              required
+            />
+          </div>
+
+          <a href="#">¿Olvidaste tu contraseña?</a>
+          <button class="button" type="submit">Iniciar sesión</button>
+        </form>
       </div>
 
-      <div class="card">
-        <h2>Inicio de Sesión - Empresa</h2>
+      <!-- FORMULARIO DE REGISTRO -->
+      <div class="container-form">
+        <form
+          class="sign-up"
+          method="post"
+          action="{{ url_for('register_empresa') }}"
+        >
+          <h2>Registrar Empresa</h2>
 
-        {% if error %}
-        <div class="error">{{ error }}</div>
-        {% endif %}
+          {% if error %}
+          <div class="error">{{ error }}</div>
+          {% endif %}
 
-        <form method="post">
-          <label for="rut_empresa">RUT empresa:</label>
-          <input
-            type="text"
-            id="rut_empresa"
-            name="rut_empresa"
-            required
-            placeholder="30.686.957-X"
-          />
+          <div class="container-input">
+            <ion-icon name="business-outline"></ion-icon>
+            <input
+              type="text"
+              name="nombre_empresa"
+              id="nombre_empresa"
+              placeholder="Nombre de la empresa"
+              required
+            />
+          </div>
 
-          <label for="password">Contraseña:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            required
-            placeholder="********"
-          />
+          <div class="container-input">
+            <ion-icon name="id-card-outline"></ion-icon>
+            <input
+              type="text"
+              name="rut_empresa"
+              id="register-rut"
+              placeholder="RUT de la empresa"
+              required
+            />
+          </div>
 
-          <button type="submit" class="btn">Entrar</button>
+          <div class="container-input">
+            <ion-icon name="mail-outline"></ion-icon>
+            <input
+              type="email"
+              name="correo_empresa"
+              id="correo_empresa"
+              placeholder="Correo empresarial"
+              required
+            />
+          </div>
+
+          <div class="container-input">
+            <ion-icon name="lock-closed-outline"></ion-icon>
+            <input
+              type="password"
+              name="password"
+              id="register-password"
+              placeholder="Contraseña"
+              required
+            />
+          </div>
+
+          <button class="button" type="submit">Registrar empresa</button>
         </form>
+      </div>
 
-        <a href="{{ url_for('register_empresa') }}">Registrar Empresa</a>
-        <a href="{{ url_for('main') }}">Volver al inicio</a>
+      <!-- PANEL DE BIENVENIDA / TRANSICIÓN -->
+      <div class="container-welcome">
+        <div class="welcome-sign-up welcome">
+          <h3>¡Bienvenido!</h3>
+          <p>
+            Accede con tu cuenta de empresa para publicar ofertas, revisar
+            postulaciones y conectar con el talento de nuestros egresados.
+          </p>
+          <button class="button" id="btn-sign-up">Registrar Empresa</button>
+        </div>
+
+        <div class="welcome-sign-in welcome">
+          <h3>¿Ya tienes cuenta?</h3>
+          <p>
+            Inicia sesión para gestionar tus publicaciones y conectar con
+            nuestros estudiantes y egresados.
+          </p>
+          <button class="button" id="btn-sign-in">Iniciar Sesión</button>
+        </div>
       </div>
     </div>
 
-    <script src="assets/js/login_empresa.js"></script>
-
-    
+    <!-- SCRIPTS -->
+    <script src="assets/js/login.js"></script>
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+    ></script>
   </body>
 </html>
