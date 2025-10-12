@@ -1,12 +1,13 @@
 import * as React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { RootTabParamList } from "../../constants/routes";
+import { RootTabParamList } from "../../types/routes";
 import { Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { THEME_ESTUDENT } from "../../constants";
 
 import HomeScreen from "../../screens/HomeScreen";
 import JobScreen from "../../screens/JobScreen";
+import ProfileScreen from "../../screens/ProfileScreen";
 
 // 1. Hook de creación con el tipado
 const Tab = createBottomTabNavigator<RootTabParamList>();
@@ -24,6 +25,8 @@ const TabNavigator: React.FC = () => {
                         iconName = focused ? "home" : "home-outline";
                     } else if (route.name === "JobTab") {
                         iconName = focused ? "briefcase" : "briefcase-outline";
+                    } else if (route.name === "ProfileTab") {
+                        iconName = focused ? "person" : "person-outline";
                     } else {
                         iconName = "help-circle-outline"; // Icono por defecto
                     }
@@ -41,7 +44,7 @@ const TabNavigator: React.FC = () => {
                     backgroundColor: THEME_ESTUDENT.colors.text, // Fondo blanco
                     borderTopColor: "#EEEEEE",
                     height: 60,
-                    paddingBottom: 8,
+                    paddingBottom: 12,
                 },
                 tabBarIconStyle: {},
             })}>
@@ -55,6 +58,11 @@ const TabNavigator: React.FC = () => {
                 name="JobTab"
                 component={JobScreen}
                 options={{ title: "Ofertas" }}
+            />
+            <Tab.Screen
+                name="ProfileTab"
+                component={ProfileScreen}
+                options={{ title: "Perfil" }}
             />
         </Tab.Navigator>
     );

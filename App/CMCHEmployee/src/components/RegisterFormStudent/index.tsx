@@ -56,7 +56,10 @@ export default function RegisterFormStudent() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Registrate</Text>
+            <View style={styles.headers}>
+                <Text style={styles.title}>Registrate</Text>
+                <Text style={styles.subTitle}>Estudiante</Text>
+            </View>
             <View style={styles.inputs}>
                 <Text style={styles.label}>Ingrese el RUT:</Text>
                 <TextInput
@@ -84,7 +87,6 @@ export default function RegisterFormStudent() {
                         THEME_ESTUDENT.colors.text_2
                     }></TextInput>
                 <Text style={styles.label}>Ingresa tu apellido:</Text>
-
                 <TextInput
                     style={styles.input}
                     value={credentials.lastName}
@@ -95,7 +97,7 @@ export default function RegisterFormStudent() {
                     }></TextInput>
             </View>
             <TouchableOpacity onPress={handleLogin} style={styles.button}>
-                <Text style={styles.textButton}>Ingresa</Text>
+                <Text style={styles.textButton}>Registrar Estudiante</Text>
             </TouchableOpacity>
         </View>
     );

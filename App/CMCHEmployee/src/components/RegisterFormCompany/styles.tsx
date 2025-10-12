@@ -37,15 +37,16 @@ export const styles = StyleSheet.create({
         fontWeight: THEME_ESTUDENT.font_weights.bold,
         color: THEME_ESTUDENT.colors.text,
     },
+    label: {
+        fontSize: THEME_ESTUDENT.font_sizes.body,
+        color: THEME_ESTUDENT.colors.text,
+        fontWeight: THEME_ESTUDENT.font_weights.regular,
+    },
+
     headers: { display: "flex", gap: 8, textAlign: "left", width: "100%" },
     subTitle: {
         fontSize: THEME_ESTUDENT.font_sizes.body,
         fontWeight: THEME_ESTUDENT.font_weights.bold,
         color: THEME_ESTUDENT.colors.text,
-    },
-    label: {
-        fontSize: THEME_ESTUDENT.font_sizes.body,
-        color: THEME_ESTUDENT.colors.text,
-        fontWeight: THEME_ESTUDENT.font_weights.regular,
     },
 });

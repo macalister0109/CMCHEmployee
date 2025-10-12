@@ -8,7 +8,11 @@ interface LoginCredentials {
     password: string;
 }
 
-export default function LoginForm() {
+interface Props {
+    onSuccess?: () => void;
+}
+
+export default function LoginForm({ onSuccess }: Props) {
     const [credentials, setCredentials] = useState<LoginCredentials>({
         rut: "",
         password: "",
@@ -41,6 +45,9 @@ export default function LoginForm() {
 
         // Opcional: Limpiar el formulario después del envío
         setCredentials({ rut: "", password: "" });
+
+        // Llamar callback de éxito (ej. para cambiar pantalla)
+        onSuccess?.();
     };
 
     return (
