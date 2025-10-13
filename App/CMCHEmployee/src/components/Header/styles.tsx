@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
     },
     img_container: {
         width: THEME_ESTUDENT.device_width * THEME_ESTUDENT.width["70%"],
-        height: "80%",
+        height: "70%",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",

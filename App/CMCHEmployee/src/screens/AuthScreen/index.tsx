@@ -5,7 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import GradientBackground from "../../components/GradientBackground";
 import { styles } from "./styles";
 import { useNavigation } from "@react-navigation/native";
-
+import { THEME_ESTUDENT } from "../../constants";
 interface Props {
     onLoginSuccess?: () => void;
 }
@@ -20,7 +20,11 @@ export default function AuthScreen({ onLoginSuccess }: Props) {
     };
 
     return (
-        <GradientBackground>
+        <GradientBackground
+            color={[
+                THEME_ESTUDENT.colors.primary_1,
+                THEME_ESTUDENT.colors.primary_3,
+            ]}>
             <View style={styles.screen}>
                 <LoginForm></LoginForm>
                 <View style={styles.registerQuestion}>

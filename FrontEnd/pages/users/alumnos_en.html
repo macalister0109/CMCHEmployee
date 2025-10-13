@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student dashboard - Legado TP</title>
+    <link rel="stylesheet" href="../assets/css/dashboard_estudiante.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header class="dashboard-header">
+      <div class="logo-container">
+        <img
+          src="../assets/img/logo.png"
+          alt="Logo institucional"
+          class="logo"
+        />
+        <span class="brand">レガド-TP</span>
+      </div>
+      <nav class="dashboard-nav">
+        <a href="#inicio">Start</a>
+        <a href="">Offers</a>
+        <a href="{{ url_for('empresas') }}">Companies</a>
+        <a href="profile.html">Profile</a>
+      </nav>
+      {% if nombre %}
+      <div class="user-info">
+        <span>Welcome, {{ nombre }} {{ apellido }}</span>
+        <form method="post" action="{{ url_for('logout') }}">
+          <button type="submit" class="btn-logout">Log out</button>
+        </form>
+      </div>
+      {% endif %}
+    </header>
+
+    <main class="dashboard-main">
+      <div class="dashboard-card profile-card" id="inicio">
+        <h3>Perfil</h3>
+        <p><strong>Name:</strong> {{ nombre }}</p>
+        <p><strong>RUT:</strong> {{ rut }}</p>
+        <p><strong>Specialty:</strong> {{ especialidad }}</p>
+        <p><strong>Teacher in chager:</strong> {{ profesor }}</p>
+        <a href="{{ url_for('editar_perfil') }}" class="btn-primary"
+          >Edit profile</a
+        >
+      </div>
+
+      <div class="dashboard-card">
+        <h3>Job offers</h3>
+        {% for oferta in ofertas %}
+        <div class="oferta-item">
+          <p><strong>{{ oferta.titulo }}</strong> - {{ oferta.empresa }}</p>
+          <a
+            href="{{ url_for('postular', id=oferta.id) }}"
+            class="btn-secondary2"
+            >Postulate</a
+          >
+        </div>
+        {% else %}
+        <p>No offers available.</p>
+        {% endfor %}
+      </div>
+
+      <div class="dashboard-card">
+        <h3>History of postulates</h3>
+        {% for post in postulaciones %}
+        <div class="post-item">
+          <p>{{ post.oferta }} - Estado: {{ post.estado }}</p>
+        </div>
+        {% else %}
+        <p>You haven't applied to any offers yet.</p>
+        {% endfor %}
+      </div>
+
+      <div class="dashboard-card">
+        <h3>Companies</h3>
+        {% for empresa in empresas %}
+        <div class="empresa-item">
+          <p>{{ empresa.nombre }}</p>
+          <a
+            href="{{ url_for('ver_empresa', id=empresa.id) }}"
+            class="btn-secondary2"
+            >See company</a
+          >
+        </div>
+        {% else %}
+        <p>There are no companies available.</p>
+        {% endfor %}
+      </div>
+    </main>
+
+    <nav class="mobile-nav">
+      <a href="#inicio">
+        <i class="fas fa-home"></i>
+        <span>Start</span>
+      </a>
+      <a href="{{ url_for('ofertas') }}">
+        <i class="fas fa-briefcase"></i>
+        <span>Offers</span>
+      </a>
+      <a href="{{ url_for('empresas') }}">
+        <i class="fas fa-building"></i>
+        <span>Companies</span>
+      </a>
+      <a href="{{ url_for('perfil') }}">
+        <i class="fas fa-user"></i>
+        <span>Profile</span>
+      </a>
+    </nav>
+  </body>
+</html>

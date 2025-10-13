@@ -1,7 +1,8 @@
-import { View, TextInput, Alert, TouchableOpacity, Text } from "react-native";
+import { View, TextInput, Alert, TouchableOpacity, Text, ActivityIndicator } from "react-native";
 import { useState, useEffect } from "react";
 import { styles } from "./styles";
 import { THEME_ESTUDENT } from "../../constants";
+import apiService from "../../services/api";
 
 interface RegisterCredentials {
     rut: string;
@@ -17,6 +18,7 @@ export default function RegisterFormStudent() {
         name: "",
         lastName: "",
     });
+    const [loading, setLoading] = useState(false);
 
     const handleInputChange = (
         field: keyof RegisterCredentials,
@@ -27,31 +29,68 @@ export default function RegisterFormStudent() {
             [field]: value,
         }));
     };
-    const handleLogin = () => {
-        if (
-            !credentials.rut.includes("-") ||
-            credentials.password.length < 6 ||
-            (credentials.name.length < 4 && credentials.name.length > 25) ||
-            (credentials.lastName.length > 4 &&
-                credentials.lastName.length > 25)
-        ) {
+
+    const handleRegister = async () => {
+        // Validación básica
+        if (!credentials.rut || credentials.password.length < 8) {
             Alert.alert(
                 "Error de Validación",
-                "Verifica tu rut o la contraseña (mín. 6 caracteres)."
+                "Verifica tu RUT y contraseña (mín. 8 caracteres)."
             );
             return;
         }
 
-        console.log("Enviando datos de login:", credentials);
-        console.log(credentials);
+        if (credentials.name.length < 2 || credentials.lastName.length < 2) {
+            Alert.alert(
+                "Error de Validación",
+                "El nombre y apellido deben tener al menos 2 caracteres."
+            );
+            return;
+        }
 
-        Alert.alert(
-            "Registrado Exitosamente (Simulado)",
-            `Bienvenido ${credentials.name}. Datos enviados.`
-        );
+        setLoading(true);
 
-        // Opcional: Limpiar el formulario después del envío
-        setCredentials({ rut: "", password: "", name: "", lastName: "" });
+        try {
+            console.log("📝 Registrando estudiante:", credentials.name, credentials.lastName);
+            
+            // Llamada al API del backend
+            const response = await apiService.registerStudent({
+                rut: credentials.rut,
+                nombre: credentials.name,
+                apellido: credentials.lastName,
+                password: credentials.password,
+            });
+
+            console.log("📡 Respuesta del servidor:", response);
+
+            if (response.success) {
+                Alert.alert(
+                    "✅ Registro Exitoso",
+                    response.message || `Bienvenido ${credentials.name}! Tu cuenta ha sido creada.`,
+                    [
+                        {
+                            text: "OK",
+                            onPress: () => {
+                                setCredentials({ rut: "", password: "", name: "", lastName: "" });
+                            },
+                        },
+                    ]
+                );
+            } else {
+                Alert.alert(
+                    "❌ Error de Registro",
+                    response.error || "No se pudo completar el registro"
+                );
+            }
+        } catch (error) {
+            console.error("❌ Error en handleRegister:", error);
+            Alert.alert(
+                "Error de Conexión",
+                "No se pudo conectar con el servidor. Verifica tu conexión."
+            );
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -96,8 +135,16 @@ export default function RegisterFormStudent() {
                         THEME_ESTUDENT.colors.text_2
                     }></TextInput>
             </View>
-            <TouchableOpacity onPress={handleLogin} style={styles.button}>
-                <Text style={styles.textButton}>Registrar Estudiante</Text>
+            <TouchableOpacity 
+                onPress={handleRegister} 
+                style={[styles.button, loading && { opacity: 0.6 }]}
+                disabled={loading}
+            >
+                {loading ? (
+                    <ActivityIndicator color={THEME_ESTUDENT.colors.text} />
+                ) : (
+                    <Text style={styles.textButton}>Registrar Estudiante</Text>
+                )}
             </TouchableOpacity>
         </View>
     );

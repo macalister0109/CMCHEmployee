@@ -6,17 +6,16 @@ import { ReactNode } from "react";
 
 type GradientBackgroundProps = {
     children: ReactNode;
+    color: [string, string];
 };
 
 export default function GradientBackground({
     children,
+    color,
 }: GradientBackgroundProps) {
     return (
         <LinearGradient
-            colors={[
-                THEME_ESTUDENT.colors.primary_1,
-                THEME_ESTUDENT.colors.primary_2,
-            ]}
+            colors={[color[0], color[1]]}
             start={{ x: 0, y: 0.5 }}
             end={{ x: 1, y: 0.5 }}
             style={styles.linearGradient}>

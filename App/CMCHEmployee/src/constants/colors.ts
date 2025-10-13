@@ -17,7 +17,7 @@ type colors = {
 };
 
 export const ESTUDENT_VIEW: colors = {
-    bg_1: "#E6F7FF",
+    bg_1: "#f5fcff",
     text: "#FFFFFF",
     alert: "#D92631",
     uccess: "#0CF500",
@@ -27,8 +27,8 @@ export const ESTUDENT_VIEW: colors = {
     secondary_1: "#8B8CB0",
     secondary_2: "#676998",
     secondary_3: "#535479",
-    third_1: "#FFD733",
-    third_2: "#D92631",
+    third_1: "#D92631",
+    third_2: "#E1515A",
     border: "#5D5F88",
     dark: "#151515ff",
     text_2: "#b9b9b9ff",
