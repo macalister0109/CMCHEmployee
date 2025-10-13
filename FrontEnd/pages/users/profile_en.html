@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Perfil Profesional</title>
+    <title>Professional Profile</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
       rel="stylesheet"
@@ -24,7 +24,7 @@
         </div>
         <nav class="nav">
           <a href="{{ url_for('dashboard') }}">Dashboard</a>
-          <a href="editar_perfil.html">editar</a>
+          <a href="editar_perfil.html">Edit</a>
         </nav>
       </div>
     </header>
@@ -42,12 +42,12 @@
               <h2>{{ nombre }} {{ apellido }}</h2>
               <p class="rol">{{ rol }}</p>
               <p>{{ descripcion }}</p>
-              <p>Profesor a cargo: {{ profesor }}</p>
+              <p>Teacher in charge: {{ profesor }}</p>
             </div>
           </div>
 
           <section class="perfil-section">
-            <h3>Experiencia</h3>
+            <h3>Experience</h3>
             <ul>
               {% for exp in experiencias %}
               <li>
@@ -59,7 +59,7 @@
           </section>
 
           <section class="perfil-section">
-            <h3>Educación</h3>
+            <h3>Education</h3>
             <ul>
               {% for edu in educacion %}
               <li>
@@ -71,7 +71,7 @@
           </section>
 
           <section class="perfil-section">
-            <h3>Habilidades</h3>
+            <h3>Skills</h3>
             <ul>
               {% for skill in skills %}
               <li>{{ skill }}</li>
