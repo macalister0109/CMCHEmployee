@@ -6,7 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function App() {
     const [isLoading, setIsLoading] = useState(true);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(true);
 
     useEffect(() => {
         const checkLogin = async () => {
@@ -21,7 +21,7 @@ export default function App() {
 
     return (
         <NavigationContainer>
-            {isLoggedIn ? (
+            {true ? (
                 <TabNavigator />
             ) : (
                 <AuthStack onLoginSuccess={() => setIsLoggedIn(true)} />
