@@ -29,7 +29,7 @@ export default function RegisterCompany({ navigation }: Props) {
                     <TouchableOpacity
                         style={styles.loginButton}
                         onPress={() => navigation.navigate("Auth")}>
-                        <Text style={styles.loginText}>Inicar Sesion</Text>
+                        <Text style={styles.loginText}>Iniciar Sesión</Text>
                     </TouchableOpacity>
                 </View>
             </View>

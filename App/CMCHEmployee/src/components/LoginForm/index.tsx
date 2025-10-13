@@ -1,7 +1,8 @@
-import { View, TextInput, Alert, TouchableOpacity, Text } from "react-native";
+import { View, TextInput, Alert, TouchableOpacity, Text, ActivityIndicator } from "react-native";
 import { useState, useEffect } from "react";
 import { styles } from "./styles";
 import { THEME_ESTUDENT } from "../../constants";
+import apiService from "../../services/api";
 
 interface LoginCredentials {
     rut: string;
@@ -17,6 +18,8 @@ export default function LoginForm({ onSuccess }: Props) {
         rut: "",
         password: "",
     });
+    const [loading, setLoading] = useState(false);
+
     const handleInputChange = (
         field: keyof LoginCredentials,
         value: string
@@ -26,28 +29,59 @@ export default function LoginForm({ onSuccess }: Props) {
             [field]: value,
         }));
     };
-    const handleLogin = () => {
-        if (!credentials.rut.includes("-") || credentials.password.length < 6) {
+
+    const handleLogin = async () => {
+        // Validación básica
+        if (!credentials.rut || credentials.password.length < 6) {
             Alert.alert(
                 "Error de Validación",
-                "Verifica tu correo o la contraseña (mín. 6 caracteres)."
+                "Verifica tu RUT y contraseña (mín. 6 caracteres)."
             );
             return;
         }
 
-        // B. Lógica de Negocio (Aquí iría la llamada a tu API, por ejemplo, usando 'fetch' o 'axios')
-        console.log("Enviando datos de login:", credentials);
+        setLoading(true);
 
-        Alert.alert(
-            "Login Exitoso (Simulado)",
-            `Bienvenido ${credentials.rut}. Datos enviados.`
-        );
+        try {
+            console.log("🔐 Intentando login con:", credentials.rut);
+            
+            // Llamada al API del backend
+            const response = await apiService.login(
+                credentials.rut,
+                credentials.password
+            );
 
-        // Opcional: Limpiar el formulario después del envío
-        setCredentials({ rut: "", password: "" });
+            console.log("📡 Respuesta del servidor:", response);
 
-        // Llamar callback de éxito (ej. para cambiar pantalla)
-        onSuccess?.();
+            if (response.success) {
+                Alert.alert(
+                    "✅ Login Exitoso",
+                    `Bienvenido ${credentials.rut}!`,
+                    [
+                        {
+                            text: "OK",
+                            onPress: () => {
+                                setCredentials({ rut: "", password: "" });
+                                onSuccess?.();
+                            },
+                        },
+                    ]
+                );
+            } else {
+                Alert.alert(
+                    "❌ Error de Login",
+                    response.error || "Credenciales incorrectas"
+                );
+            }
+        } catch (error) {
+            console.error("❌ Error en handleLogin:", error);
+            Alert.alert(
+                "Error de Conexión",
+                "No se pudo conectar con el servidor. Verifica tu conexión."
+            );
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -70,8 +104,16 @@ export default function LoginForm({ onSuccess }: Props) {
                     placeholderTextColor={THEME_ESTUDENT.colors.text_2}
                     secureTextEntry></TextInput>
             </View>
-            <TouchableOpacity onPress={handleLogin} style={styles.button}>
-                <Text style={styles.textButton}>Ingresa</Text>
+            <TouchableOpacity 
+                onPress={handleLogin} 
+                style={[styles.button, loading && { opacity: 0.6 }]}
+                disabled={loading}
+            >
+                {loading ? (
+                    <ActivityIndicator color={THEME_ESTUDENT.colors.text} />
+                ) : (
+                    <Text style={styles.textButton}>Ingresa</Text>
+                )}
             </TouchableOpacity>
         </View>
     );
