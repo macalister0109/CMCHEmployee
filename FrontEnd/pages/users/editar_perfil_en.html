@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Professional profile - Preview</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../assets/css/editar.css" />
+    <link rel="stylesheet" href="../assets/css/main.css" />
+    <script
+      src="https://kit.fontawesome.com/a076d05399.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <header class="header">
+      <div class="logo-container">
+          <img
+            src="../assets/img/logo.png"
+            alt="Logo institucional"
+            class="logo"
+          />
+          <h1 class="brand">レガド-TP</h1>
+        </div>
+        <nav class="nav">
+          <a href="{{ url_for('dashboard') }}">Dashboard</a>
+          <form method="post" action="{{ url_for('logout') }}">
+            <button type="submit" class="btn-logout">Log out</button>
+            <a href="profile.html">My profile</a>
+          </form>
+        </nav>
+      </div>
+    </header>
+
+    <main class="main-perfil">
+      <div class="perfil-wrapper">
+        <form
+          method="post"
+          action="{{ url_for('guardar_perfil') }}"
+          enctype="multipart/form-data"
+          class="perfil-form"
+        >
+          <div class="perfil-card">
+            <div class="perfil-header-card">
+              <div class="perfil-avatar">
+                <img
+                  id="preview-foto"
+                  src="{{ foto_url or '../assets/img/perfil_usuario.jpg' }}"
+                  alt="Foto Perfil"
+                  class="avatar-img"
+                />
+                <input
+                  type="file"
+                  name="foto"
+                  accept="image/*"
+                  class="input-file"
+                  id="foto-input"
+                />
+              </div>
+              <div class="perfil-info">
+                <input
+                  type="text"
+                  name="nombre"
+                  value="{{ nombre }}"
+                  placeholder="Nombre"
+                  class="input-text"
+                  id="nombre-input"
+                  required
+                />
+                <input
+                  type="text"
+                  name="apellido"
+                  value="{{ apellido }}"
+                  placeholder="Apellido"
+                  class="input-text"
+                  id="apellido-input"
+                  required
+                />
+                <input
+                  type="text"
+                  name="rol"
+                  value="{{ rol }}"
+                  placeholder="Rol"
+                  class="input-text"
+                  id="rol-input"
+                  required
+                />
+                <p class="profesor">
+                  Teacher in charge:
+                  <span id="profesor-preview">{{ profesor }}</span>
+                </p>
+                <textarea
+                  name="descripcion"
+                  placeholder="Resumen profesional..."
+                  class="input-textarea"
+                  id="descripcion-input"
+                >
+{{ descripcion }}</textarea
+                >
+              </div>
+            </div>
+
+            <div class="perfil-buttons">
+              <button type="submit" class="btn-primary">Save profile</button>
+              <input
+                type="file"
+                name="cv"
+                accept=".pdf,.doc,.docx"
+                class="input-file-cv"
+              />
+              <a href="{{ url_for('descargar_cv') }}" class="btn-secondary"
+                >Download CV</a
+              >
+            </div>
+
+            <section class="perfil-section">
+              <h3>Experience</h3>
+              <div id="experiencias-container">
+                {% for exp in experiencias %}
+                <div class="experiencia-item">
+                  <input
+                    type="text"
+                    name="exp_cargo[]"
+                    value="{{ exp.cargo }}"
+                    placeholder="Cargo"
+                    class="exp-input"
+                    required
+                  />
+                  <input
+                    type="text"
+                    name="exp_empresa[]"
+                    value="{{ exp.empresa }}"
+                    placeholder="Empresa"
+                    class="exp-input"
+                    required
+                  />
+                  <input
+                    type="text"
+                    name="exp_fecha[]"
+                    value="{{ exp.fecha_inicio }} - {{ exp.fecha_fin }}"
+                    placeholder="Fechas"
+                    class="exp-input"
+                    required
+                  />
+                  <button type="button" class="btn-remove">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+                {% endfor %}
+              </div>
+              <button type="button" id="add-experiencia" class="btn-add">
+                <i class="fas fa-plus"></i> Add experience
+              </button>
+            </section>
+
+            <section class="perfil-section">
+              <h3>Education</h3>
+              <div id="educacion-container">
+                {% for edu in educacion %}
+                <div class="educacion-item">
+                  <input
+                    type="text"
+                    name="edu_titulo[]"
+                    value="{{ edu.titulo }}"
+                    placeholder="Título"
+                    class="edu-input"
+                    required
+                  />
+                  <input
+                    type="text"
+                    name="edu_institucion[]"
+                    value="{{ edu.institucion }}"
+                    placeholder="Institución"
+                    class="edu-input"
+                    required
+                  />
+                  <input
+                    type="text"
+                    name="edu_fecha[]"
+                    value="{{ edu.fecha_inicio }} - {{ edu.fecha_fin }}"
+                    placeholder="Fechas"
+                    class="edu-input"
+                    required
+                  />
+                  <button type="button" class="btn-remove">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+                {% endfor %}
+              </div>
+              <button type="button" id="add-educacion" class="btn-add">
+                <i class="fas fa-plus"></i>Add education
+              </button>
+            </section>
+
+            <section class="perfil-section">
+              <h3>Skills</h3>
+              <div id="skills-container">
+                {% for skill in skills %}
+                <div class="skill-item">
+                  <input
+                    type="text"
+                    name="skills[]"
+                    value="{{ skill }}"
+                    placeholder="Habilidad"
+                    class="skill-input"
+                    required
+                  />
+                  <button type="button" class="btn-remove">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+                {% endfor %}
+              </div>
+              <button type="button" id="add-skill" class="btn-add">
+                <i class="fas fa-plus"></i>Add skill
+              </button>
+            </section>
+          </div>
+        </form>
+
+        <div class="perfil-preview">
+          <h2>Preview</h2>
+          <div class="preview-card">
+            <img
+              id="preview-avatar"
+              src="{{ foto_url or '../assets/img/perfil_usuario.jpg' }}"
+              class="avatar-img"
+            />
+            <h3 id="preview-nombre">{{ nombre }} {{ apellido }}</h3>
+            <p id="preview-rol">{{ rol }}</p>
+            <p id="preview-descripcion">{{ descripcion }}</p>
+
+            <h4>Experience</h4>
+            <ul id="preview-experiencia"></ul>
+
+            <h4>Education</h4>
+            <ul id="preview-educacion"></ul>
+
+            <h4>Skills</h4>
+            <ul id="preview-skills"></ul>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const nombreInput = document.getElementById("nombre-input");
+      const apellidoInput = document.getElementById("apellido-input");
+      const rolInput = document.getElementById("rol-input");
+      const descripcionInput = document.getElementById("descripcion-input");
+      const fotoInput = document.getElementById("foto-input");
+
+      const previewNombre = document.getElementById("preview-nombre");
+      const previewRol = document.getElementById("preview-rol");
+      const previewDescripcion = document.getElementById("preview-descripcion");
+      const previewAvatar = document.getElementById("preview-avatar");
+
+      function actualizarPreview() {
+        previewNombre.textContent =
+          nombreInput.value + " " + apellidoInput.value;
+        previewRol.textContent = rolInput.value;
+        previewDescripcion.textContent = descripcionInput.value;
+      }
+
+      nombreInput.addEventListener("input", actualizarPreview);
+      apellidoInput.addEventListener("input", actualizarPreview);
+      rolInput.addEventListener("input", actualizarPreview);
+      descripcionInput.addEventListener("input", actualizarPreview);
+
+      fotoInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = () => {
+            previewAvatar.src = reader.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      function setupPreview(containerId, previewId) {
+        const container = document.getElementById(containerId);
+        const previewList = document.getElementById(previewId);
+
+        function updatePreviewList() {
+          previewList.innerHTML = "";
+          container.querySelectorAll("input").forEach((input) => {
+            if (input.value.trim() !== "") {
+              const li = document.createElement("li");
+              li.textContent = input.value;
+              previewList.appendChild(li);
+            }
+          });
+        }
+
+        container.addEventListener("input", updatePreviewList);
+        container
+          .querySelectorAll(".btn-remove")
+          .forEach((btn) => btn.addEventListener("click", updatePreviewList));
+      }
+
+      setupPreview("experiencias-container", "preview-experiencia");
+      setupPreview("educacion-container", "preview-educacion");
+      setupPreview("skills-container", "preview-skills");
+    </script>
+  </body>
+</html>
