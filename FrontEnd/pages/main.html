@@ -39,6 +39,9 @@
             <div class="welcome-header">
               <span class="welcome-text">{{ bienvenida }}</span>
               {% if aviso %}<span class="aviso">{{ aviso }}</span>{% endif %}
+              <form method="post" action="{{ url_for('logout') }}" style="display:inline; margin-left:10px;">
+                <button type="submit" class="btn-outline btn-logout">Cerrar Sesión</button>
+              </form>
             </div>
           {% else %}
             <a href="{{ url_for('login') }}" class="btn-primary">Ingresar</a>

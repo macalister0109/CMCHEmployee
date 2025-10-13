@@ -195,14 +195,18 @@ def register_empresa():
             apellido_encargado = request.form.get('apellido_encargado')
             rut_empresa = request.form.get('rut_empresa')
             rut_encargado = request.form.get('rut_encargado')
-            direccion = request.form.get('direccion')
-            email = request.form.get('email')
+            direccion = request.form.get('direccion') or '-'
+            email = request.form.get('email') or request.form.get('correo_contacto')
             rubro = request.form.get('rubro') or '-'
             sitio_web = request.form.get('sitio_web') or '-'
             password = request.form.get('password')
         
         rut_empresa_normalizado = re.sub(r'[^0-9kK]', '', rut_empresa)
         rut_encargado_normalizado = re.sub(r'[^0-9kK]', '', rut_encargado) if rut_encargado else None
+        
+        # Validar que el email no sea None (generar uno por defecto si no viene)
+        if not email:
+            email = f'empresa_{rut_empresa_normalizado}@example.com'
         
         # Verifica que el rut de empresa sea unico
         existing = EmpresaNacional.query.filter_by(rut_empresa=rut_empresa_normalizado).first()
