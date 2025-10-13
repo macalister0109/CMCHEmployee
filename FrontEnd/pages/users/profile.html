@@ -3,15 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Perfil Profesional</title>
+    <title id="title-text">Perfil Profesional</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="../assets/css/perfil.css" />
     <link rel="stylesheet" href="../assets/css/main.css" />
+    <link rel="stylesheet" href="../assets/css/perfil.css" />
   </head>
   <body>
+    <!-- HEADER -->
     <header class="header">
       <div class="header-container">
         <div class="logo-container">
@@ -23,12 +24,24 @@
           <h1 class="brand">レガド-TP</h1>
         </div>
         <nav class="nav">
-          <a href="{{ url_for('dashboard') }}">Dashboard</a>
-          <a href="editar_perfil.html">editar</a>
+          <a href="{{ url_for('dashboard') }}" id="nav-dashboard">Dashboard</a>
+          <a href="editar_perfil.html" id="nav-editar">Editar</a>
         </nav>
+        <!-- SELECTOR DE IDIOMA -->
+        <div class="header-language">
+          <label for="language-select">Idioma:</label>
+          <select
+            id="language-select"
+            onchange="cambiarIdiomaPerfil(this.value)"
+          >
+            <option value="es">🇪🇸 Español</option>
+            <option value="en">🇺🇸 English</option>
+          </select>
+        </div>
       </div>
     </header>
 
+    <!-- MAIN PERFIL -->
     <main class="main-perfil">
       <div class="perfil-wrapper">
         <div class="perfil-card">
@@ -39,15 +52,15 @@
               class="avatar-img"
             />
             <div class="perfil-info">
-              <h2>{{ nombre }} {{ apellido }}</h2>
-              <p class="rol">{{ rol }}</p>
-              <p>{{ descripcion }}</p>
-              <p>Profesor a cargo: {{ profesor }}</p>
+              <h2 id="perfil-nombre">{{ nombre }} {{ apellido }}</h2>
+              <p class="rol" id="perfil-rol">{{ rol }}</p>
+              <p id="perfil-descripcion">{{ descripcion }}</p>
+              <p id="perfil-profesor">Profesor a cargo: {{ profesor }}</p>
             </div>
           </div>
 
           <section class="perfil-section">
-            <h3>Experiencia</h3>
+            <h3 id="experiencia-title">Experiencia</h3>
             <ul>
               {% for exp in experiencias %}
               <li>
@@ -59,7 +72,7 @@
           </section>
 
           <section class="perfil-section">
-            <h3>Educación</h3>
+            <h3 id="educacion-title">Educación</h3>
             <ul>
               {% for edu in educacion %}
               <li>
@@ -71,7 +84,7 @@
           </section>
 
           <section class="perfil-section">
-            <h3>Habilidades</h3>
+            <h3 id="habilidades-title">Habilidades</h3>
             <ul>
               {% for skill in skills %}
               <li>{{ skill }}</li>
@@ -81,5 +94,65 @@
         </div>
       </div>
     </main>
+
+    <!-- SCRIPT DE IDIOMAS -->
+    <script>
+      const traduccionesPerfil = {
+        es: {
+          "title-text": "Perfil Profesional",
+          "nav-dashboard": "Dashboard",
+          "nav-editar": "Editar",
+          "perfil-rol": "Rol",
+          "experiencia-title": "Experiencia",
+          "educacion-title": "Educación",
+          "habilidades-title": "Habilidades",
+        },
+        en: {
+          "title-text": "Professional Profile",
+          "nav-dashboard": "Dashboard",
+          "nav-editar": "Edit",
+          "perfil-rol": "Role",
+          "experiencia-title": "Experience",
+          "educacion-title": "Education",
+          "habilidades-title": "Skills",
+        },
+      };
+
+      function cambiarIdiomaPerfil(lang) {
+        localStorage.setItem("lang", lang);
+        const elementos = traduccionesPerfil[lang];
+
+        // Título del documento
+        if (document.title) document.title = elementos["title-text"];
+
+        // Nav
+        const navDashboard = document.getElementById("nav-dashboard");
+        if (navDashboard) navDashboard.textContent = elementos["nav-dashboard"];
+
+        const navEditar = document.getElementById("nav-editar");
+        if (navEditar) navEditar.textContent = elementos["nav-editar"];
+
+        // Rol
+        const rolEl = document.getElementById("perfil-rol");
+        if (rolEl)
+          rolEl.textContent = elementos["perfil-rol"] + ": " + "{{ rol }}";
+
+        // Secciones
+        const expEl = document.getElementById("experiencia-title");
+        if (expEl) expEl.textContent = elementos["experiencia-title"];
+
+        const eduEl = document.getElementById("educacion-title");
+        if (eduEl) eduEl.textContent = elementos["educacion-title"];
+
+        const habEl = document.getElementById("habilidades-title");
+        if (habEl) habEl.textContent = elementos["habilidades-title"];
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const langGuardado = localStorage.getItem("lang") || "es";
+        document.getElementById("language-select").value = langGuardado;
+        cambiarIdiomaPerfil(langGuardado);
+      });
+    </script>
   </body>
 </html>

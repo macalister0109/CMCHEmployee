@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard Estudiante - Legado TP</title>
+    <title id="title-text">Dashboard Estudiante - Legado TP</title>
     <link rel="stylesheet" href="../assets/css/dashboard_estudiante.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
@@ -15,6 +15,7 @@
     />
   </head>
   <body>
+    <!-- HEADER -->
     <header class="dashboard-header">
       <div class="logo-container">
         <img
@@ -25,94 +26,195 @@
         <span class="brand">レガド-TP</span>
       </div>
       <nav class="dashboard-nav">
-        <a href="#inicio">Inicio</a>
-        <a href="">Ofertas</a>
-        <a href="{{ url_for('empresas') }}">Empresas</a>
-        <a href="profile.html">Perfil</a>
+        <a href="#inicio" id="nav-inicio">Inicio</a>
+        <a href="{{ url_for('ofertas') }}" id="nav-ofertas">Ofertas</a>
+        <a href="{{ url_for('empresas') }}" id="nav-empresas">Empresas</a>
+        <a href="{{ url_for('perfil') }}" id="nav-perfil">Perfil</a>
       </nav>
       {% if nombre %}
       <div class="user-info">
-        <span>Bienvenido, {{ nombre }} {{ apellido }}</span>
+        <span id="welcome-text">Bienvenido, {{ nombre }} {{ apellido }}</span>
         <form method="post" action="{{ url_for('logout') }}">
-          <button type="submit" class="btn-logout">Cerrar Sesión</button>
+          <button type="submit" class="btn-logout" id="btn-logout">
+            Cerrar Sesión
+          </button>
         </form>
       </div>
       {% endif %}
+      <!-- SELECTOR DE IDIOMA -->
+      <div class="header-language">
+        <label for="language-select">Idioma:</label>
+        <select
+          id="language-select"
+          onchange="cambiarIdiomaDashboard(this.value)"
+        >
+          <option value="es">🇪🇸 Español</option>
+          <option value="en">🇺🇸 English</option>
+        </select>
+      </div>
     </header>
 
+    <!-- MAIN DASHBOARD -->
     <main class="dashboard-main">
       <div class="dashboard-card profile-card" id="inicio">
-        <h3>Perfil</h3>
-        <p><strong>Nombre:</strong> {{ nombre }}</p>
-        <p><strong>RUT:</strong> {{ rut }}</p>
-        <p><strong>Especialidad:</strong> {{ especialidad }}</p>
-        <p><strong>Profesor a cargo:</strong> {{ profesor }}</p>
-        <a href="{{ url_for('editar_perfil') }}" class="btn-primary"
+        <h3 id="perfil-title">Perfil</h3>
+        <p><strong id="nombre-text">Nombre:</strong> {{ nombre }}</p>
+        <p><strong id="rut-text">RUT:</strong> {{ rut }}</p>
+        <p>
+          <strong id="especialidad-text">Especialidad:</strong> {{ especialidad
+          }}
+        </p>
+        <p>
+          <strong id="profesor-text">Profesor a cargo:</strong> {{ profesor }}
+        </p>
+        <a
+          href="{{ url_for('editar_perfil') }}"
+          class="btn-primary"
+          id="btn-editar-perfil"
           >Editar Perfil</a
         >
       </div>
 
       <div class="dashboard-card">
-        <h3>Ofertas Laborales</h3>
+        <h3 id="ofertas-title">Ofertas Laborales</h3>
         {% for oferta in ofertas %}
         <div class="oferta-item">
           <p><strong>{{ oferta.titulo }}</strong> - {{ oferta.empresa }}</p>
           <a
             href="{{ url_for('postular', id=oferta.id) }}"
             class="btn-secondary2"
+            id="btn-postular"
             >Postular</a
           >
         </div>
         {% else %}
-        <p>No hay ofertas disponibles.</p>
+        <p id="no-ofertas">No hay ofertas disponibles.</p>
         {% endfor %}
       </div>
 
       <div class="dashboard-card">
-        <h3>Historial de Postulaciones</h3>
+        <h3 id="historial-title">Historial de Postulaciones</h3>
         {% for post in postulaciones %}
         <div class="post-item">
           <p>{{ post.oferta }} - Estado: {{ post.estado }}</p>
         </div>
         {% else %}
-        <p>No has postulado a ninguna oferta aún.</p>
+        <p id="no-postulaciones">No has postulado a ninguna oferta aún.</p>
         {% endfor %}
       </div>
 
       <div class="dashboard-card">
-        <h3>Empresas</h3>
+        <h3 id="empresas-title">Empresas</h3>
         {% for empresa in empresas %}
         <div class="empresa-item">
           <p>{{ empresa.nombre }}</p>
           <a
             href="{{ url_for('ver_empresa', id=empresa.id) }}"
             class="btn-secondary2"
+            id="btn-ver-empresa"
             >Ver Empresa</a
           >
         </div>
         {% else %}
-        <p>No hay empresas disponibles.</p>
+        <p id="no-empresas">No hay empresas disponibles.</p>
         {% endfor %}
       </div>
     </main>
 
     <nav class="mobile-nav">
-      <a href="#inicio">
+      <a href="#inicio" id="mobile-inicio">
         <i class="fas fa-home"></i>
         <span>Inicio</span>
       </a>
-      <a href="{{ url_for('ofertas') }}">
+      <a href="{{ url_for('ofertas') }}" id="mobile-ofertas">
         <i class="fas fa-briefcase"></i>
         <span>Ofertas</span>
       </a>
-      <a href="{{ url_for('empresas') }}">
+      <a href="{{ url_for('empresas') }}" id="mobile-empresas">
         <i class="fas fa-building"></i>
         <span>Empresas</span>
       </a>
-      <a href="{{ url_for('perfil') }}">
+      <a href="{{ url_for('perfil') }}" id="mobile-perfil">
         <i class="fas fa-user"></i>
         <span>Perfil</span>
       </a>
     </nav>
+
+    <!-- SCRIPT DE IDIOMAS -->
+    <script>
+      const traduccionesDashboard = {
+        es: {
+          "title-text": "Dashboard Estudiante - Legado TP",
+          "nav-inicio": "Inicio",
+          "nav-ofertas": "Ofertas",
+          "nav-empresas": "Empresas",
+          "nav-perfil": "Perfil",
+          "welcome-text": "Bienvenido, {{ nombre }} {{ apellido }}",
+          "perfil-title": "Perfil",
+          "nombre-text": "Nombre:",
+          "rut-text": "RUT:",
+          "especialidad-text": "Especialidad:",
+          "profesor-text": "Profesor a cargo:",
+          "btn-editar-perfil": "Editar Perfil",
+          "ofertas-title": "Ofertas Laborales",
+          "btn-postular": "Postular",
+          "no-ofertas": "No hay ofertas disponibles.",
+          "historial-title": "Historial de Postulaciones",
+          "no-postulaciones": "No has postulado a ninguna oferta aún.",
+          "empresas-title": "Empresas",
+          "btn-ver-empresa": "Ver Empresa",
+          "no-empresas": "No hay empresas disponibles.",
+          "mobile-inicio": "Inicio",
+          "mobile-ofertas": "Ofertas",
+          "mobile-empresas": "Empresas",
+          "mobile-perfil": "Perfil",
+        },
+        en: {
+          "title-text": "Student Dashboard - Legado TP",
+          "nav-inicio": "Home",
+          "nav-ofertas": "Jobs",
+          "nav-empresas": "Companies",
+          "nav-perfil": "Profile",
+          "welcome-text": "Welcome, {{ nombre }} {{ apellido }}",
+          "perfil-title": "Profile",
+          "nombre-text": "Name:",
+          "rut-text": "RUT:",
+          "especialidad-text": "Specialty:",
+          "profesor-text": "Assigned Teacher:",
+          "btn-editar-perfil": "Edit Profile",
+          "ofertas-title": "Job Offers",
+          "btn-postular": "Apply",
+          "no-ofertas": "No job offers available.",
+          "historial-title": "Application History",
+          "no-postulaciones": "You haven't applied to any offers yet.",
+          "empresas-title": "Companies",
+          "btn-ver-empresa": "View Company",
+          "no-empresas": "No companies available.",
+          "mobile-inicio": "Home",
+          "mobile-ofertas": "Jobs",
+          "mobile-empresas": "Companies",
+          "mobile-perfil": "Profile",
+        },
+      };
+
+      function cambiarIdiomaDashboard(lang) {
+        localStorage.setItem("lang", lang);
+        const elementos = traduccionesDashboard[lang];
+
+        Object.keys(elementos).forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = elementos[id];
+        });
+
+        // Título del documento
+        if (document.title) document.title = elementos["title-text"];
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const langGuardado = localStorage.getItem("lang") || "es";
+        document.getElementById("language-select").value = langGuardado;
+        cambiarIdiomaDashboard(langGuardado);
+      });
+    </script>
   </body>
 </html>
