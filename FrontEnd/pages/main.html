@@ -3,39 +3,74 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Legado TP Bolsa de Empleo</title>
+    <title id="title-text">Legado TP Bolsa de Empleo</title>
+
+    <!-- CSS -->
     <link rel="stylesheet" href="assets/css/main.css" />
+
+    <!-- Favicon -->
     <link rel="icon" href="assets/img/logo.png" type="image/png" />
+
+    <!-- Fuentes -->
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
       rel="stylesheet"
     />
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-ku5Dd8r7a8wV2exP4ZqYtZ+0U5o9pZevskHvC3q8YFJk5Qtv8QHZQ6t6s8U3Nf+XrVtUwl64ZJ5sF0lX8Ff6Gw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
   </head>
+
   <body>
+    <!-- HEADER -->
     <header class="header">
       <div class="container header-inner">
         <div class="logo-container">
-          <img src="assets/img/logo.png" alt="Logo institucional" class="logo" />
-          <h1 class="brand">レガド-TP</h1>
+          <img
+            src="assets/img/logo.png"
+            alt="Logo institucional"
+            class="logo"
+          />
+          <h1 class="brand" id="brand-name">レガド-TP</h1>
         </div>
 
-        <nav class="nav">
-          <a href="{{ url_for('main') }}">Inicio</a>
-          <a href="#especialidades">Especialidades</a>
-          <a href="#empresas">Empresas asociadas</a>
-          <a href="#about">Sobre Nosotros</a>
-          <a href="#contacto">Contacto</a>
+        <nav class="nav" aria-label="Menú principal">
+          <a href="{{ url_for('main') }}" id="nav-inicio">Inicio</a>
+          <a href="#especialidades" id="nav-especialidades">Especialidades</a>
+          <a href="#empresas" id="nav-empresas">Empresas asociadas</a>
+          <a href="#about" id="nav-sobrenosotros">Sobre Nosotros</a>
+          <a href="#contacto" id="nav-contacto">Contacto</a>
         </nav>
+
         <div class="auth-buttons">
           {% if nombre %}
-            <div class="welcome-header">
-              <span class="welcome-text">Bienvenido, {{ nombre }}{% if apellido %} {{ apellido }}{% endif %}</span>
-                <form method="post" action="{{ url_for('logout') }}" style="display:inline; margin-left:10px;">
-                  <button type="submit" class="btn-outline btn-logout">Cerrar Sesión</button>
-                </form>
-            </div>
+          <div class="welcome-header">
+            <span class="welcome-text" id="welcome-text">
+              Bienvenido, {{ nombre }}{% if apellido %} {{ apellido }}{% endif
+              %}
+            </span>
+            <form
+              method="post"
+              action="{{ url_for('logout') }}"
+              class="logout-form"
+            >
+              <button
+                type="submit"
+                class="btn-outline btn-logout"
+                id="logout-button"
+              >
+                Cerrar Sesión
+              </button>
+            </form>
+          </div>
           {% elif bienvenida %}
+<<<<<<< HEAD
             <div class="welcome-header">
               <span class="welcome-text">{{ bienvenida }}</span>
               {% if aviso %}<span class="aviso">{{ aviso }}</span>{% endif %}
@@ -43,219 +78,329 @@
                 <button type="submit" class="btn-outline btn-logout">Cerrar Sesión</button>
               </form>
             </div>
+=======
+          <div class="welcome-header">
+            <span class="welcome-text">{{ bienvenida }}</span>
+            {% if aviso %}<span class="aviso">{{ aviso }}</span>{% endif %}
+          </div>
+>>>>>>> 93ba8594a0e6605c36a03a2e76b27eb483cfc055
           {% else %}
-            <a href="{{ url_for('login') }}" class="btn-primary">Ingresar</a>
-            <a href="{{ url_for('login_empresa') }}" class="btn-outline">Empresas</a>
+          <a href="{{ url_for('login') }}" class="btn-primary" id="btn-ingresar"
+            >Ingresar</a
+          >
+          <a
+            href="{{ url_for('login_empresa') }}"
+            class="btn-outline"
+            id="btn-empresas"
+            >Empresas</a
+          >
           {% endif %}
         </div>
       </div>
     </header>
 
-    <!-- Mensajes de bienvenida y avisos mostrados en el header -->
-
-    <section class="hero">
+    <!-- HERO -->
+    <section class="hero" aria-label="Sección principal">
       <div class="container hero-inner">
         <div class="hero-text">
-          <h2>Conecta con tu Futuro Laboral</h2>
-          <p>
-            Mas de <strong>100 oportunidades</strong> esperan a estudiantes,
+          <h2 id="hero-title">Conecta con tu Futuro Laboral</h2>
+          <p id="hero-text">
+            Más de <strong>100 oportunidades</strong> esperan a estudiantes,
             egresados y profesionales en nuestras especialidades
           </p>
-          <form class="search-box">
+          <form class="search-box" role="search">
             <input
               type="text"
-              placeholder="Puesto , empresa o palabra clave"
+              placeholder="Puesto, empresa o palabra clave"
               class="search-input"
+              id="search-placeholder"
+              aria-label="Buscar empleo por palabra clave"
             />
-            <select class="search-select">
+            <select
+              class="search-select"
+              id="search-location"
+              aria-label="Seleccionar ubicación"
+            >
               <option>Todo Chile</option>
               <option>Santiago</option>
-              <option>Valparaiso</option>
+              <option>Valparaíso</option>
               <option>Concepción</option>
             </select>
-            <select class="search-select">
-              <option>Practica</option>
-              <option>part-time</option>
+            <select
+              class="search-select"
+              id="search-type"
+              aria-label="Tipo de empleo"
+            >
+              <option>Práctica</option>
+              <option>Part-time</option>
               <option>Jornada Completa</option>
             </select>
-            <button type="submit" class="btn-primary">Buscar</button>
+            <button type="submit" class="btn-primary" id="btn-buscar">
+              Buscar
+            </button>
           </form>
         </div>
         <div class="hero-img">
           <img
             src="assets/img/marcelino.jpeg"
-            alt="San Marcelino Champagnat"
+            alt="San Marcelino Champagnat, fundador"
             class="founder-img"
           />
         </div>
       </div>
     </section>
 
+    <!-- ESPECIALIDADES -->
     <section class="especialidades" id="especialidades">
-     <div class="section-title">
-                <h2>Nuestras Especialidades</h2>
-                <p>Ofrecemos oportunidades laborales en las seis especialidades de nuestro centro de formación</p>
-            </div>
-            
-            <div class="specialties-grid">
-                <div class="specialty-card">
-                    <div class="specialty-icon">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <div class="specialty-content">
-                        <h3>Programación</h3>
-                        <p>Desarrollo de software, aplicaciones web y móviles. Oportunidades en frontend, backend y fullstack.</p>
-                        <a href="#">Ver <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-          
-                <div class="specialty-card">
-                    <div class="specialty-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <div class="specialty-content">
-                        <h3>Administración de Empresas</h3>
-                        <p>Gestión empresarial, recursos humanos, marketing y administración financiera.</p>
-                        <a href="#">Ver <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-                
-                <div class="specialty-card">
-                    <div class="specialty-icon">
-                        <i class="fas fa-hard-hat"></i>
-                    </div>
-                    <div class="specialty-content">
-                        <h3>Construcciones Metálicas</h3>
-                        <p>Diseño, fabricación y montaje de estructuras metálicas para construcción e industria.</p>
-                        <a href="#">Ver <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-                
-                <div class="specialty-card">
-                    <div class="specialty-icon">
-                        <i class="fas fa-microchip"></i>
-                    </div>
-                    <div class="specialty-content">
-                        <h3>Electrónica</h3>
-                        <p>Diseño, mantenimiento y reparación de sistemas y circuitos electrónicos.</p>
-                        <a href="#">Ver <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-                
-                <div class="specialty-card">
-                    <div class="specialty-icon">
-                        <i class="fas fa-network-wired"></i>
-                    </div>
-                    <div class="specialty-content">
-                        <h3>Conectividad y Redes</h3>
-                        <p>Infraestructura de redes, telecomunicaciones, seguridad informática y conectividad.</p>
-                        <a href="#">Ver <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-                
-                <div class="specialty-card">
-                    <div class="specialty-icon">
-                        <i class="fas fa-utensils"></i>
-                    </div>
-                    <div class="specialty-content">
-                        <h3>Gastronomía</h3>
-                        <p>Arte culinario, servicios gastronómicos, gestión de restaurantes y alimentación.</p>
-                        <a href="#">Ver <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-            </div>
+      <div class="section-title">
+        <h2 id="specialties-title">Nuestras Especialidades</h2>
+        <p id="specialties-text">
+          Ofrecemos oportunidades laborales en las seis especialidades de
+          nuestro centro de formación
+        </p>
+      </div>
+
+      <div class="specialties-grid">
+        <!-- Programación -->
+        <div class="specialty-card">
+          <div class="specialty-icon"><i class="fas fa-code"></i></div>
+          <div class="specialty-content">
+            <h3 id="spec-prog-title">Programación</h3>
+            <p id="spec-prog-text">
+              Desarrollo de software, aplicaciones web y móviles. Oportunidades
+              en frontend, backend y fullstack.
+            </p>
+            <a href="#" id="spec-prog-link" aria-label="Ver Programación"
+              >Ver <i class="fas fa-arrow-right"></i
+            ></a>
+          </div>
         </div>
+
+        <!-- Administración de Empresas -->
+        <div class="specialty-card">
+          <div class="specialty-icon"><i class="fas fa-chart-line"></i></div>
+          <div class="specialty-content">
+            <h3 id="spec-admin-title">Administración de Empresas</h3>
+            <p id="spec-admin-text">
+              Gestión empresarial, recursos humanos, marketing y administración
+              financiera.
+            </p>
+            <a
+              href="#"
+              id="spec-admin-link"
+              aria-label="Ver Administración de Empresas"
+              >Ver <i class="fas fa-arrow-right"></i
+            ></a>
+          </div>
+        </div>
+
+        <!-- Construcciones Metálicas -->
+        <div class="specialty-card">
+          <div class="specialty-icon"><i class="fas fa-hard-hat"></i></div>
+          <div class="specialty-content">
+            <h3 id="spec-metal-title">Construcciones Metálicas</h3>
+            <p id="spec-metal-text">
+              Diseño, fabricación y montaje de estructuras metálicas para
+              construcción e industria.
+            </p>
+            <a
+              href="#"
+              id="spec-metal-link"
+              aria-label="Ver Construcciones Metálicas"
+              >Ver <i class="fas fa-arrow-right"></i
+            ></a>
+          </div>
+        </div>
+
+        <!-- Electrónica -->
+        <div class="specialty-card">
+          <div class="specialty-icon"><i class="fas fa-microchip"></i></div>
+          <div class="specialty-content">
+            <h3 id="spec-elec-title">Electrónica</h3>
+            <p id="spec-elec-text">
+              Diseño, mantenimiento y reparación de sistemas y circuitos
+              electrónicos.
+            </p>
+            <a href="#" id="spec-elec-link" aria-label="Ver Electrónica"
+              >Ver <i class="fas fa-arrow-right"></i
+            ></a>
+          </div>
+        </div>
+
+        <!-- Conectividad y Redes -->
+        <div class="specialty-card">
+          <div class="specialty-icon"><i class="fas fa-network-wired"></i></div>
+          <div class="specialty-content">
+            <h3 id="spec-redes-title">Conectividad y Redes</h3>
+            <p id="spec-redes-text">
+              Infraestructura de redes, telecomunicaciones, seguridad
+              informática y conectividad.
+            </p>
+            <a
+              href="#"
+              id="spec-redes-link"
+              aria-label="Ver Conectividad y Redes"
+              >Ver <i class="fas fa-arrow-right"></i
+            ></a>
+          </div>
+        </div>
+
+        <!-- Gastronomía -->
+        <div class="specialty-card">
+          <div class="specialty-icon"><i class="fas fa-utensils"></i></div>
+          <div class="specialty-content">
+            <h3 id="spec-gastro-title">Gastronomía</h3>
+            <p id="spec-gastro-text">
+              Arte culinario, servicios gastronómicos, gestión de restaurantes y
+              alimentación.
+            </p>
+            <a href="#" id="spec-gastro-link" aria-label="Ver Gastronomía"
+              >Ver <i class="fas fa-arrow-right"></i
+            ></a>
+          </div>
+        </div>
+      </div>
     </section>
 
+    <!-- EMPRESAS -->
     <section class="empresas" id="empresas">
       <div class="section-title">
-        <h2>Empresas asociadas</h2>
+        <h2 id="companies-title">Empresas asociadas</h2>
       </div>
       <div class="carousel-container">
-        <button class="prev">&#10094;</button>
+        <button class="prev" aria-label="Anterior">&#10094;</button>
         <div class="carousel" id="carousel">
-                <div class="company-card" onclick="goToCompany('/empresa1')">
-        <img src="assets/img/logos/logo.png" alt="Empresa1">
-      </div>
-
-      <div class="company-card" onclick="goToCompany('/empresa2')">
-        <img src="assets/img/logos/logo.png" alt="Empresa2">
-      </div>
-
-      <div class="company-card" onclick="goToCompany('/empresa3')">
-        <img src="assets/img/logos/logo.png" alt="Empresa3">
-      </div>
-
-      <div class="company-card" onclick="goToCompany('/empresa4')">
-        <img src="assets/img/logos/logo.png" alt="Empresa4">
-      </div>
-
-      <div class="company-card" onclick="goToCompany('/empresa5')">
-        <img src="assets/img/logos/logo.png" alt="Empresa5">
-      </div>
-      
-      <div class="company-card" onclick="goToCompany('/empresa6')">
-        <img src="assets/img/logos/logo.png" alt="Empresa6">
-      </div>
+          {% for empresa in empresas %}
+          <div
+            class="company-card"
+            onclick="goToCompany('{{ empresa.url }}')"
+            role="button"
+            tabindex="0"
+          >
+            <img src="{{ empresa.logo }}" alt="{{ empresa.nombre }}" />
+          </div>
+          {% endfor %}
         </div>
-        <button class="next">&#10095;</button>
+        <button class="next" aria-label="Siguiente">&#10095;</button>
       </div>
       <div class="view-all-container">
-        <a href="/listado-empresas" class="view-all-btn"><i class="fas fa-building"> Ver todas las empresas</i></a>
+        <a href="/listado-empresas" class="view-all-btn" id="view-all-btn">
+          <i class="fas fa-building"></i> Ver todas las empresas
+        </a>
       </div>
     </section>
-    
-   <section class="about-us-gradient" id="about">
-  <div class="about-us-container">
-    <div class="about-content-gradient">
-      <h2>Conócenos mejor</h2>
-      <p>Somos <strong>Legado TP</strong>, 
-        la plataforma desarrollada  por y para la comunidad educativa del colegio 
-        <strong>Marista Marcelino Champagnat.</strong> 
-        Nacimos del diagnostico real de las trayectorias de egresados (2021-2023)-sus desafios, sueños e historias- 
-        para transformar la transición <strong>colegio-mundo laboral</strong> y superior en una ruta clara, digna y segura</p>
 
-         <p>Nuestra misión es simple: <strong>conectar talento técnico con oportunidades justas, acompañar decisiones vocacionales y proteger las prácticas profesionales.</strong>
-        Lo hacemos con recursos prácticos, una bolsa de empleo responsable y una red de apoyo entre estudiantes y exalumnos.</p>
-        <h3>Valores</h3>
-        <p>&#8226; Dignidad laboral &#8226; Vocacion y pertinencia &#8226; comunidad y colaboracion &#8226; transparencia y proteccion de datos.</p>
-      <a href="#especialidades" class="btn-primary2">Especialidades</a>
-      <a href="#empresas" class="btn-secondary2">Empresas</a>
-    </div>
-    <div class="about-right">
-      <img src="assets/img/cmch.jpg" alt="Imagen Derecha">
-    </div>
-  </div>
-</section>
+    <!-- ABOUT -->
+    <section class="about-us-gradient" id="about">
+      <div class="about-us-container">
+        <div class="about-content-gradient">
+          <h2 id="about-title">Conócenos mejor</h2>
+          <p id="about-text">
+            Somos <strong>Legado TP</strong>, la plataforma desarrollada por y
+            para la comunidad educativa del colegio
+            <strong>Marista Marcelino Champagnat.</strong>
+          </p>
+          <h3 id="values-title">Valores</h3>
+          <p id="values-text">
+            • Dignidad laboral • Vocación y pertinencia • Comunidad y
+            colaboración • Transparencia y protección de datos.
+          </p>
+          <a href="#especialidades" class="btn-primary2" id="btn-especialidades"
+            >Especialidades</a
+          >
+          <a href="#empresas" class="btn-secondary2" id="btn-empresas2"
+            >Empresas</a
+          >
+        </div>
+        <div class="about-right">
+          <img
+            src="assets/img/cmch.jpg"
+            alt="Instalaciones del Colegio Marcelino Champagnat"
+          />
+        </div>
+      </div>
+    </section>
 
- <footer class="footer" id="contacto">
-  <div class="container footer-inner">
-    <p>&copy; 2025 Legado TP - Bolsa de Empleo</p>
-    <p>Inspirados en San Marcelino Champagnat y en su hermosa misión.</p>
+    <!-- FOOTER -->
+    <footer class="footer" id="contacto">
+      <div class="container footer-inner">
+        <p id="footer-text">&copy; 2025 Legado TP - Bolsa de Empleo</p>
+        <p id="footer-subtext">
+          Inspirados en San Marcelino Champagnat y en su hermosa misión.
+        </p>
 
-    <nav class="footer-links">
-      <a href="#">Inicio</a>
-      <a href="#">Sobre nosotros</a>
-      <a href="#">Contacto</a>
-      <a href="#">Políticas de privacidad</a>
-    </nav>
+        <nav class="footer-links" aria-label="Enlaces del pie de página">
+          <a href="#" id="footer-home">Inicio</a>
+          <a href="#" id="footer-about">Sobre nosotros</a>
+          <a href="#" id="footer-contact">Contacto</a>
+          <a href="#" id="footer-privacy">Políticas de privacidad</a>
+        </nav>
 
-    <div class="footer-social">
-      <a href="#"><i class="fab fa-facebook"></i></a>
-      <a href="#"><i class="fab fa-instagram"></i></a>
-      <a href="#"><i class="fab fa-linkedin"></i></a>
-    </div>
+        <div class="footer-social">
+          <a href="#"><i class="fab fa-facebook" aria-label="Facebook"></i></a>
+          <a href="#"
+            ><i class="fab fa-instagram" aria-label="Instagram"></i
+          ></a>
+          <a href="#"><i class="fab fa-linkedin" aria-label="LinkedIn"></i></a>
+        </div>
 
-    <!-- Select de idiomas con banderas -->
-<div class="footer-language">
-  <label for="language-select">Idioma:</label>
-  <select id="language-select" onchange="cambiarIdioma(this.value)">
-    <option value="es" {% if lang == 'es' %}selected{% endif %}>🇪🇸 Español</option>
-    <option value="en" {% if lang == 'en' %}selected{% endif %}>🇺🇸 English</option>
-  </select>
-</div>
+        <div class="footer-language">
+          <label for="language-select" id="lang-label">Idioma:</label>
+          <select id="language-select" onchange="cambiarIdioma(this.value)">
+            <option value="es">🇪🇸 Español</option>
+            <option value="en">🇺🇸 English</option>
+          </select>
+        </div>
+      </div>
+    </footer>
 
-<script src="assets/js/main.js"></script>
+    <!-- SCRIPT DE IDIOMAS -->
+    <script>
+      const traducciones = {
+        es: {
+          "title-text": "Legado TP Bolsa de Empleo",
+          "hero-title": "Conecta con tu Futuro Laboral",
+          "hero-text":
+            "Más de <strong>100 oportunidades</strong> esperan a estudiantes, egresados y profesionales en nuestras especialidades",
+          "specialties-title": "Nuestras Especialidades",
+          "specialties-text":
+            "Ofrecemos oportunidades laborales en las seis especialidades de nuestro centro de formación",
+          "companies-title": "Empresas asociadas",
+          "about-title": "Conócenos mejor",
+          "footer-text": "&copy; 2025 Legado TP - Bolsa de Empleo",
+          "footer-subtext":
+            "Inspirados en San Marcelino Champagnat y en su hermosa misión.",
+        },
+        en: {
+          "title-text": "Legado TP Job Board",
+          "hero-title": "Connect with Your Career Future",
+          "hero-text":
+            "More than <strong>100 opportunities</strong> await students, graduates, and professionals in our specialties",
+          "specialties-title": "Our Specialties",
+          "specialties-text":
+            "We offer job opportunities in the six specialties of our training center",
+          "companies-title": "Partner Companies",
+          "about-title": "Get to Know Us Better",
+          "footer-text": "&copy; 2025 Legado TP - Job Board",
+          "footer-subtext":
+            "Inspired by Saint Marcellin Champagnat and his beautiful mission.",
+        },
+      };
 
+      function cambiarIdioma(lang) {
+        localStorage.setItem("lang", lang);
+        const elements = traducciones[lang];
+        Object.keys(elements).forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.innerHTML = elements[id];
+        });
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const langGuardado = localStorage.getItem("lang") || "es";
+        document.getElementById("language-select").value = langGuardado;
+        cambiarIdioma(langGuardado);
+      });
+    </script>
   </body>
 </html>
