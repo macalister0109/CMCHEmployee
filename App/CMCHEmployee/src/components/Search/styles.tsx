@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
         height: 75,
         padding: 4,
         gap: 12,
-        alignSelf: "center",
+        justifyContent: "space-evenly",
     },
     input: {
         width: "80%",
@@ -19,6 +19,7 @@ export const styles = StyleSheet.create({
         borderRadius: 16,
         color: THEME_ESTUDENT.colors.primary_1,
         fontWeight: THEME_ESTUDENT.font_weights.bold,
+
         paddingHorizontal: 16, // --- SOMBRA iOS ---
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 4 },

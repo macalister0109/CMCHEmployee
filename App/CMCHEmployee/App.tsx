@@ -21,7 +21,7 @@ export default function App() {
 
     return (
         <NavigationContainer>
-            {false ? (
+            {true ? (
                 <TabNavigator />
             ) : (
                 <AuthStack onLoginSuccess={() => setIsLoggedIn(true)} />
