@@ -18,6 +18,7 @@ export const styles = StyleSheet.create({
         width: THEME_ESTUDENT.width["80%"] * THEME_ESTUDENT.device_width,
         fontWeight: THEME_ESTUDENT.font_weights.bold,
         borderRadius: 5,
+        padding: 12,
     },
     button: {
         width: THEME_ESTUDENT.width["30%"] * THEME_ESTUDENT.device_width,

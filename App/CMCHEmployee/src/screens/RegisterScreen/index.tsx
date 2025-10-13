@@ -4,11 +4,15 @@ import GradientBackground from "../../components/GradientBackground";
 import { styles } from "./styles";
 import RegisterFormStudent from "../../components/RegisterFormStudent";
 import { useNavigation } from "@react-navigation/native";
-
+import { THEME_ESTUDENT } from "../../constants";
 export default function RegisterScreen() {
     const navigation: any = useNavigation();
     return (
-        <GradientBackground>
+        <GradientBackground
+            color={[
+                THEME_ESTUDENT.colors.primary_1,
+                THEME_ESTUDENT.colors.primary_3,
+            ]}>
             <View style={styles.container}>
                 <RegisterFormStudent />
 
