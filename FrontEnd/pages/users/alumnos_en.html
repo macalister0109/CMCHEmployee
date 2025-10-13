@@ -75,43 +75,43 @@
           <p>{{ post.oferta }} - Estado: {{ post.estado }}</p>
         </div>
         {% else %}
-        <p>No has postulado a ninguna oferta aún.</p>
+        <p>You haven't applied to any offers yet.</p>
         {% endfor %}
       </div>
 
       <div class="dashboard-card">
-        <h3>Empresas</h3>
+        <h3>Companies</h3>
         {% for empresa in empresas %}
         <div class="empresa-item">
           <p>{{ empresa.nombre }}</p>
           <a
             href="{{ url_for('ver_empresa', id=empresa.id) }}"
             class="btn-secondary2"
-            >Ver Empresa</a
+            >See company</a
           >
         </div>
         {% else %}
-        <p>No hay empresas disponibles.</p>
+        <p>There are no companies available.</p>
         {% endfor %}
       </div>
     </main>
 
     <nav class="mobile-nav">
-      <a href="#inicio">
+      <a href="#Start">
         <i class="fas fa-home"></i>
-        <span>Inicio</span>
+        <span>Start</span>
       </a>
       <a href="{{ url_for('ofertas') }}">
         <i class="fas fa-briefcase"></i>
-        <span>Ofertas</span>
+        <span>Offer</span>
       </a>
       <a href="{{ url_for('empresas') }}">
         <i class="fas fa-building"></i>
-        <span>Empresas</span>
+        <span>Companies</span>
       </a>
       <a href="{{ url_for('perfil') }}">
         <i class="fas fa-user"></i>
-        <span>Perfil</span>
+        <span>Porfile</span>
       </a>
     </nav>
   </body>
