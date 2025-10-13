@@ -1,7 +1,8 @@
-import { View, TextInput, Alert, TouchableOpacity, Text } from "react-native";
+import { View, TextInput, Alert, TouchableOpacity, Text, ActivityIndicator } from "react-native";
 import { useState, useEffect } from "react";
 import { styles } from "./styles";
 import { THEME_ESTUDENT } from "../../constants";
+import apiService from "../../services/api";
 
 interface RegisterCredentials {
     rut: string;
@@ -17,6 +18,7 @@ export default function RegisterFormCompany() {
         companyName: "",
         contactEmail: "",
     });
+    const [loading, setLoading] = useState(false);
 
     const handleInputChange = (
         field: keyof RegisterCredentials,
@@ -27,22 +29,23 @@ export default function RegisterFormCompany() {
             [field]: value,
         }));
     };
-    const handleLogin = () => {
+
+    const handleRegister = async () => {
         // Validaciones básicas
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        if (!credentials.rut.includes("-")) {
+        if (!credentials.rut) {
             Alert.alert(
                 "Error de Validación",
-                "Ingresa un RUT válido (ej: 12.345.678-9)."
+                "Ingresa el RUT de la empresa."
             );
             return;
         }
 
-        if (credentials.companyPassword.length < 6) {
+        if (credentials.companyPassword.length < 8) {
             Alert.alert(
                 "Error de Validación",
-                "La contraseña debe tener al menos 6 caracteres."
+                "La contraseña debe tener al menos 8 caracteres."
             );
             return;
         }
@@ -66,20 +69,54 @@ export default function RegisterFormCompany() {
             return;
         }
 
-        console.log("Enviando datos de registro empresa:", credentials);
+        setLoading(true);
 
-        Alert.alert(
-            "Registro Exitoso (Simulado)",
-            `Empresa ${credentials.companyName} registrada correctamente.`
-        );
+        try {
+            console.log("🏢 Registrando empresa:", credentials.companyName);
+            
+            // Llamada al API del backend
+            const response = await apiService.registerCompany({
+                nombre_empresa: credentials.companyName,
+                rut_empresa: credentials.rut,
+                email: credentials.contactEmail,
+                password: credentials.companyPassword,
+            });
 
-        // Limpiar el formulario después del envío
-        setCredentials({
-            rut: "",
-            companyPassword: "",
-            companyName: "",
-            contactEmail: "",
-        });
+            console.log("📡 Respuesta del servidor:", response);
+
+            if (response.success) {
+                Alert.alert(
+                    "✅ Registro Exitoso",
+                    response.message || `Empresa ${credentials.companyName} registrada correctamente.`,
+                    [
+                        {
+                            text: "OK",
+                            onPress: () => {
+                                setCredentials({
+                                    rut: "",
+                                    companyPassword: "",
+                                    companyName: "",
+                                    contactEmail: "",
+                                });
+                            },
+                        },
+                    ]
+                );
+            } else {
+                Alert.alert(
+                    "❌ Error de Registro",
+                    response.error || "No se pudo completar el registro de la empresa"
+                );
+            }
+        } catch (error) {
+            console.error("❌ Error en handleRegister:", error);
+            Alert.alert(
+                "Error de Conexión",
+                "No se pudo conectar con el servidor. Verifica tu conexión."
+            );
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -131,8 +168,16 @@ export default function RegisterFormCompany() {
                     keyboardType="email-address"
                     autoCapitalize="none"></TextInput>
             </View>
-            <TouchableOpacity onPress={handleLogin} style={styles.button}>
-                <Text style={styles.textButton}>Registrar Empresa</Text>
+            <TouchableOpacity 
+                onPress={handleRegister} 
+                style={[styles.button, loading && { opacity: 0.6 }]}
+                disabled={loading}
+            >
+                {loading ? (
+                    <ActivityIndicator color={THEME_ESTUDENT.colors.text} />
+                ) : (
+                    <Text style={styles.textButton}>Registrar Empresa</Text>
+                )}
             </TouchableOpacity>
         </View>
     );

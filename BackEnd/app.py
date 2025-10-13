@@ -175,21 +175,42 @@ def get_default_pais_id():
 @app.route('/register_empresa', methods=['GET', 'POST'])
 def register_empresa():
     if request.method == 'POST':
-        nombre_empresa = request.form.get('nombre_empresa')
-        nombre_encargado = request.form.get('nombre_encargado')
-        apellido_encargado = request.form.get('apellido_encargado')
-        rut_empresa = request.form.get('rut_empresa')
-        rut_encargado = request.form.get('rut_encargado')
-        direccion = request.form.get('direccion')
-        email = request.form.get('email')
-        rubro = request.form.get('rubro') or '-'
-        sitio_web = request.form.get('sitio_web') or '-'
+        # Detectar si es JSON (desde app móvil) o form-data (desde web)
+        is_json = request.is_json
+        if is_json:
+            data = request.get_json()
+            nombre_empresa = data.get('nombre_empresa')
+            nombre_encargado = data.get('nombre_encargado')
+            apellido_encargado = data.get('apellido_encargado')
+            rut_empresa = data.get('rut_empresa')
+            rut_encargado = data.get('rut_encargado')
+            direccion = data.get('direccion', '-')
+            email = data.get('email')
+            rubro = data.get('rubro', '-')
+            sitio_web = data.get('sitio_web', '-')
+            password = data.get('password')
+        else:
+            nombre_empresa = request.form.get('nombre_empresa')
+            nombre_encargado = request.form.get('nombre_encargado')
+            apellido_encargado = request.form.get('apellido_encargado')
+            rut_empresa = request.form.get('rut_empresa')
+            rut_encargado = request.form.get('rut_encargado')
+            direccion = request.form.get('direccion')
+            email = request.form.get('email')
+            rubro = request.form.get('rubro') or '-'
+            sitio_web = request.form.get('sitio_web') or '-'
+            password = request.form.get('password')
+        
         rut_empresa_normalizado = re.sub(r'[^0-9kK]', '', rut_empresa)
         rut_encargado_normalizado = re.sub(r'[^0-9kK]', '', rut_encargado) if rut_encargado else None
+        
         # Verifica que el rut de empresa sea unico
         existing = EmpresaNacional.query.filter_by(rut_empresa=rut_empresa_normalizado).first()
         if existing:
+            if is_json:
+                return jsonify({'success': False, 'error': 'El RUT de empresa ya está registrado'}), 409
             return render_template('register_empresa.html', error='El RUT de empresa ya está registrado')
+        
         aviso = None
         empresario_obj = None
         if rut_encargado_normalizado:
@@ -227,16 +248,19 @@ def register_empresa():
             db.session.add(placeholder_emp)
             db.session.flush()
             empresario_obj = placeholder_emp
+        
         # La contraseña de empresa es obligatoria
-        password = request.form.get('password')
         if not password or len(password) < 8:
+            if is_json:
+                return jsonify({'success': False, 'error': 'La contraseña de empresa debe tener al menos 8 caracteres'}), 400
             return render_template('register_empresa.html', error='La contraseña de empresa debe tener al menos 8 caracteres')
+        
         hashed_password = generate_password_hash(password)
         # crear empresa y relaciones
         empresa = Empresas(
             nombre_empresa=nombre_empresa,
             rubro=rubro,
-            direccion=direccion,
+            direccion=direccion or '-',
             telefono='000000000',
             correo_contacto=email,
             cantidad_empleados=0,
@@ -255,6 +279,19 @@ def register_empresa():
         emp_nac = EmpresaNacional(id_empresa=empresa.id_empresa, rut_empresa=rut_empresa_normalizado)
         db.session.add(emp_nac)
         db.session.commit()
+        
+        if is_json:
+            return jsonify({
+                'success': True,
+                'message': f"Empresa '{nombre_empresa}' registrada exitosamente",
+                'empresa': {
+                    'id_empresa': empresa.id_empresa,
+                    'nombre_empresa': nombre_empresa,
+                    'rut_empresa': rut_empresa_normalizado
+                },
+                'aviso': aviso
+            })
+        
         bienvenida = f"Bienvenida empresa '{nombre_empresa}'"
         return render_template('main.html', bienvenida=bienvenida, aviso=aviso)
     return render_template('register_empresa.html')
@@ -263,18 +300,34 @@ def register_empresa():
 @app.route('/login_empresa', methods=['GET', 'POST'])
 def login_empresa():
     if request.method == 'POST':
-        rut_empresa = request.form.get('rut_empresa')
-        password = request.form.get('password')
+        # Detectar si es JSON (desde app móvil) o form-data (desde web)
+        is_json = request.is_json
+        if is_json:
+            data = request.get_json()
+            rut_empresa = data.get('rut_empresa')
+            password = data.get('password')
+        else:
+            rut_empresa = request.form.get('rut_empresa')
+            password = request.form.get('password')
+        
         # Validaciones básicas
         if not rut_empresa:
+            if is_json:
+                return jsonify({'success': False, 'error': 'Ingrese el RUT de la empresa'}), 400
             return render_template('login_empresa.html', error='Ingrese el RUT de la empresa')
         if not password:
+            if is_json:
+                return jsonify({'success': False, 'error': 'Ingrese la contraseña'}), 400
             return render_template('login_empresa.html', error='Ingrese la contraseña')
+        
         # Normaliza el RUT y busca la entidad
         rut_empresa_normalizado = re.sub(r'[^0-9kK]', '', str(rut_empresa))
         emp_nac = EmpresaNacional.query.filter_by(rut_empresa=rut_empresa_normalizado).first()
         if not emp_nac:
+            if is_json:
+                return jsonify({'success': False, 'error': 'RUT de empresa no registrado o incorrecto'}), 401
             return render_template('login_empresa.html', error='RUT de empresa no registrado o incorrecto')
+        
         empresa = Empresas.query.get(emp_nac.id_empresa)
         # Primero intentar validar con la contraseña de la empresa
         if empresa and empresa.password_empresa:
@@ -285,12 +338,27 @@ def login_empresa():
                     session['nombre'] = empresa.nombre_empresa
                     session['apellido'] = ''
                     session['user_id'] = None
+                    
+                    if is_json:
+                        return jsonify({
+                            'success': True,
+                            'message': bienvenida,
+                            'empresa': {
+                                'id_empresa': empresa.id_empresa,
+                                'nombre_empresa': empresa.nombre_empresa,
+                                'rut_empresa': rut_empresa_normalizado
+                            }
+                        })
                     return render_template('main.html', bienvenida=bienvenida)
             except Exception:
                 # Si hay cualquier error al chequear hash, continuamos con el flujo antiguo
                 pass
+        
         if not empresa:
+            if is_json:
+                return jsonify({'success': False, 'error': 'Empresa asociada no encontrada'}), 404
             return render_template('login_empresa.html', error='Empresa asociada no encontrada')
+        
         # buscar empresario y usuario asociado (login por usuario empresario)
         empresario = None
         if empresa.Empresarios_id_usuario:
@@ -299,13 +367,35 @@ def login_empresa():
         if empresario and empresario.id_usuario:
             user = Usuarios.query.get(empresario.id_usuario)
         if not user:
+            if is_json:
+                return jsonify({'success': False, 'error': 'Usuario empresario no disponible para esta empresa'}), 404
             return render_template('login_empresa.html', error='Usuario empresario no disponible para esta empresa')
+        
         if not check_password_hash(user.password, password):
+            if is_json:
+                return jsonify({'success': False, 'error': 'Contraseña incorrecta'}), 401
             return render_template('login_empresa.html', error='Contraseña incorrecta')
+        
         bienvenida = f"Bienvenida empresa '{empresa.nombre_empresa}'"
         session['nombre'] = user.nombre
         session['apellido'] = user.apellido
         session['user_id'] = user.id_usuario
+        
+        if is_json:
+            return jsonify({
+                'success': True,
+                'message': bienvenida,
+                'empresa': {
+                    'id_empresa': empresa.id_empresa,
+                    'nombre_empresa': empresa.nombre_empresa,
+                    'rut_empresa': rut_empresa_normalizado
+                },
+                'user': {
+                    'nombre': user.nombre,
+                    'apellido': user.apellido,
+                    'user_id': user.id_usuario
+                }
+            })
         return render_template('main.html', bienvenida=bienvenida)
     return render_template('login_empresa.html')
 
@@ -320,20 +410,45 @@ def main():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        rut = request.form.get('rut')
-        password = request.form.get('password')
+        # Detectar si es JSON (desde app móvil) o form-data (desde web)
+        is_json = request.is_json
+        if is_json:
+            data = request.get_json()
+            rut = data.get('rut')
+            password = data.get('password')
+        else:
+            rut = request.form.get('rut')
+            password = request.form.get('password')
+        
         # hace que el rut se pueda ingresar sin puntos ni guiones
         rut_normalizado = re.sub(r'[^0-9kK]', '', rut)
         # Buscar UsuarioAutorizado por numero_documento
         auth = UsuarioAutorizado.query.filter_by(numero_documento=rut_normalizado).first()
         if not auth:
+            if is_json:
+                return jsonify({'success': False, 'error': 'RUT no registrado o formato incorrecto'}), 401
             return render_template('login.html', error='RUT no registrado o formato incorrecto')
+        
         user = Usuarios.query.filter_by(UsuarioAutorizado_ID=auth.id_usuario_autorizado).first()
         if not user or not password or not check_password_hash(user.password, password):
+            if is_json:
+                return jsonify({'success': False, 'error': 'Contraseña incorrecta'}), 401
             return render_template('login.html', error='Contraseña incorrecta')
+        
         session['nombre'] = user.nombre
         session['apellido'] = user.apellido
         session['user_id'] = user.id_usuario
+        
+        if is_json:
+            return jsonify({
+                'success': True,
+                'message': f'Bienvenido {user.nombre}!',
+                'user': {
+                    'nombre': user.nombre,
+                    'apellido': user.apellido,
+                    'user_id': user.id_usuario
+                }
+            })
         return redirect(url_for('main'))
     return render_template('login.html')
 
@@ -341,15 +456,28 @@ def login():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        rut = request.form.get('rut')
-        nombre = request.form.get('nombre')
-        apellido = request.form.get('apellido')
-        password = request.form.get('password')
+        # Detectar si es JSON (desde app móvil) o form-data (desde web)
+        is_json = request.is_json
+        if is_json:
+            data = request.get_json()
+            rut = data.get('rut')
+            nombre = data.get('nombre')
+            apellido = data.get('apellido')
+            password = data.get('password')
+        else:
+            rut = request.form.get('rut')
+            nombre = request.form.get('nombre')
+            apellido = request.form.get('apellido')
+            password = request.form.get('password')
+        
         # hace que el rut se pueda ingresar sin puntos ni guiones
         rut_normalizado = re.sub(r'[^0-9kK]', '', rut)
         # Verifica el largo de la contraseña
         if not password or len(password) < 8:
-            return render_template('register.html', error='La contraseña debe tener al menos 8 caracteres')
+            if is_json:
+                return jsonify({'success': False, 'error': 'La contraseña debe tener al menos 8 caracteres'}), 400
+            return render_template('login.html', error='La contraseña debe tener al menos 8 caracteres', is_register=True, toggle=True)
+        
         # Verifica que el RUT esté autorizado en UsuarioAutorizado
         existing_auth = UsuarioAutorizado.query.filter_by(numero_documento=rut_normalizado).first()
         if not existing_auth:
@@ -379,11 +507,19 @@ def register():
             except Exception:
                 # Si no se puede escribir el archivo, seguimos sin fallo crítico
                 pass
-            return render_template('register.html', error='No estás autorizado a crear la cuenta. Tu solicitud ha sido guardada para revisión.')
+            
+            error_msg = 'No estás autorizado a crear la cuenta. Tu solicitud ha sido guardada para revisión.'
+            if is_json:
+                return jsonify({'success': False, 'error': error_msg}), 403
+            return render_template('login.html', error=error_msg, is_register=True, toggle=True)
+        
         # Si el RUT está autorizado, verificar que aún no tenga usuario asociado
         user_exists = Usuarios.query.filter_by(UsuarioAutorizado_ID=existing_auth.id_usuario_autorizado).first()
         if user_exists:
-            return render_template('register.html', error='El RUT ya está registrado')
+            if is_json:
+                return jsonify({'success': False, 'error': 'El RUT ya está registrado'}), 409
+            return render_template('login.html', error='El RUT ya está registrado', is_register=True, toggle=True)
+        
         # Crear Usuarios y Alumnos vinculados al UsuarioAutorizado existente
         hashed_password = generate_password_hash(password)
         new_user = Usuarios(nombre=nombre, apellido=apellido, password=hashed_password, correo=f'user_{rut_normalizado}@example.com', telefono='000000000', Pais_id_pais=get_default_pais_id(), Rut_usuario=existing_auth.numero_documento, UsuarioAutorizado_ID=existing_auth.id_usuario_autorizado)
@@ -395,8 +531,20 @@ def register():
         session['nombre'] = nombre
         session['apellido'] = apellido
         session['user_id'] = new_user.id_usuario
+        
+        if is_json:
+            return jsonify({
+                'success': True,
+                'message': 'Registro exitoso',
+                'user': {
+                    'nombre': nombre,
+                    'apellido': apellido,
+                    'user_id': new_user.id_usuario
+                }
+            })
         return redirect(url_for('main'))
-    return render_template('register.html')
+    # Si acceden directamente a /register con GET, redirigir a login con toggle
+    return render_template('login.html', toggle=True)
 
 
 # API: listar empresas
