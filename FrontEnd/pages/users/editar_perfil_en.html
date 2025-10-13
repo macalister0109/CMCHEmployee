@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Perfil Profesional - Preview</title>
+    <title>Professional profile - Preview</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
       rel="stylesheet"
@@ -28,8 +28,8 @@
         <nav class="nav">
           <a href="{{ url_for('dashboard') }}">Dashboard</a>
           <form method="post" action="{{ url_for('logout') }}">
-            <button type="submit" class="btn-logout">Cerrar Sesión</button>
-            <a href="profile.html">Mi Perfil</a>
+            <button type="submit" class="btn-logout">Log out</button>
+            <a href="profile.html">My profile</a>
           </form>
         </nav>
       </div>
@@ -89,7 +89,7 @@
                   required
                 />
                 <p class="profesor">
-                  Profesor a cargo:
+                  Teacher in charge:
                   <span id="profesor-preview">{{ profesor }}</span>
                 </p>
                 <textarea
@@ -104,7 +104,7 @@
             </div>
 
             <div class="perfil-buttons">
-              <button type="submit" class="btn-primary">Guardar Perfil</button>
+              <button type="submit" class="btn-primary">Save profile</button>
               <input
                 type="file"
                 name="cv"
@@ -112,12 +112,12 @@
                 class="input-file-cv"
               />
               <a href="{{ url_for('descargar_cv') }}" class="btn-secondary"
-                >Descargar CV</a
+                >Download CV</a
               >
             </div>
 
             <section class="perfil-section">
-              <h3>Experiencia</h3>
+              <h3>Experience</h3>
               <div id="experiencias-container">
                 {% for exp in experiencias %}
                 <div class="experiencia-item">
@@ -152,12 +152,12 @@
                 {% endfor %}
               </div>
               <button type="button" id="add-experiencia" class="btn-add">
-                <i class="fas fa-plus"></i> Agregar Experiencia
+                <i class="fas fa-plus"></i> Add experience
               </button>
             </section>
 
             <section class="perfil-section">
-              <h3>Educación</h3>
+              <h3>Education</h3>
               <div id="educacion-container">
                 {% for edu in educacion %}
                 <div class="educacion-item">
@@ -192,12 +192,12 @@
                 {% endfor %}
               </div>
               <button type="button" id="add-educacion" class="btn-add">
-                <i class="fas fa-plus"></i> Agregar Educación
+                <i class="fas fa-plus"></i>Add education
               </button>
             </section>
 
             <section class="perfil-section">
-              <h3>Habilidades</h3>
+              <h3>Skills</h3>
               <div id="skills-container">
                 {% for skill in skills %}
                 <div class="skill-item">
@@ -216,14 +216,14 @@
                 {% endfor %}
               </div>
               <button type="button" id="add-skill" class="btn-add">
-                <i class="fas fa-plus"></i> Agregar Habilidad
+                <i class="fas fa-plus"></i>Add skill
               </button>
             </section>
           </div>
         </form>
 
         <div class="perfil-preview">
-          <h2>Vista Previa</h2>
+          <h2>Preview</h2>
           <div class="preview-card">
             <img
               id="preview-avatar"
@@ -234,13 +234,13 @@
             <p id="preview-rol">{{ rol }}</p>
             <p id="preview-descripcion">{{ descripcion }}</p>
 
-            <h4>Experiencia</h4>
+            <h4>Experience</h4>
             <ul id="preview-experiencia"></ul>
 
-            <h4>Educación</h4>
+            <h4>Education</h4>
             <ul id="preview-educacion"></ul>
 
-            <h4>Habilidades</h4>
+            <h4>Skills</h4>
             <ul id="preview-skills"></ul>
           </div>
         </div>
