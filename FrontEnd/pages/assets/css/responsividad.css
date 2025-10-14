@@ -1,0 +1,255 @@
+/* =========================================================
+   VARIABLES GLOBALES
+========================================================= */
+:root {
+  --blue: #1f1273;
+  --dark-blue: #0f0a3c;
+  --gold: #f2b705;
+  --gold-oscuro: #936804;
+  --white: #ffffff;
+  --gray: #f5f6fa;
+  --text-dark: #2c2c2c;
+  --red: #ff0000;
+  --radius: 12px;
+  --shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  --font: "Inter", sans-serif;
+}
+
+/* =========================================================
+   RESET
+========================================================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--white);
+  color: var(--text-dark);
+  line-height: 1.6;
+  padding-bottom: 70px; /* espacio para barra inferior móvil */
+}
+
+/* =========================================================
+   BARRA INFERIOR MÓVIL
+========================================================= */
+.mobile-bottom-nav {
+  display: none; /* por defecto en desktop */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: var(--white);
+  border-top: 1px solid #eaeaea;
+  box-shadow: 0 -4px 10px rgba(0,0,0,0.08);
+  z-index: 9999;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0.5rem 0;
+  height: 60px;
+}
+
+.mobile-bottom-nav .nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: var(--text-dark);
+  font-size: 0.75rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.mobile-bottom-nav .nav-item i {
+  font-size: 1.3rem;
+  margin-bottom: 0.2rem;
+  transition: transform 0.2s;
+}
+
+.mobile-bottom-nav .nav-item:hover i,
+.mobile-bottom-nav .nav-item.active i {
+  transform: scale(1.2);
+  color: var(--gold);
+}
+
+/* =========================================================
+   RESPONSIVIDAD
+========================================================= */
+
+/* Grandes pantallas */
+@media (max-width: 1200px) {
+  .hero-inner {
+    flex-direction: column;
+    text-align: center;
+    gap: 2rem;
+  }
+
+  .hero-img .founder-img {
+    max-width: 250px;
+  }
+
+  .specialties-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .about-us-container {
+    flex-direction: column;
+  }
+
+  .about-right img {
+    width: 400px;
+    height: 400px;
+  }
+}
+
+/* Pantallas medianas */
+@media (max-width: 992px) {
+  .specialties-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .about-content-gradient h2 {
+    font-size: 2.4rem;
+  }
+
+  .hero-text h2 {
+    font-size: 2rem;
+  }
+
+  .hero-text p {
+    font-size: 1rem;
+  }
+}
+
+/* Tablet y móviles grandes */
+@media (max-width: 768px) {
+  /* Oculta navbar y botones */
+  .nav, .auth-buttons {
+    display: none;
+  }
+
+  /* Solo logo y brand */
+  .header-inner {
+    justify-content: flex-start;
+    padding: 1rem;
+  }
+
+  .logo-container {
+    gap: 5px;
+  }
+
+  .logo {
+    width: 50px;
+    height: 60px;
+  }
+
+  .brand {
+    font-size: 28px;
+  }
+
+  /* Hero */
+  .hero-inner {
+    padding: 2rem 1rem;
+  }
+
+  .hero-text h2 {
+    font-size: 1.8rem;
+  }
+
+  .hero-text p {
+    font-size: 0.95rem;
+  }
+
+  .search-box {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .search-input, .search-select, .btn-primary {
+    width: 100%;
+  }
+
+  /* Especialidades */
+  .specialties-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  /* About */
+  .about-us-container {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .about-right img {
+    width: 300px;
+    height: 300px;
+  }
+
+  .about-content-gradient h2 {
+    font-size: 2rem;
+  }
+
+  .about-content-gradient p {
+    font-size: 1rem;
+  }
+
+  /* Empresas */
+  .carousel-container {
+    width: 100%;
+  }
+
+  .company-card img {
+    width: 150px;
+    height: 150px;
+  }
+
+  .view-all-btn {
+    font-size: 0.9rem;
+    padding: 0.6rem 1.5rem;
+  }
+
+  /* Mostrar barra inferior */
+  .mobile-bottom-nav {
+    display: flex;
+  }
+}
+
+/* Móviles pequeños */
+@media (max-width: 576px) {
+  .hero-text h2 {
+    font-size: 1.5rem;
+  }
+
+  .hero-text p {
+    font-size: 0.85rem;
+  }
+
+  .about-content-gradient h2 {
+    font-size: 1.6rem;
+  }
+
+  .about-content-gradient p {
+    font-size: 0.9rem;
+  }
+
+  .about-right img {
+    width: 250px;
+    height: 250px;
+  }
+
+  .mobile-bottom-nav {
+    height: 55px;
+  }
+
+  .mobile-bottom-nav .nav-item i {
+    font-size: 1rem;
+  }
+
+  .mobile-bottom-nav .nav-item span {
+    font-size: 0.6rem;
+  }
+}
