@@ -12,7 +12,7 @@
     "vision": "Ser un colegio marista que potencie los talentos y valores de cada estudiante, generando aprendizaje, plenitud y realización personal.",
     "especialidades": [
         {
-            "nombre": "Administración Mención de Recursos Humanos",
+            "nombre": "Administración Mención Recursos Humanos",
             "descripcion": "Forma técnicos en gestión del personal, organización, procesos administrativos y atención al cliente.",
             "inicio": 1998,
             "imagen": "./../../assets/adaptive-icon.png",

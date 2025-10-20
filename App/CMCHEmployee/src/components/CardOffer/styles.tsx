@@ -5,7 +5,7 @@ export const styles = StyleSheet.create({
     card: {
         width: THEME_ESTUDENT.device_width * THEME_ESTUDENT.width["90%"],
         height: THEME_ESTUDENT.device_height * THEME_ESTUDENT.width["20%"],
-        backgroundColor: THEME_ESTUDENT.colors.text,
+        backgroundColor: THEME_ESTUDENT.colors.bg_1,
         display: "flex",
         flexDirection: "row",
         alignSelf: "center",

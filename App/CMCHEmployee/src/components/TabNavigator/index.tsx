@@ -41,7 +41,7 @@ const TabNavigator: React.FC = () => {
                 headerShown: false,
                 tabBarLabelStyle: { fontWeight: "bold" },
                 tabBarStyle: {
-                    backgroundColor: THEME_ESTUDENT.colors.text, // Fondo blanco
+                    backgroundColor: THEME_ESTUDENT.colors.bg_1, // Fondo blanco
                     borderTopColor: "#EEEEEE",
                     height: 60,
                     paddingBottom: 12,

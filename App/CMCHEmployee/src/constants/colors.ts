@@ -1,5 +1,5 @@
 type colors = {
-    bg_1: string; // ejemplo, ajusta los hex reales
+    bg_1: string;
     text: string;
     alert: string;
     uccess: string;
@@ -17,8 +17,8 @@ type colors = {
 };
 
 export const ESTUDENT_VIEW: colors = {
-    bg_1: "#f5fcff",
-    text: "#FFFFFF",
+    bg_1: "#fefFff",
+    text: "#000",
     alert: "#D92631",
     uccess: "#0CF500",
     primary_1: "#211261",

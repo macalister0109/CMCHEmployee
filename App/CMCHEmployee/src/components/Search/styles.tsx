@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
     input: {
         width: "80%",
         height: "80%",
-        backgroundColor: THEME_ESTUDENT.colors.text,
+        backgroundColor: THEME_ESTUDENT.colors.bg_1,
         borderRadius: 16,
         color: THEME_ESTUDENT.colors.primary_1,
         fontWeight: THEME_ESTUDENT.font_weights.bold,
