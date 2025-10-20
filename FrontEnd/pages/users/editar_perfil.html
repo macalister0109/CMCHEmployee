@@ -3,40 +3,42 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Perfil Profesional - Preview</title>
+    <title>Editar Perfil - Preview</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="../assets/css/editar.css" />
     <link rel="stylesheet" href="../assets/css/main.css" />
+    <link rel="stylesheet" href="../assets/css/editar.css" />
     <script
       src="https://kit.fontawesome.com/a076d05399.js"
       crossorigin="anonymous"
     ></script>
   </head>
   <body>
+    <!-- HEADER -->
     <header class="header">
       <div class="logo-container">
-          <img
-            src="../assets/img/logo.png"
-            alt="Logo institucional"
-            class="logo"
-          />
-          <h1 class="brand">レガド-TP</h1>
-        </div>
-        <nav class="nav">
-          <a href="{{ url_for('dashboard') }}">Dashboard</a>
-          <form method="post" action="{{ url_for('logout') }}">
-            <button type="submit" class="btn-logout">Cerrar Sesión</button>
-            <a href="profile.html">Mi Perfil</a>
-          </form>
-        </nav>
+        <img
+          src="../assets/img/logo.png"
+          alt="Logo institucional"
+          class="logo"
+        />
+        <h1 class="brand">レガド-TP</h1>
       </div>
+      <nav class="nav">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <form method="post" action="{{ url_for('logout') }}">
+          <button type="submit" class="btn-logout">Cerrar Sesión</button>
+          <a href="{{ url_for('perfil') }}">Mi Perfil</a>
+        </form>
+      </nav>
     </header>
 
+    <!-- MAIN -->
     <main class="main-perfil">
       <div class="perfil-wrapper">
+        <!-- FORMULARIO DE EDICIÓN -->
         <form
           method="post"
           action="{{ url_for('guardar_perfil') }}"
@@ -44,6 +46,7 @@
           class="perfil-form"
         >
           <div class="perfil-card">
+            <!-- HEADER -->
             <div class="perfil-header-card">
               <div class="perfil-avatar">
                 <img
@@ -79,6 +82,7 @@
                   id="apellido-input"
                   required
                 />
+                {% if perfil_type != 'empresa' %}
                 <input
                   type="text"
                   name="rol"
@@ -88,13 +92,24 @@
                   id="rol-input"
                   required
                 />
-                <p class="profesor">
+                {% endif %} {% if perfil_type == 'alumno' %}
+                <p>
                   Profesor a cargo:
                   <span id="profesor-preview">{{ profesor }}</span>
                 </p>
+                {% elif perfil_type == 'empresa' %}
+                <input
+                  type="text"
+                  name="contacto"
+                  value="{{ contacto }}"
+                  placeholder="Contacto"
+                  class="input-text"
+                  id="contacto-input"
+                />
+                {% endif %}
                 <textarea
                   name="descripcion"
-                  placeholder="Resumen profesional..."
+                  placeholder="Resumen..."
                   class="input-textarea"
                   id="descripcion-input"
                 >
@@ -103,6 +118,7 @@
               </div>
             </div>
 
+            <!-- BOTONES -->
             <div class="perfil-buttons">
               <button type="submit" class="btn-primary">Guardar Perfil</button>
               <input
@@ -116,6 +132,8 @@
               >
             </div>
 
+            <!-- SECCIONES DINÁMICAS -->
+            {% if perfil_type != 'empresa' %}
             <section class="perfil-section">
               <h3>Experiencia</h3>
               <div id="experiencias-container">
@@ -195,9 +213,13 @@
                 <i class="fas fa-plus"></i> Agregar Educación
               </button>
             </section>
+            {% endif %}
 
             <section class="perfil-section">
-              <h3>Habilidades</h3>
+              <h3>
+                {% if perfil_type == 'empresa' %}Vacantes / Servicios{% else
+                %}Habilidades{% endif %}
+              </h3>
               <div id="skills-container">
                 {% for skill in skills %}
                 <div class="skill-item">
@@ -205,7 +227,7 @@
                     type="text"
                     name="skills[]"
                     value="{{ skill }}"
-                    placeholder="Habilidad"
+                    placeholder="{% if perfil_type == 'empresa' %}Servicio{% else %}Habilidad{% endif %}"
                     class="skill-input"
                     required
                   />
@@ -216,12 +238,14 @@
                 {% endfor %}
               </div>
               <button type="button" id="add-skill" class="btn-add">
-                <i class="fas fa-plus"></i> Agregar Habilidad
+                <i class="fas fa-plus"></i> Agregar {% if perfil_type ==
+                'empresa' %}Servicio{% else %}Habilidad{% endif %}
               </button>
             </section>
           </div>
         </form>
 
+        <!-- VISTA PREVIA -->
         <div class="perfil-preview">
           <h2>Vista Previa</h2>
           <div class="preview-card">
@@ -231,16 +255,23 @@
               class="avatar-img"
             />
             <h3 id="preview-nombre">{{ nombre }} {{ apellido }}</h3>
-            <p id="preview-rol">{{ rol }}</p>
+            <p id="preview-rol">
+              {% if perfil_type != 'empresa' %}{{ rol }}{% else %}{{ rubro }}{%
+              endif %}
+            </p>
             <p id="preview-descripcion">{{ descripcion }}</p>
 
+            {% if perfil_type != 'empresa' %}
             <h4>Experiencia</h4>
             <ul id="preview-experiencia"></ul>
-
             <h4>Educación</h4>
             <ul id="preview-educacion"></ul>
+            {% endif %}
 
-            <h4>Habilidades</h4>
+            <h4>
+              {% if perfil_type == 'empresa' %}Vacantes / Servicios{% else
+              %}Habilidades{% endif %}
+            </h4>
             <ul id="preview-skills"></ul>
           </div>
         </div>
@@ -248,27 +279,28 @@
     </main>
 
     <script>
+      // Inputs
       const nombreInput = document.getElementById("nombre-input");
       const apellidoInput = document.getElementById("apellido-input");
       const rolInput = document.getElementById("rol-input");
       const descripcionInput = document.getElementById("descripcion-input");
       const fotoInput = document.getElementById("foto-input");
-
+      const previewAvatar = document.getElementById("preview-avatar");
       const previewNombre = document.getElementById("preview-nombre");
       const previewRol = document.getElementById("preview-rol");
       const previewDescripcion = document.getElementById("preview-descripcion");
-      const previewAvatar = document.getElementById("preview-avatar");
 
+      // Actualiza vista previa principal
       function actualizarPreview() {
         previewNombre.textContent =
           nombreInput.value + " " + apellidoInput.value;
-        previewRol.textContent = rolInput.value;
+        if (rolInput) previewRol.textContent = rolInput.value;
         previewDescripcion.textContent = descripcionInput.value;
       }
 
       nombreInput.addEventListener("input", actualizarPreview);
       apellidoInput.addEventListener("input", actualizarPreview);
-      rolInput.addEventListener("input", actualizarPreview);
+      if (rolInput) rolInput.addEventListener("input", actualizarPreview);
       descripcionInput.addEventListener("input", actualizarPreview);
 
       fotoInput.addEventListener("change", (e) => {
@@ -282,6 +314,7 @@
         }
       });
 
+      // Función para actualizar listas dinámicas
       function setupPreview(containerId, previewId) {
         const container = document.getElementById(containerId);
         const previewList = document.getElementById(previewId);

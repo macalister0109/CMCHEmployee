@@ -25,7 +25,9 @@
         </div>
         <nav class="nav">
           <a href="{{ url_for('dashboard') }}" id="nav-dashboard">Dashboard</a>
-          <a href="editar_perfil.html" id="nav-editar">Editar</a>
+          {% if perfil_type != 'empresa' %}
+          <a href="{{ url_for('editar_perfil') }}" id="nav-editar">Editar</a>
+          {% endif %}
         </nav>
         <!-- SELECTOR DE IDIOMA -->
         <div class="header-language">
@@ -52,13 +54,28 @@
               class="avatar-img"
             />
             <div class="perfil-info">
-              <h2 id="perfil-nombre">{{ nombre }} {{ apellido }}</h2>
-              <p class="rol" id="perfil-rol">{{ rol }}</p>
-              <p id="perfil-descripcion">{{ descripcion }}</p>
+              <h2 id="perfil-nombre">{{ nombre }} {{ apellido or "" }}</h2>
+              {% if perfil_type == 'alumno' %}
+              <p class="rol" id="perfil-rol">RUT: {{ rut }}</p>
+              <p id="perfil-especialidad">Especialidad: {{ especialidad }}</p>
               <p id="perfil-profesor">Profesor a cargo: {{ profesor }}</p>
+              {% elif perfil_type == 'docente' %}
+              <p class="rol" id="perfil-rol">
+                Asignaturas: {{ asignaturas | join(', ') }}
+              </p>
+              <p id="perfil-estudiantes">
+                Estudiantes a cargo: {{ estudiantes | length }}
+              </p>
+              {% elif perfil_type == 'empresa' %}
+              <p class="rol" id="perfil-rol">Rubro: {{ rubro }}</p>
+              <p id="perfil-contacto">Contacto: {{ contacto }}</p>
+              {% endif %}
+              <p id="perfil-descripcion">{{ descripcion }}</p>
             </div>
           </div>
 
+          <!-- SECCIONES DINÁMICAS -->
+          {% if perfil_type == 'alumno' %}
           <section class="perfil-section">
             <h3 id="experiencia-title">Experiencia</h3>
             <ul>
@@ -70,7 +87,6 @@
               {% endfor %}
             </ul>
           </section>
-
           <section class="perfil-section">
             <h3 id="educacion-title">Educación</h3>
             <ul>
@@ -82,7 +98,6 @@
               {% endfor %}
             </ul>
           </section>
-
           <section class="perfil-section">
             <h3 id="habilidades-title">Habilidades</h3>
             <ul>
@@ -91,6 +106,44 @@
               {% endfor %}
             </ul>
           </section>
+          {% elif perfil_type == 'docente' %}
+          <section class="perfil-section">
+            <h3 id="experiencia-title">Experiencia Académica</h3>
+            <ul>
+              {% for exp in experiencias %}
+              <li>
+                {{ exp.cargo }} en {{ exp.institucion }} ({{ exp.fecha_inicio }}
+                - {{ exp.fecha_fin }})
+              </li>
+              {% endfor %}
+            </ul>
+          </section>
+          <section class="perfil-section">
+            <h3 id="habilidades-title">Habilidades</h3>
+            <ul>
+              {% for skill in skills %}
+              <li>{{ skill }}</li>
+              {% endfor %}
+            </ul>
+          </section>
+          {% elif perfil_type == 'empresa' %}
+          <section class="perfil-section">
+            <h3 id="vacantes-title">Vacantes Publicadas</h3>
+            <ul>
+              {% for vac in vacantes %}
+              <li>{{ vac.titulo }} - {{ vac.estado }}</li>
+              {% endfor %}
+            </ul>
+          </section>
+          <section class="perfil-section">
+            <h3 id="habilidades-title">Habilidades o Servicios</h3>
+            <ul>
+              {% for skill in skills %}
+              <li>{{ skill }}</li>
+              {% endfor %}
+            </ul>
+          </section>
+          {% endif %}
         </div>
       </div>
     </main>
@@ -106,6 +159,7 @@
           "experiencia-title": "Experiencia",
           "educacion-title": "Educación",
           "habilidades-title": "Habilidades",
+          "vacantes-title": "Vacantes Publicadas",
         },
         en: {
           "title-text": "Professional Profile",
@@ -115,37 +169,25 @@
           "experiencia-title": "Experience",
           "educacion-title": "Education",
           "habilidades-title": "Skills",
+          "vacantes-title": "Published Vacancies",
         },
       };
 
       function cambiarIdiomaPerfil(lang) {
         localStorage.setItem("lang", lang);
         const elementos = traduccionesPerfil[lang];
+        document.title = elementos["title-text"];
 
-        // Título del documento
-        if (document.title) document.title = elementos["title-text"];
+        Object.keys(elementos).forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = elementos[id];
+        });
 
-        // Nav
-        const navDashboard = document.getElementById("nav-dashboard");
-        if (navDashboard) navDashboard.textContent = elementos["nav-dashboard"];
-
-        const navEditar = document.getElementById("nav-editar");
-        if (navEditar) navEditar.textContent = elementos["nav-editar"];
-
-        // Rol
+        // Para el rol dinámico concatenado
         const rolEl = document.getElementById("perfil-rol");
-        if (rolEl)
-          rolEl.textContent = elementos["perfil-rol"] + ": " + "{{ rol }}";
-
-        // Secciones
-        const expEl = document.getElementById("experiencia-title");
-        if (expEl) expEl.textContent = elementos["experiencia-title"];
-
-        const eduEl = document.getElementById("educacion-title");
-        if (eduEl) eduEl.textContent = elementos["educacion-title"];
-
-        const habEl = document.getElementById("habilidades-title");
-        if (habEl) habEl.textContent = elementos["habilidades-title"];
+        if (rolEl && "{{ perfil_type }}" === "alumno") {
+          rolEl.textContent = elementos["perfil-rol"] + ": {{ rut }}";
+        }
       }
 
       document.addEventListener("DOMContentLoaded", () => {

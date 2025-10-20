@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title id="title-text">Dashboard Estudiante - Legado TP</title>
-    <link rel="stylesheet" href="../assets/css/dashboard_estudiante.css" />
+    <link rel="stylesheet" href="../assets/css/dashboard.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
       rel="stylesheet"
@@ -25,12 +25,14 @@
         />
         <span class="brand">レガド-TP</span>
       </div>
-      <nav class="dashboard-nav">
+
+      <nav class="dashboard-nav" aria-label="Main Navigation">
         <a href="#inicio" id="nav-inicio">Inicio</a>
         <a href="{{ url_for('ofertas') }}" id="nav-ofertas">Ofertas</a>
         <a href="{{ url_for('empresas') }}" id="nav-empresas">Empresas</a>
         <a href="{{ url_for('perfil') }}" id="nav-perfil">Perfil</a>
       </nav>
+
       {% if nombre %}
       <div class="user-info">
         <span id="welcome-text">Bienvenido, {{ nombre }} {{ apellido }}</span>
@@ -41,6 +43,7 @@
         </form>
       </div>
       {% endif %}
+
       <!-- SELECTOR DE IDIOMA -->
       <div class="header-language">
         <label for="language-select">Idioma:</label>
@@ -56,8 +59,9 @@
 
     <!-- MAIN DASHBOARD -->
     <main class="dashboard-main">
-      <div class="dashboard-card profile-card" id="inicio">
-        <h3 id="perfil-title">Perfil</h3>
+      <!-- PERFIL -->
+      <section class="dashboard-card profile-card" id="inicio">
+        <h2 id="perfil-title">Perfil</h2>
         <p><strong id="nombre-text">Nombre:</strong> {{ nombre }}</p>
         <p><strong id="rut-text">RUT:</strong> {{ rut }}</p>
         <p>
@@ -73,71 +77,69 @@
           id="btn-editar-perfil"
           >Editar Perfil</a
         >
-      </div>
+      </section>
 
-      <div class="dashboard-card">
-        <h3 id="ofertas-title">Ofertas Laborales</h3>
-        {% for oferta in ofertas %}
-        <div class="oferta-item">
+      <!-- OFERTAS -->
+      <section class="dashboard-card" aria-labelledby="ofertas-title">
+        <h2 id="ofertas-title">Ofertas Laborales</h2>
+        {% if ofertas %} {% for oferta in ofertas %}
+        <article class="oferta-item">
           <p><strong>{{ oferta.titulo }}</strong> - {{ oferta.empresa }}</p>
           <a
             href="{{ url_for('postular', id=oferta.id) }}"
-            class="btn-secondary2"
-            id="btn-postular"
+            class="btn-secondary2 btn-postular"
             >Postular</a
           >
-        </div>
-        {% else %}
+        </article>
+        {% endfor %} {% else %}
         <p id="no-ofertas">No hay ofertas disponibles.</p>
-        {% endfor %}
-      </div>
+        {% endif %}
+      </section>
 
-      <div class="dashboard-card">
-        <h3 id="historial-title">Historial de Postulaciones</h3>
-        {% for post in postulaciones %}
-        <div class="post-item">
+      <!-- HISTORIAL POSTULACIONES -->
+      <section class="dashboard-card" aria-labelledby="historial-title">
+        <h2 id="historial-title">Historial de Postulaciones</h2>
+        {% if postulaciones %} {% for post in postulaciones %}
+        <article class="post-item">
           <p>{{ post.oferta }} - Estado: {{ post.estado }}</p>
-        </div>
-        {% else %}
+        </article>
+        {% endfor %} {% else %}
         <p id="no-postulaciones">No has postulado a ninguna oferta aún.</p>
-        {% endfor %}
-      </div>
+        {% endif %}
+      </section>
 
-      <div class="dashboard-card">
-        <h3 id="empresas-title">Empresas</h3>
-        {% for empresa in empresas %}
-        <div class="empresa-item">
+      <!-- EMPRESAS -->
+      <section class="dashboard-card" aria-labelledby="empresas-title">
+        <h2 id="empresas-title">Empresas</h2>
+        {% if empresas %} {% for empresa in empresas %}
+        <article class="empresa-item">
           <p>{{ empresa.nombre }}</p>
           <a
             href="{{ url_for('ver_empresa', id=empresa.id) }}"
-            class="btn-secondary2"
-            id="btn-ver-empresa"
+            class="btn-secondary2 btn-ver-empresa"
             >Ver Empresa</a
           >
-        </div>
-        {% else %}
+        </article>
+        {% endfor %} {% else %}
         <p id="no-empresas">No hay empresas disponibles.</p>
-        {% endfor %}
-      </div>
+        {% endif %}
+      </section>
     </main>
 
-    <nav class="mobile-nav">
-      <a href="#inicio" id="mobile-inicio">
-        <i class="fas fa-home"></i>
-        <span>Inicio</span>
-      </a>
-      <a href="{{ url_for('ofertas') }}" id="mobile-ofertas">
-        <i class="fas fa-briefcase"></i>
-        <span>Ofertas</span>
-      </a>
-      <a href="{{ url_for('empresas') }}" id="mobile-empresas">
-        <i class="fas fa-building"></i>
-        <span>Empresas</span>
-      </a>
-      <a href="{{ url_for('perfil') }}" id="mobile-perfil">
-        <i class="fas fa-user"></i>
-        <span>Perfil</span>
-      </a>
+    <!-- NAV MOBILE -->
+    <nav class="mobile-nav" role="navigation" aria-label="Mobile Navigation">
+      <a href="#inicio" id="mobile-inicio"
+        ><i class="fas fa-home"></i><span>Inicio</span></a
+      >
+      <a href="{{ url_for('ofertas') }}" id="mobile-ofertas"
+        ><i class="fas fa-briefcase"></i><span>Ofertas</span></a
+      >
+      <a href="{{ url_for('empresas') }}" id="mobile-empresas"
+        ><i class="fas fa-building"></i><span>Empresas</span></a
+      >
+      <a href="{{ url_for('perfil') }}" id="mobile-perfil"
+        ><i class="fas fa-user"></i><span>Perfil</span></a
+      >
     </nav>
 
     <!-- SCRIPT DE IDIOMAS -->
@@ -200,14 +202,11 @@
       function cambiarIdiomaDashboard(lang) {
         localStorage.setItem("lang", lang);
         const elementos = traduccionesDashboard[lang];
-
         Object.keys(elementos).forEach((id) => {
           const el = document.getElementById(id);
           if (el) el.textContent = elementos[id];
         });
-
-        // Título del documento
-        if (document.title) document.title = elementos["title-text"];
+        document.title = elementos["title-text"];
       }
 
       document.addEventListener("DOMContentLoaded", () => {
