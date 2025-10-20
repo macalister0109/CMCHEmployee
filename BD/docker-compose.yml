@@ -1,0 +1,35 @@
+
+# En este archivo se encarga de hacer saber a docker cómo levantar la base de datos de forma local, de modo que cada encargado del diseño de la base de datos no dependa finalmente del servidor principal. Desde el directorio del proyecto se escribe en una terminal:
+#
+# docker compose up -d
+#
+# o si tu docker usa el comando antiguo:
+#
+# docker-compose up -d
+#
+# Esto descargará la imágen si no la tienes, creará el contenedor y ejecutará SQL.
+#
+# Host: localhost
+# puerto: 3306
+# Usuario: root
+# Contraseña: root
+# Base: cmchemplooye
+
+version: "3.8"
+services:
+  mariadb:
+    image: mariadb:10.4
+    container_name: mariadb-local
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: cmchemployee
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./cmchemployee.sql:/docker-entrypoint-initdb.d/cmchemployee.sql:ro
+
+volumes:
+  mariadb_data:
+
