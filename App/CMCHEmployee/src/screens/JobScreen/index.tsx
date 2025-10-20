@@ -18,10 +18,12 @@ export default function JobScreen() {
         img: "../../../assets/adaptive-icon.png",
     });
     return (
-        <View style={styles.screen}>
+        <View style={[styles.screen, { gap: 24, alignItems: "center" }]}>
             <Header />
             <Search />
 
+            <CardOffer dates={date} />
+            <CardOffer dates={date} />
             <CardOffer dates={date} />
         </View>
     );
