@@ -10,6 +10,7 @@ export const styles = StyleSheet.create({
         display: "flex",
         gap: 8,
         padding: 4,
+        alignItems: "center",
     },
     title: {
         fontSize: THEME_ESTUDENT.font_sizes.h1,
@@ -31,5 +32,9 @@ export const styles = StyleSheet.create({
         flexDirection: "row",
         gap: 8,
         marginLeft: 6,
+    },
+    img: {
+        width: THEME_ESTUDENT.device_width * THEME_ESTUDENT.width["90%"],
+        height: 120,
     },
 });
