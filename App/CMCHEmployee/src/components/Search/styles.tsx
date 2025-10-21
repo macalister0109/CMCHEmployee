@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
         justifyContent: "space-evenly",
     },
     input: {
-        width: "80%",
+        width: "60%",
         height: "80%",
         backgroundColor: THEME_ESTUDENT.colors.bg_1,
         borderRadius: 16,
@@ -29,5 +29,11 @@ export const styles = StyleSheet.create({
         // --- SOMBRA Android ---
         elevation: 6,
     },
-    icon: {},
+    icon: {
+        backgroundColor: "#fff",
+        padding: 12,
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 100,
+    },
 });
