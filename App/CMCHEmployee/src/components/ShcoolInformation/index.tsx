@@ -78,7 +78,7 @@ export default function ShcoolInformation() {
                     title="Visión"
                 />
                 <View style={styles.PEcontainer}>
-                    <Text style={styles.title}>Perfil Egresado</Text>
+                    <Text style={styles.title}>Perfil Egresados</Text>
                     <Text style={styles.description}>
                         {promotions.perfil_egresado.descripcion}
                     </Text>
@@ -103,6 +103,8 @@ export default function ShcoolInformation() {
                         />
                     );
                 })}
+                <View style={styles.line}></View>
+
                 <GradientBackground
                     color={[
                         THEME_ESTUDENT.colors.primary_1,
