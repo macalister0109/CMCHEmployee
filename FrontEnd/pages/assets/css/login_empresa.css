@@ -67,6 +67,26 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.card::-webkit-scrollbar {
+    width: 6px;
+}
+
+.card::-webkit-scrollbar-track {
+    background: var(--dark-blue);
+    border-radius: 10px;
+}
+
+.card::-webkit-scrollbar-thumb {
+    background: var(--yellow);
+    border-radius: 10px;
+}
+
+.card::-webkit-scrollbar-thumb:hover {
+    background: var(--red);
 }
 
 .card h2 {

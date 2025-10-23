@@ -104,6 +104,7 @@ class Empresas(db.Model):
     direccion = db.Column(db.String(150), nullable=False)
     telefono = db.Column(db.String(20), nullable=False)
     correo_contacto = db.Column(db.String(100), nullable=False)
+    correo_empresa = db.Column(db.String(100), nullable=True)
     cantidad_empleados = db.Column(db.Integer)
     logo = db.Column(db.String(255), nullable=False)
     sitio_web = db.Column(db.String(255), nullable=False)
@@ -172,94 +173,130 @@ def get_default_pais_id():
     return new_pais.id_pais
 
 #Registro empresa 
-@app.route('/register_empresa', methods=['GET', 'POST'])
+@app.route('/register_empresa', methods=['POST'])
 def register_empresa():
-    if request.method == 'POST':
-        # Detectar si es JSON (desde app móvil) o form-data (desde web)
-        is_json = request.is_json
+    """Maneja el registro de empresas - Solo POST"""
+    # Detectar si es JSON (desde app móvil) o form-data (desde web)
+    is_json = request.is_json
+    if is_json:
+        data = request.get_json()
+        nombre_empresa = data.get('nombre_empresa')
+        nombre_encargado = data.get('nombre_encargado')
+        apellido_encargado = data.get('apellido_encargado')
+        rut_empresa = data.get('rut_empresa')
+        rut_encargado = data.get('rut_encargado')
+        direccion = data.get('direccion', '-')
+        email = data.get('email')
+        rubro = data.get('rubro', '-')
+        sitio_web = data.get('sitio_web', '-')
+        password = data.get('password')
+    else:
+        nombre_empresa = request.form.get('nombre_empresa')
+        nombre_encargado = request.form.get('nombre_encargado')
+        apellido_encargado = request.form.get('apellido_encargado')
+        rut_empresa = request.form.get('rut_empresa')
+        rut_encargado = request.form.get('rut_encargado')
+        direccion = request.form.get('direccion') or '-'
+        email = request.form.get('email') or request.form.get('correo_empresa')  # Cambio aquí para coincidir con el formulario
+        rubro = request.form.get('rubro') or '-'
+        sitio_web = request.form.get('sitio_web') or '-'
+        password = request.form.get('password')
+    
+    rut_empresa_normalizado = re.sub(r'[^0-9kK]', '', rut_empresa)
+    rut_encargado_normalizado = re.sub(r'[^0-9kK]', '', rut_encargado) if rut_encargado else None
+    
+    # Validar que los campos obligatorios estén presentes
+    if not rut_encargado or not rut_encargado_normalizado:
         if is_json:
-            data = request.get_json()
-            nombre_empresa = data.get('nombre_empresa')
-            nombre_encargado = data.get('nombre_encargado')
-            apellido_encargado = data.get('apellido_encargado')
-            rut_empresa = data.get('rut_empresa')
-            rut_encargado = data.get('rut_encargado')
-            direccion = data.get('direccion', '-')
-            email = data.get('email')
-            rubro = data.get('rubro', '-')
-            sitio_web = data.get('sitio_web', '-')
-            password = data.get('password')
-        else:
-            nombre_empresa = request.form.get('nombre_empresa')
-            nombre_encargado = request.form.get('nombre_encargado')
-            apellido_encargado = request.form.get('apellido_encargado')
-            rut_empresa = request.form.get('rut_empresa')
-            rut_encargado = request.form.get('rut_encargado')
-            direccion = request.form.get('direccion') or '-'
-            email = request.form.get('email') or request.form.get('correo_contacto')
-            rubro = request.form.get('rubro') or '-'
-            sitio_web = request.form.get('sitio_web') or '-'
-            password = request.form.get('password')
-        
-        rut_empresa_normalizado = re.sub(r'[^0-9kK]', '', rut_empresa)
-        rut_encargado_normalizado = re.sub(r'[^0-9kK]', '', rut_encargado) if rut_encargado else None
-        
-        # Validar que el email no sea None (generar uno por defecto si no viene)
-        if not email:
-            email = f'empresa_{rut_empresa_normalizado}@example.com'
-        
-        # Verifica que el rut de empresa sea unico
-        existing = EmpresaNacional.query.filter_by(rut_empresa=rut_empresa_normalizado).first()
-        if existing:
-            if is_json:
-                return jsonify({'success': False, 'error': 'El RUT de empresa ya está registrado'}), 409
-            return render_template('register_empresa.html', error='El RUT de empresa ya está registrado')
-        
-        aviso = None
-        empresario_obj = None
-        if rut_encargado_normalizado:
-            # buscar usuario encargado por numero de documento
-            auth = UsuarioAutorizado.query.filter_by(numero_documento=rut_encargado_normalizado).first()
-            user_encargado = None
-            if auth:
-                user_encargado = Usuarios.query.filter_by(UsuarioAutorizado_ID=auth.id_usuario_autorizado).first()
-            if user_encargado:
-                empresario_obj = Empresarios.query.get(user_encargado.id_usuario)
-            else:
-                # crear UsuarioAutorizado y Usuario + Empresario
-                new_auth = UsuarioAutorizado(tipo_documento='RUT', numero_documento=rut_encargado_normalizado)
-                db.session.add(new_auth)
-                db.session.flush()
-                hashed_pred = generate_password_hash('012345A')
-                new_user = Usuarios(nombre=nombre_encargado or 'Encargado', apellido=apellido_encargado or '', password=hashed_pred, correo=f'encargado_{rut_encargado_normalizado}@example.com', telefono='000000000', Pais_id_pais=get_default_pais_id(), Rut_usuario=new_auth.numero_documento, UsuarioAutorizado_ID=new_auth.id_usuario_autorizado)
-                db.session.add(new_user)
-                db.session.flush()
-                new_empresario = Empresarios(id_usuario=new_user.id_usuario, empresa_principal=nombre_empresa, cargo='Encargado')
-                db.session.add(new_empresario)
-                db.session.flush()
-                empresario_obj = new_empresario
-                aviso = f"Usuario encargado creado con rut {rut_encargado_normalizado} y contraseña predeterminada: 012345A. Por favor cámbiala en modo usuario."
-        else:
-            # crear un empresario placeholder vinculado a un nuevo usuario administrador si no se proporcionó encargado
-            placeholder_auth = UsuarioAutorizado(tipo_documento='RUT', numero_documento=f'admin-{nombre_empresa}')
-            db.session.add(placeholder_auth)
+            return jsonify({'success': False, 'error': 'El RUT del encargado es obligatorio'}), 400
+        return render_template('login_empresa.html', error='El RUT del encargado es obligatorio', toggle=True)
+    
+    if not nombre_encargado or not apellido_encargado:
+        if is_json:
+            return jsonify({'success': False, 'error': 'El nombre y apellido del encargado son obligatorios'}), 400
+        return render_template('login_empresa.html', error='El nombre y apellido del encargado son obligatorios', toggle=True)
+    
+    # Validar que el email no sea None (generar uno por defecto si no viene)
+    if not email:
+        email = f'empresa_{rut_empresa_normalizado}@example.com'
+    
+    # Verifica que el rut de empresa sea unico
+    existing = EmpresaNacional.query.filter_by(rut_empresa=rut_empresa_normalizado).first()
+    if existing:
+        if is_json:
+            return jsonify({'success': False, 'error': 'El RUT de empresa ya está registrado'}), 409
+        return render_template('login_empresa.html', error='El RUT de empresa ya está registrado', toggle=True)
+    
+    # Verificar que el correo no esté en uso
+    existing_empresa = Empresas.query.filter_by(correo_empresa=email).first()
+    if existing_empresa:
+        if is_json:
+            return jsonify({'success': False, 'error': 'El correo electrónico ya está registrado'}), 409
+        return render_template('login_empresa.html', error='El correo electrónico ya está registrado', toggle=True)
+    
+    # Buscar o crear usuario encargado
+    aviso = None
+    empresario_obj = None
+    
+    # Buscar usuario encargado existente por numero de documento
+    auth = UsuarioAutorizado.query.filter_by(numero_documento=rut_encargado_normalizado).first()
+    user_encargado = None
+    
+    if auth:
+        # Si existe el usuario autorizado, buscar el usuario asociado
+        user_encargado = Usuarios.query.filter_by(UsuarioAutorizado_ID=auth.id_usuario_autorizado).first()
+    
+    if user_encargado:
+        # Si el usuario existe, buscar o crear su registro de empresario
+        empresario_obj = Empresarios.query.get(user_encargado.id_usuario)
+        if not empresario_obj:
+            # Crear empresario para usuario existente
+            empresario_obj = Empresarios(
+                id_usuario=user_encargado.id_usuario,
+                empresa_principal=nombre_empresa,
+                cargo='Encargado'
+            )
+            db.session.add(empresario_obj)
             db.session.flush()
-            hashed_pred = generate_password_hash('changeMe123')
-            placeholder_user = Usuarios(nombre=f'{nombre_empresa} Admin', apellido=apellido_encargado or '', password=hashed_pred, correo=f'admin_{nombre_empresa.replace(" ","").lower()}@example.com', telefono='000000000', Pais_id_pais=get_default_pais_id(), Rut_usuario=placeholder_auth.numero_documento, UsuarioAutorizado_ID=placeholder_auth.id_usuario_autorizado)
-            db.session.add(placeholder_user)
-            db.session.flush()
-            placeholder_emp = Empresarios(id_usuario=placeholder_user.id_usuario, empresa_principal=nombre_empresa, cargo='Administrador')
-            db.session.add(placeholder_emp)
-            db.session.flush()
-            empresario_obj = placeholder_emp
+    else:
+        # Crear nuevo UsuarioAutorizado, Usuario y Empresario
+        new_auth = UsuarioAutorizado(tipo_documento='RUT', numero_documento=rut_encargado_normalizado)
+        db.session.add(new_auth)
+        db.session.flush()
         
-        # La contraseña de empresa es obligatoria
-        if not password or len(password) < 8:
-            if is_json:
-                return jsonify({'success': False, 'error': 'La contraseña de empresa debe tener al menos 8 caracteres'}), 400
-            return render_template('register_empresa.html', error='La contraseña de empresa debe tener al menos 8 caracteres')
+        hashed_pred = generate_password_hash('012345A')
+        new_user = Usuarios(
+            nombre=nombre_encargado,
+            apellido=apellido_encargado,
+            password=hashed_pred,
+            correo=f'encargado_{rut_encargado_normalizado}@example.com',
+            telefono='000000000',
+            Pais_id_pais=get_default_pais_id(),
+            Rut_usuario=new_auth.numero_documento,
+            UsuarioAutorizado_ID=new_auth.id_usuario_autorizado
+        )
+        db.session.add(new_user)
+        db.session.flush()
         
-        hashed_password = generate_password_hash(password)
+        new_empresario = Empresarios(
+            id_usuario=new_user.id_usuario,
+            empresa_principal=nombre_empresa,
+            cargo='Encargado'
+        )
+        db.session.add(new_empresario)
+        db.session.flush()
+        empresario_obj = new_empresario
+        aviso = f"Usuario encargado creado con RUT {rut_encargado_normalizado} y contraseña predeterminada: 012345A. Por favor cámbiala en modo usuario."
+    
+    # La contraseña de empresa es obligatoria
+    if not password or len(password) < 8:
+        if is_json:
+            return jsonify({'success': False, 'error': 'La contraseña de empresa debe tener al menos 8 caracteres'}), 400
+        return render_template('login_empresa.html', error='La contraseña de empresa debe tener al menos 8 caracteres', toggle=True)
+    
+    hashed_password = generate_password_hash(password)
+    
+    try:
         # crear empresa y relaciones
         empresa = Empresas(
             nombre_empresa=nombre_empresa,
@@ -267,6 +304,7 @@ def register_empresa():
             direccion=direccion or '-',
             telefono='000000000',
             correo_contacto=email,
+            correo_empresa=email, 
             cantidad_empleados=0,
             logo='-',
             sitio_web=sitio_web,
@@ -279,6 +317,7 @@ def register_empresa():
         )
         db.session.add(empresa)
         db.session.flush()
+        
         # crear subtipo nacional
         emp_nac = EmpresaNacional(id_empresa=empresa.id_empresa, rut_empresa=rut_empresa_normalizado)
         db.session.add(emp_nac)
@@ -296,9 +335,34 @@ def register_empresa():
                 'aviso': aviso
             })
         
-        bienvenida = f"Bienvenida empresa '{nombre_empresa}'"
-        return render_template('main.html', bienvenida=bienvenida, aviso=aviso)
-    return render_template('register_empresa.html')
+        # Iniciar sesión automáticamente después del registro
+        session['nombre'] = empresa.nombre_empresa
+        session['apellido'] = ''
+        session['user_id'] = None
+        session['empresa_id'] = empresa.id_empresa
+        
+        # Redirigir a la página principal (main)
+        return redirect(url_for('main'))
+        
+    except Exception as e:
+        db.session.rollback()
+        error_msg = 'Error al registrar la empresa. Por favor, verifica los datos e intenta nuevamente.'
+        
+        # Si es un error de integridad, proporcionar más detalles
+        if 'Duplicate entry' in str(e):
+            if 'rut_empresa' in str(e):
+                error_msg = 'El RUT de empresa ya está registrado'
+            elif 'correo' in str(e):
+                error_msg = 'El correo electrónico ya está registrado'
+            elif 'numero_documento' in str(e):
+                error_msg = 'Ya existe un usuario con ese documento de identidad'
+            else:
+                error_msg = 'Ya existe un registro con esos datos'
+        
+        if is_json:
+            return jsonify({'success': False, 'error': error_msg}), 400
+        
+        return render_template('login_empresa.html', error=error_msg, toggle=True)
 
 #login empresa
 @app.route('/login_empresa', methods=['GET', 'POST'])
@@ -354,7 +418,8 @@ def login_empresa():
                                 'rut_empresa': rut_empresa_normalizado
                             }
                         })
-                    return redirect(url_for('dashboard_empresa'))
+                    # Redirigir a la página principal (main)
+                    return redirect(url_for('main'))
             except Exception:
                 # Si hay cualquier error al chequear hash, continuamos con el flujo antiguo
                 pass
@@ -411,7 +476,17 @@ def main():
     nombre = session.get('nombre')
     apellido = session.get('apellido')
     empresa_id = session.get('empresa_id')
-    return render_template('main.html', nombre=nombre, apellido=apellido, empresa_id=empresa_id)
+    
+    # Si es una empresa, crear mensaje de bienvenida
+    bienvenida = None
+    if empresa_id and nombre:
+        bienvenida = f"Bienvenida empresa '{nombre}'"
+    
+    return render_template('main.html', 
+                         nombre=nombre, 
+                         apellido=apellido, 
+                         empresa_id=empresa_id,
+                         bienvenida=bienvenida)
 
 # Dashboard Empresa
 @app.route('/dashboard-empresa')

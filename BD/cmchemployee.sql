@@ -88,6 +88,7 @@ CREATE TABLE IF NOT EXISTS `empresas` (
   `direccion` varchar(150) NOT NULL,
   `telefono` varchar(20) NOT NULL,
   `correo_contacto` varchar(100) NOT NULL,
+  `correo_empresa` varchar(100) DEFAULT NULL COMMENT 'Correo principal de la empresa',
   `cantidad_empleados` int(11) DEFAULT NULL,
   `logo` varchar(255) NOT NULL COMMENT 'URL del logo',
   `sitio_web` varchar(255) NOT NULL COMMENT 'URL del sitio web',

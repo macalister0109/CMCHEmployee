@@ -1,7 +1,8 @@
 :root {
   --blue: #1f1273;     
   --dark-blue: #0f0a3c;  
-  --gold: #f2b705;   
+  --gold: #f2b705;
+  --yellow: #f2b705;   /* Alias para gold */
   --gold-oscuro: #936804;       
 
   --white: #ffffff;
@@ -74,31 +75,83 @@ body {
 .auth-buttons {
     display: flex;
     gap: 10px;
+    align-items: center;
+    margin-left: auto; /* Empuja los botones a la derecha */
 }
 
+/* Welcome Header - Container principal */
+.welcome-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: nowrap; /* Mantiene todo en una línea */
+}
+
+/* Texto de bienvenida */
+.welcome-text {
+    font-size: 0.85rem; /* Más pequeño */
+    font-weight: 600;
+    color: var(--blue);
+    white-space: nowrap;
+}
+
+/* Formulario de logout inline */
+.logout-form {
+    display: inline;
+    margin: 0;
+}
+
+/* Container para acciones de empresa */
+.empresa-actions {
+    display: inline-flex;
+    gap: 8px; /* Reducido */
+    align-items: center;
+    flex-wrap: nowrap; /* Mantiene en una línea */
+}
+
+/* ============================================
+   BOTONES - Estilos unificados
+   ============================================ */
+
+/* Botón primario - Azul */
 .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     background: var(--blue);
     color: var(--white);
     padding: 0.6rem 1.2rem;
     border-radius: var(--radius);
     text-decoration: none;
     font-weight: 600;
-    transition: background 0.3s;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
 }
 
 .btn-primary:hover {
     background: var(--gold);
     color: var(--text-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(31, 18, 115, 0.3);
 }
 
+/* Botón outline - Borde azul */
 .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     border: 2px solid var(--blue);
     color: var(--blue);
-    padding: 0.5rem 1rem;
+    background: transparent;
+    padding: 0.55rem 1.1rem;
     border-radius: var(--radius);
     text-decoration: none;
     font-weight: 600;
-    transition: all 0.3s;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 .btn-outline:hover {
@@ -106,18 +159,80 @@ body {
     color: var(--white);
 }
 
+/* Botón de Dashboard - Amarillo destacado */
+.btn-dashboard {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.9rem; /* Más pequeño */
+    border-radius: calc(var(--radius) - 2px);
+    font-weight: 600;
+    font-size: 0.85rem; /* Más pequeño */
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    background: var(--gold);
+    color: var(--dark-blue);
+    border: 2px solid var(--gold);
+    box-shadow: 0 2px 6px rgba(242, 183, 5, 0.25);
+}
+
+.btn-dashboard:hover {
+    background: var(--dark-blue);
+    color: var(--gold);
+    border-color: var(--dark-blue);
+    box-shadow: 0 3px 10px rgba(242, 183, 5, 0.35);
+    transform: translateY(-1px);
+}
+
+.btn-dashboard i {
+    font-size: 0.9rem; /* Icono más pequeño */
+}
+
+/* Botón de Logout - Outline rojo */
+.btn-logout {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.85rem; /* Más pequeño */
+    border-radius: calc(var(--radius) - 2px);
+    font-weight: 600;
+    font-size: 0.85rem; /* Más pequeño */
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 2px solid #dc3545;
+    color: #dc3545;
+    background: transparent;
+}
+
+.btn-logout:hover {
+    background: #dc3545;
+    color: var(--white);
+    border-color: #dc3545;
+    transform: translateY(-1px);
+}
+
+/* Botón secundario */
 .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     background: var(--gold);
     color: var(--dark-blue);
     padding: 0.6rem 1.2rem;
     border-radius: var(--radius);
     text-decoration: none;
     font-weight: 600;
-    transition: background 0.3s;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
 }
 
 .btn-secondary:hover {
     background: #d9a404;
+    transform: translateY(-2px);
 }
 
 .hero {
@@ -392,26 +507,6 @@ button.next { right: 5px;}
 .btn-primary2:hover {
   background: #d9a404;
   color: var(--text-dark);
-
-}
-
-/* Estilo para botón de cerrar sesión: usa la variante outline por defecto */
-.btn-logout {
-    display: inline-block;
-    padding: 0.45rem 0.9rem;
-    border-radius: calc(var(--radius) - 4px);
-    font-weight: 700;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.25s ease;
-    border: 2px solid var(--blue);
-    color: var(--blue);
-    background: transparent;
-}
-
-.btn-logout:hover {
-    background: var(--blue);
-    color: var(--white);
 }
 
 .btn-secondary2 {
@@ -550,5 +645,137 @@ button.next { right: 5px;}
   background-repeat: no-repeat;
   background-position: right 0.7rem center;
   background-size: 12px 12px;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+/* Tablets y pantallas medianas */
+@media (max-width: 992px) {
+    .header-inner {
+        padding: 1rem 1.5rem;
+    }
+    
+    .nav a {
+        margin: 0 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .brand {
+        font-size: 32px;
+    }
+    
+    .welcome-text {
+        font-size: 0.85rem;
+    }
+}
+
+/* Dispositivos móviles */
+@media (max-width: 768px) {
+    .header-inner {
+        flex-wrap: wrap;
+        padding: 1rem;
+    }
+    
+    .nav {
+        order: 3;
+        width: 100%;
+        margin-top: 1rem;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .nav a {
+        margin: 0.3rem 0.5rem;
+        font-size: 0.85rem;
+    }
+    
+    .auth-buttons {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .welcome-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        width: 100%;
+    }
+    
+    .welcome-text {
+        width: 100%;
+        text-align: left;
+        font-size: 0.9rem;
+        white-space: normal;
+    }
+    
+    .empresa-actions {
+        flex-direction: column;
+        width: 100%;
+        margin-left: 0;
+        gap: 8px;
+    }
+    
+    .btn-dashboard,
+    .btn-logout,
+    .btn-primary,
+    .btn-outline {
+        width: 100%;
+        justify-content: center;
+        padding: 0.65rem 1rem;
+    }
+    
+    .logout-form {
+        width: 100%;
+    }
+    
+    .hero-inner {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .hero-text h2 {
+        font-size: 1.8rem;
+    }
+    
+    .search-box {
+        flex-direction: column;
+    }
+    
+    .search-input,
+    .search-select {
+        width: 100%;
+    }
+}
+
+/* Dispositivos muy pequeños */
+@media (max-width: 480px) {
+    .logo {
+        width: 45px;
+        height: 55px;
+    }
+    
+    .brand {
+        font-size: 24px;
+    }
+    
+    .logo-container {
+        gap: 8px;
+    }
+    
+    .btn-dashboard,
+    .btn-logout,
+    .btn-primary,
+    .btn-outline {
+        font-size: 0.85rem;
+        padding: 0.6rem 0.8rem;
+    }
+    
+    .btn-dashboard i,
+    .btn-logout i {
+        font-size: 0.9rem;
+    }
 }
 

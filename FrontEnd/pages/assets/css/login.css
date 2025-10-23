@@ -45,15 +45,40 @@ body {
 .container-form {
   width: 100%;
   overflow: hidden;
+  max-height: 90vh;
 }
 
 .container-form form {
   height: 100%;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   transition: transform var(--transition);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 40px 20px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--cmch-yellow) var(--dark-blue);
+}
+
+.container-form form::-webkit-scrollbar {
+  width: 6px;
+}
+
+.container-form form::-webkit-scrollbar-track {
+  background: var(--dark-blue);
+  border-radius: 10px;
+}
+
+.container-form form::-webkit-scrollbar-thumb {
+  background: var(--cmch-yellow);
+  border-radius: 10px;
+}
+
+.container-form form::-webkit-scrollbar-thumb:hover {
+  background: var(--cmch-red);
 }
 
 .container-form h2 {
