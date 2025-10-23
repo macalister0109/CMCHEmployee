@@ -211,6 +211,120 @@ class ApiService {
       method: 'POST',
     });
   }
+
+  // ========================================
+  // GESTIÓN DE PUESTOS (EMPRESAS)
+  // ========================================
+
+  /**
+   * Crear nuevo puesto de trabajo
+   */
+  async crearPuesto(data: {
+    empresa_id: number;
+    area_trabajo: string;
+    region_trabajo: string;
+    comuna_trabajo: string;
+    modalidad_trabajo: string;
+    tipo_industria: string;
+    tamanio_empresa: string;
+    descripcion_trabajo: string;
+    calificaciones?: string;
+  }): Promise<ApiResponse<any>> {
+    return this.request('/api/puesto', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  /**
+   * Editar puesto existente
+   */
+
+  async editarPuesto(id: number, data: {
+    empresa_id?: number;
+    area_trabajo?: string;
+    region_trabajo?: string;
+    comuna_trabajo?: string;
+    modalidad_trabajo?: string;
+    tipo_industria?: string;
+    tamanio_empresa?: string;
+    descripcion_trabajo?: string;
+    calificaciones?: string;
+  }): Promise<ApiResponse<any>> {
+    return this.request(`/api/puesto/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  /**
+   * Eliminar puesto
+   */
+
+  async eliminarPuesto(id: number, empresaId: number): Promise<ApiResponse<any>> {
+    return this.request(`/api/puesto/${id}?empresa_id=${empresaId}&format=json`, {
+      method: 'DELETE',
+    });
+  }
+
+  /**
+   * Ver postulantes a un puesto
+   */
+
+  async verPostulantes(puestoId: number, empresaId: number): Promise<ApiResponse<any>> {
+    return this.request(`/api/puesto/${puestoId}/postulantes?empresa_id=${empresaId}`, {
+      method: 'GET',
+    });
+  }
+
+  /**
+   * Cambiar estado de postulación
+   */
+
+  async cambiarEstadoPostulacion(postulacionId: number, estado: string, empresaId: number): Promise<ApiResponse<any>> {
+    return this.request(`/api/postulacion/${postulacionId}`, {
+      method: 'PUT',
+      body: JSON.stringify({ estado, empresa_id: empresaId }),
+    });
+  }
+
+  /**
+   * Obtener mis puestos (empresa autenticada)
+   */
+  
+  async getMisPuestosEmpresa(empresaId: number): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>(`/api/empresa/mis-puestos?empresa_id=${empresaId}`, {
+      method: 'GET',
+    });
+  }
+
+  // ========================================
+  // BÚSQUEDA
+  // ========================================
+
+  /**
+   * Buscar ofertas laborales
+   */
+  
+  async buscarOfertas(filtros: {
+    q?: string;          // Texto de búsqueda
+    region?: string;     // Región
+    modalidad?: string;  // Modalidad de trabajo
+    area?: string;       // Área de trabajo
+  }): Promise<ApiResponse<any>> {
+    const params = new URLSearchParams();
+    if (filtros.q) params.append('q', filtros.q);
+    if (filtros.region) params.append('region', filtros.region);
+    if (filtros.modalidad) params.append('modalidad', filtros.modalidad);
+    if (filtros.area) params.append('area', filtros.area);
+
+    const queryString = params.toString();
+    const endpoint = queryString ? `/api/buscar?${queryString}` : '/api/buscar';
+
+    return this.request(endpoint, {
+      method: 'GET',
+    });
+  }
 }
 
 // Exportar instancia única del servicio

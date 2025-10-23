@@ -342,6 +342,7 @@ def login_empresa():
                     session['nombre'] = empresa.nombre_empresa
                     session['apellido'] = ''
                     session['user_id'] = None
+                    session['empresa_id'] = empresa.id_empresa  # Guardar ID de empresa
                     
                     if is_json:
                         return jsonify({
@@ -353,7 +354,7 @@ def login_empresa():
                                 'rut_empresa': rut_empresa_normalizado
                             }
                         })
-                    return render_template('main.html', bienvenida=bienvenida)
+                    return redirect(url_for('dashboard_empresa'))
             except Exception:
                 # Si hay cualquier error al chequear hash, continuamos con el flujo antiguo
                 pass
@@ -384,6 +385,7 @@ def login_empresa():
         session['nombre'] = user.nombre
         session['apellido'] = user.apellido
         session['user_id'] = user.id_usuario
+        session['empresa_id'] = empresa.id_empresa  # Guardar ID de empresa
         
         if is_json:
             return jsonify({
@@ -400,7 +402,7 @@ def login_empresa():
                     'user_id': user.id_usuario
                 }
             })
-        return render_template('main.html', bienvenida=bienvenida)
+        return redirect(url_for('dashboard_empresa'))
     return render_template('login_empresa.html')
 
 # Ruta principal
@@ -408,7 +410,43 @@ def login_empresa():
 def main():
     nombre = session.get('nombre')
     apellido = session.get('apellido')
-    return render_template('main.html', nombre=nombre, apellido=apellido)
+    empresa_id = session.get('empresa_id')
+    return render_template('main.html', nombre=nombre, apellido=apellido, empresa_id=empresa_id)
+
+# Dashboard Empresa
+@app.route('/dashboard-empresa')
+def dashboard_empresa():
+    """Dashboard para empresas autenticadas"""
+    empresa_id = session.get('empresa_id')
+    nombre_empresa = session.get('nombre')
+    
+    if not empresa_id:
+        return redirect(url_for('login_empresa'))
+    
+    return render_template('dashboard_empresa.html', 
+                         empresa_id=empresa_id,
+                         nombre_empresa=nombre_empresa)
+
+# Página de resultados de búsqueda
+@app.route('/resultados-busqueda')
+def resultados_busqueda():
+    """Página de resultados de búsqueda"""
+    query = request.args.get('q', '')
+    region = request.args.get('region', '')
+    modalidad = request.args.get('modalidad', '')
+    area = request.args.get('area', '')
+    user_id = session.get('user_id')
+    nombre = session.get('nombre')
+    apellido = session.get('apellido')
+    
+    return render_template('resultados_busqueda.html',
+                         query=query,
+                         region=region,
+                         modalidad=modalidad,
+                         area=area,
+                         user_id=user_id,
+                         nombre=nombre,
+                         apellido=apellido)
 
 # Página de login
 @app.route('/login', methods=['GET', 'POST'])
@@ -667,6 +705,402 @@ def assets_files(filename):
 def logout():
     session.clear()
     return redirect(url_for('main'))
+
+# ========================================
+# GESTIÓN DE PUESTOS DE TRABAJO (EMPRESAS)
+# ========================================
+
+# Crear nuevo puesto de trabajo
+@app.route('/api/puesto', methods=['POST'])
+def crear_puesto():
+    """Permite a una empresa crear un nuevo puesto de trabajo"""
+    # Detectar si es JSON (app móvil) o form-data (web)
+    is_json = request.is_json
+    if is_json:
+        data = request.get_json()
+    else:
+        data = request.form.to_dict()
+    
+    # Obtener ID de empresa desde sesión o parámetro
+    empresa_id = data.get('empresa_id') or session.get('empresa_id')
+    
+    if not empresa_id:
+        if is_json:
+            return jsonify({'success': False, 'error': 'Debe estar autenticado como empresa'}), 401
+        return jsonify({'error': 'Debe estar autenticado como empresa'}), 401
+    
+    # Validar campos requeridos
+    required_fields = ['area_trabajo', 'region_trabajo', 'comuna_trabajo', 
+                       'modalidad_trabajo', 'tipo_industria', 'tamanio_empresa', 
+                       'descripcion_trabajo']
+    
+    for field in required_fields:
+        if not data.get(field):
+            error_msg = f'El campo {field} es requerido'
+            if is_json:
+                return jsonify({'success': False, 'error': error_msg}), 400
+            return jsonify({'error': error_msg}), 400
+    
+    # Crear el puesto
+    try:
+        nuevo_puesto = PuestoDeTrabajo(
+            Empresas_id_empresa=empresa_id,
+            area_trabajo=data['area_trabajo'],
+            region_trabajo=data['region_trabajo'],
+            comuna_trabajo=data['comuna_trabajo'],
+            modalidad_trabajo=data['modalidad_trabajo'],
+            tipo_industria=data['tipo_industria'],
+            tamanio_empresa=data['tamanio_empresa'],
+            descripcion_trabajo=data['descripcion_trabajo'],
+            calificaciones=data.get('calificaciones', '')
+        )
+        db.session.add(nuevo_puesto)
+        db.session.commit()
+        
+        if is_json:
+            return jsonify({
+                'success': True,
+                'message': 'Puesto creado exitosamente',
+                'puesto': {
+                    'id_trabajo': nuevo_puesto.id_trabajo,
+                    'area_trabajo': nuevo_puesto.area_trabajo,
+                    'region_trabajo': nuevo_puesto.region_trabajo
+                }
+            }), 201
+        
+        return jsonify({'success': True, 'id_trabajo': nuevo_puesto.id_trabajo}), 201
+        
+    except Exception as e:
+        db.session.rollback()
+        if is_json:
+            return jsonify({'success': False, 'error': str(e)}), 500
+        return jsonify({'error': str(e)}), 500
+
+
+# Editar puesto de trabajo existente
+@app.route('/api/puesto/<int:id>', methods=['PUT'])
+def editar_puesto(id):
+    """Permite a una empresa editar uno de sus puestos de trabajo"""
+    is_json = request.is_json
+    if is_json:
+        data = request.get_json()
+    else:
+        data = request.form.to_dict()
+    
+    # Buscar el puesto
+    puesto = PuestoDeTrabajo.query.get(id)
+    if not puesto:
+        if is_json:
+            return jsonify({'success': False, 'error': 'Puesto no encontrado'}), 404
+        return jsonify({'error': 'Puesto no encontrado'}), 404
+    
+    # Verificar que la empresa sea dueña del puesto (seguridad básica)
+    empresa_id = data.get('empresa_id') or session.get('empresa_id')
+    if empresa_id and puesto.Empresas_id_empresa != int(empresa_id):
+        if is_json:
+            return jsonify({'success': False, 'error': 'No autorizado para editar este puesto'}), 403
+        return jsonify({'error': 'No autorizado para editar este puesto'}), 403
+    
+    # Actualizar campos si vienen en la petición
+    try:
+        if data.get('area_trabajo'):
+            puesto.area_trabajo = data['area_trabajo']
+        if data.get('region_trabajo'):
+            puesto.region_trabajo = data['region_trabajo']
+        if data.get('comuna_trabajo'):
+            puesto.comuna_trabajo = data['comuna_trabajo']
+        if data.get('modalidad_trabajo'):
+            puesto.modalidad_trabajo = data['modalidad_trabajo']
+        if data.get('tipo_industria'):
+            puesto.tipo_industria = data['tipo_industria']
+        if data.get('tamanio_empresa'):
+            puesto.tamanio_empresa = data['tamanio_empresa']
+        if data.get('descripcion_trabajo'):
+            puesto.descripcion_trabajo = data['descripcion_trabajo']
+        if 'calificaciones' in data:
+            puesto.calificaciones = data['calificaciones']
+        
+        db.session.commit()
+        
+        if is_json:
+            return jsonify({
+                'success': True,
+                'message': 'Puesto actualizado exitosamente',
+                'puesto': {
+                    'id_trabajo': puesto.id_trabajo,
+                    'area_trabajo': puesto.area_trabajo,
+                    'region_trabajo': puesto.region_trabajo,
+                    'descripcion_trabajo': puesto.descripcion_trabajo
+                }
+            })
+        
+        return jsonify({'success': True, 'message': 'Puesto actualizado'}), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        if is_json:
+            return jsonify({'success': False, 'error': str(e)}), 500
+        return jsonify({'error': str(e)}), 500
+
+
+# Eliminar puesto de trabajo
+@app.route('/api/puesto/<int:id>', methods=['DELETE'])
+def eliminar_puesto(id):
+    """Permite a una empresa eliminar uno de sus puestos de trabajo"""
+    is_json = request.is_json or request.args.get('format') == 'json'
+    
+    puesto = PuestoDeTrabajo.query.get(id)
+    if not puesto:
+        if is_json:
+            return jsonify({'success': False, 'error': 'Puesto no encontrado'}), 404
+        return jsonify({'error': 'Puesto no encontrado'}), 404
+    
+    # Verificar autorización (básica)
+    empresa_id = request.args.get('empresa_id') or session.get('empresa_id')
+    if empresa_id and puesto.Empresas_id_empresa != int(empresa_id):
+        if is_json:
+            return jsonify({'success': False, 'error': 'No autorizado para eliminar este puesto'}), 403
+        return jsonify({'error': 'No autorizado'}), 403
+    
+    try:
+        # Eliminar postulaciones asociadas primero
+        Postulaciones.query.filter_by(id_trabajo=id).delete()
+        
+        # Eliminar el puesto
+        db.session.delete(puesto)
+        db.session.commit()
+        
+        if is_json:
+            return jsonify({'success': True, 'message': 'Puesto eliminado exitosamente'})
+        
+        return jsonify({'success': True}), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        if is_json:
+            return jsonify({'success': False, 'error': str(e)}), 500
+        return jsonify({'error': str(e)}), 500
+
+
+# Ver postulantes a un puesto específico
+@app.route('/api/puesto/<int:id>/postulantes', methods=['GET'])
+def ver_postulantes(id):
+    """Permite a una empresa ver los postulantes a uno de sus puestos"""
+    puesto = PuestoDeTrabajo.query.get(id)
+    if not puesto:
+        return jsonify({'success': False, 'error': 'Puesto no encontrado'}), 404
+    
+    # Verificar autorización
+    empresa_id = request.args.get('empresa_id') or session.get('empresa_id')
+    if empresa_id and puesto.Empresas_id_empresa != int(empresa_id):
+        return jsonify({'success': False, 'error': 'No autorizado'}), 403
+    
+    # Obtener postulaciones
+    postulaciones = Postulaciones.query.filter_by(id_trabajo=id).all()
+    
+    postulantes = []
+    for post in postulaciones:
+        usuario = Usuarios.query.get(post.id_usuario)
+        if usuario:
+            alumno = Alumnos.query.get(usuario.id_usuario)
+            postulantes.append({
+                'id_postulacion': post.id_postulacion,
+                'fecha_postulacion': post.fecha_postulacion.isoformat(),
+                'estado': post.estado,
+                'usuario': {
+                    'id_usuario': usuario.id_usuario,
+                    'nombre': usuario.nombre,
+                    'apellido': usuario.apellido,
+                    'correo': usuario.correo,
+                    'telefono': usuario.telefono,
+                    'carrera': alumno.carrera if alumno else None,
+                    'anio_ingreso': alumno.anio_ingreso if alumno else None,
+                    'experiencia_laboral': alumno.experiencia_laboral if alumno else None
+                }
+            })
+    
+    return jsonify({
+        'success': True,
+        'puesto': {
+            'id_trabajo': puesto.id_trabajo,
+            'area_trabajo': puesto.area_trabajo,
+            'descripcion_trabajo': puesto.descripcion_trabajo
+        },
+        'total_postulantes': len(postulantes),
+        'postulantes': postulantes
+    })
+
+
+# Cambiar estado de una postulación
+@app.route('/api/postulacion/<int:id>', methods=['PUT'])
+def cambiar_estado_postulacion(id):
+    """Permite a una empresa cambiar el estado de una postulación"""
+    is_json = request.is_json
+    if is_json:
+        data = request.get_json()
+    else:
+        data = request.form.to_dict()
+    
+    nuevo_estado = data.get('estado')
+    if not nuevo_estado:
+        return jsonify({'success': False, 'error': 'Estado requerido'}), 400
+    
+    # Estados válidos
+    estados_validos = ['Enviado', 'En Revisión', 'Aceptado', 'Rechazado', 'En Proceso']
+    if nuevo_estado not in estados_validos:
+        return jsonify({'success': False, 'error': f'Estado debe ser uno de: {", ".join(estados_validos)}'}), 400
+    
+    postulacion = Postulaciones.query.get(id)
+    if not postulacion:
+        return jsonify({'success': False, 'error': 'Postulación no encontrada'}), 404
+    
+    # Verificar que la empresa sea dueña del puesto
+    puesto = PuestoDeTrabajo.query.get(postulacion.id_trabajo)
+    empresa_id = data.get('empresa_id') or session.get('empresa_id')
+    if empresa_id and puesto.Empresas_id_empresa != int(empresa_id):
+        return jsonify({'success': False, 'error': 'No autorizado'}), 403
+    
+    try:
+        postulacion.estado = nuevo_estado
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': f'Estado actualizado a: {nuevo_estado}',
+            'postulacion': {
+                'id_postulacion': postulacion.id_postulacion,
+                'estado': postulacion.estado
+            }
+        })
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+# Obtener puestos de la empresa autenticada
+@app.route('/api/empresa/mis-puestos', methods=['GET'])
+def mis_puestos_empresa():
+    """Obtiene todos los puestos de la empresa autenticada"""
+    empresa_id = request.args.get('empresa_id') or session.get('empresa_id')
+    
+    if not empresa_id:
+        return jsonify({'success': False, 'error': 'Debe estar autenticado como empresa'}), 401
+    
+    puestos = PuestoDeTrabajo.query.filter_by(Empresas_id_empresa=empresa_id).all()
+    
+    result = []
+    for p in puestos:
+        # Contar postulaciones
+        total_postulaciones = Postulaciones.query.filter_by(id_trabajo=p.id_trabajo).count()
+        
+        result.append({
+            'id_trabajo': p.id_trabajo,
+            'area_trabajo': p.area_trabajo,
+            'region_trabajo': p.region_trabajo,
+            'comuna_trabajo': p.comuna_trabajo,
+            'modalidad_trabajo': p.modalidad_trabajo,
+            'tipo_industria': p.tipo_industria,
+            'tamanio_empresa': p.tamanio_empresa,
+            'descripcion_trabajo': p.descripcion_trabajo,
+            'calificaciones': p.calificaciones,
+            'total_postulaciones': total_postulaciones
+        })
+    
+    return jsonify({
+        'success': True,
+        'total_puestos': len(result),
+        'puestos': result
+    })
+
+
+# ========================================
+# SISTEMA DE BÚSQUEDA
+# ========================================
+
+@app.route('/api/buscar', methods=['GET', 'POST'])
+def buscar_ofertas():
+    """Sistema de búsqueda de ofertas laborales"""
+    # Aceptar parámetros por GET o POST
+    if request.method == 'POST':
+        if request.is_json:
+            params = request.get_json()
+        else:
+            params = request.form.to_dict()
+    else:
+        params = request.args.to_dict()
+    
+    # Parámetros de búsqueda
+    query = params.get('q', '').strip()  # Texto de búsqueda
+    region = params.get('region', '').strip()
+    modalidad = params.get('modalidad', '').strip()
+    area = params.get('area', '').strip()
+    
+    # Empezar con todos los puestos
+    puestos_query = PuestoDeTrabajo.query
+    
+    # Filtrar por texto en área, descripción o calificaciones
+    if query:
+        search_pattern = f'%{query}%'
+        puestos_query = puestos_query.filter(
+            db.or_(
+                PuestoDeTrabajo.area_trabajo.like(search_pattern),
+                PuestoDeTrabajo.descripcion_trabajo.like(search_pattern),
+                PuestoDeTrabajo.calificaciones.like(search_pattern),
+                PuestoDeTrabajo.tipo_industria.like(search_pattern)
+            )
+        )
+    
+    # Filtrar por región
+    if region and region != 'Todo Chile':
+        puestos_query = puestos_query.filter(PuestoDeTrabajo.region_trabajo == region)
+    
+    # Filtrar por modalidad
+    if modalidad:
+        puestos_query = puestos_query.filter(PuestoDeTrabajo.modalidad_trabajo == modalidad)
+    
+    # Filtrar por área
+    if area:
+        puestos_query = puestos_query.filter(PuestoDeTrabajo.area_trabajo.like(f'%{area}%'))
+    
+    # Obtener resultados
+    puestos = puestos_query.all()
+    
+    # Construir respuesta con información de empresa
+    resultados = []
+    for p in puestos:
+        empresa = Empresas.query.get(p.Empresas_id_empresa)
+        if empresa:
+            resultados.append({
+                'id_trabajo': p.id_trabajo,
+                'area_trabajo': p.area_trabajo,
+                'region_trabajo': p.region_trabajo,
+                'comuna_trabajo': p.comuna_trabajo,
+                'modalidad_trabajo': p.modalidad_trabajo,
+                'tipo_industria': p.tipo_industria,
+                'tamanio_empresa': p.tamanio_empresa,
+                'descripcion_trabajo': p.descripcion_trabajo,
+                'calificaciones': p.calificaciones,
+                'empresa': {
+                    'id_empresa': empresa.id_empresa,
+                    'nombre_empresa': empresa.nombre_empresa,
+                    'rubro': empresa.rubro,
+                    'logo': empresa.logo,
+                    'estado_empresa': empresa.estado_empresa
+                }
+            })
+    
+    return jsonify({
+        'success': True,
+        'total_resultados': len(resultados),
+        'filtros_aplicados': {
+            'query': query,
+            'region': region,
+            'modalidad': modalidad,
+            'area': area
+        },
+        'resultados': resultados
+    })
+
 
 # Endpoint para ver estadísticas de IPs (solo para desarrollo/admin)
 @app.route('/api/stats/visitors')

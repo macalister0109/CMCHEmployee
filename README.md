@@ -84,6 +84,36 @@ Una vez iniciado el proyecto:
 - **Expo Dev Tools**: http://localhost:8081
 - **App Móvil**: Escanea el QR con Expo Go
 
+## ✨ Funcionalidades Implementadas
+
+### 🔍 **Sistema de Búsqueda de Ofertas** (NUEVO)
+- Búsqueda avanzada con múltiples filtros
+- Filtrado por región, modalidad y área
+- Vista de resultados en tiempo real
+- Detalle completo de ofertas
+- Sistema de postulación integrado
+
+### 🏢 **Dashboard Empresarial** (NUEVO)
+- Panel de control completo para empresas
+- Crear, editar y eliminar ofertas laborales
+- Ver lista de postulantes por oferta
+- Cambiar estado de postulaciones
+- Estadísticas en tiempo real
+
+### 👤 **Gestión de Usuarios**
+- Registro de estudiantes y empresas
+- Sistema de autorización previa
+- Login seguro con hash de contraseñas
+- Sesiones persistentes
+
+### 📊 **API REST Completa**
+- Endpoints para búsqueda
+- CRUD completo de puestos de trabajo
+- Gestión de postulaciones
+- Compatible con app móvil y web
+
+📖 **[Ver Documentación Completa de Funcionalidades](IMPLEMENTACION_BUSQUEDA_CRUD.md)**
+
 ## 📚 Documentación
 
 - [Guía de Inicio Rápido](INICIO_RAPIDO.md) - Instrucciones detalladas
