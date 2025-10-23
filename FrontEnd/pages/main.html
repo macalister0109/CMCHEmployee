@@ -51,7 +51,23 @@
         </nav>
 
         <div class="auth-buttons">
-          {% if nombre %}
+          {% if empresa_id %}
+          <!-- Usuario empresa -->
+          <div class="welcome-header">
+            <span class="welcome-text">Bienvenida empresa '{{ nombre }}'</span>
+            <div class="empresa-actions" style="display: inline-flex; gap: 10px; margin-left: 10px; align-items: center;">
+              <a href="{{ url_for('dashboard_empresa') }}" class="btn-primary btn-dashboard" title="Ir al Dashboard">
+                <i class="fas fa-tachometer-alt"></i> Dashboard Empresa
+              </a>
+              <form method="post" action="{{ url_for('logout') }}" style="display: inline; margin: 0;">
+                <button type="submit" class="btn-outline btn-logout" title="Cerrar sesión">
+                  <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </button>
+              </form>
+            </div>
+          </div>
+          {% elif nombre %}
+          <!-- Usuario normal -->
           <div class="welcome-header">
             <span class="welcome-text" id="welcome-text">
               Bienvenido, {{ nombre }}{% if apellido %} {{ apellido }}{% endif
@@ -71,20 +87,8 @@
               </button>
             </form>
           </div>
-          {% elif bienvenida %}
-          <div class="welcome-header">
-            <span class="welcome-text">{{ bienvenida }}</span>
-            {% if aviso %}<span class="aviso">{{ aviso }}</span>{% endif %}
-            {% if empresa_id %}
-            <a href="{{ url_for('dashboard_empresa') }}" class="btn-primary" style="margin-left:10px;">
-              <i class="fas fa-tachometer-alt"></i> Dashboard
-            </a>
-            {% endif %}
-            <form method="post" action="{{ url_for('logout') }}" style="display:inline; margin-left:10px;">
-              <button type="submit" class="btn-outline btn-logout">Cerrar Sesión</button>
-            </form>
-          </div>
           {% else %}
+          <!-- No hay sesión -->
           <a href="{{ url_for('login') }}" class="btn-primary" id="btn-ingresar"
             >Ingresar</a
           >
