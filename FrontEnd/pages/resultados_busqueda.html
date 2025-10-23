@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados de Búsqueda - Legado TP</title>
+
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/resultados.css">
+    <link rel="icon" href="assets/img/logo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="header">
+        <div class="container header-inner">
+            <div class="logo-container">
+                <img src="assets/img/logo.png" alt="Logo institucional" class="logo">
+                <h1 class="brand">レガド-TP</h1>
+            </div>
+            
+            <nav class="nav">
+                <a href="{{ url_for('main') }}">Inicio</a>
+                <a href="#" class="active">Búsqueda</a>
+            </nav>
+            
+            <div class="auth-buttons">
+                {% if nombre %}
+                <span class="welcome-text">{{ nombre }} {{ apellido }}</span>
+                <form method="post" action="{{ url_for('logout') }}" style="display:inline; margin-left:10px;">
+                    <button type="submit" class="btn-outline btn-logout">Cerrar Sesión</button>
+                </form>
+                {% else %}
+                <a href="{{ url_for('login') }}" class="btn-primary">Ingresar</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- BÚSQUEDA -->
+    <section class="search-section">
+        <div class="container">
+            <h1><i class="fas fa-search"></i> Búsqueda de Ofertas Laborales</h1>
+            
+            <form class="search-form" method="get" onsubmit="return realizarBusqueda(event)">
+                <div class="search-row">
+                    <input
+                        type="text"
+                        name="q"
+                        id="search-query"
+                        placeholder="Puesto, empresa o palabra clave"
+                        class="search-input-large"
+                        value="{{ query or '' }}"
+                    />
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                </div>
+                
+                <div class="filters-row">
+                    <select name="region" id="filter-region" class="filter-select">
+                        <option value="">Todas las regiones</option>
+                        <option value="Región Metropolitana" {% if region == 'Región Metropolitana' %}selected{% endif %}>Región Metropolitana</option>
+                        <option value="Valparaíso" {% if region == 'Valparaíso' %}selected{% endif %}>Valparaíso</option>
+                        <option value="Biobío" {% if region == 'Biobío' %}selected{% endif %}>Biobío</option>
+                        <option value="Araucanía" {% if region == 'Araucanía' %}selected{% endif %}>Araucanía</option>
+                        <option value="Los Lagos" {% if region == 'Los Lagos' %}selected{% endif %}>Los Lagos</option>
+                    </select>
+                    
+                    <select name="modalidad" id="filter-modalidad" class="filter-select">
+                        <option value="">Todas las modalidades</option>
+                        <option value="Presencial" {% if modalidad == 'Presencial' %}selected{% endif %}>Presencial</option>
+                        <option value="Remoto" {% if modalidad == 'Remoto' %}selected{% endif %}>Remoto</option>
+                        <option value="Híbrido" {% if modalidad == 'Híbrido' %}selected{% endif %}>Híbrido</option>
+                        <option value="Práctica" {% if modalidad == 'Práctica' %}selected{% endif %}>Práctica</option>
+                    </select>
+                    
+                    <input
+                        type="text"
+                        name="area"
+                        id="filter-area"
+                        placeholder="Área (ej: Programación)"
+                        class="filter-input"
+                        value="{{ area or '' }}"
+                    />
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- RESULTADOS -->
+    <section class="results-section">
+        <div class="container">
+            <div class="results-header">
+                <h2 id="results-count">Buscando...</h2>
+                <div class="sort-controls">
+                    <label for="sort-by">Ordenar por:</label>
+                    <select id="sort-by" onchange="ordenarResultados(this.value)">
+                        <option value="recientes">Más recientes</option>
+                        <option value="relevancia">Relevancia</option>
+                        <option value="empresa">Empresa</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="results-container" class="results-grid">
+                <div class="loading-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Cargando resultados...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal de Detalle -->
+    <div id="modal-detalle" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Detalle de la Oferta</h2>
+                <button class="close-btn" onclick="cerrarModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="modal-body" class="modal-body">
+                <!-- Contenido cargado dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script src="assets/js/resultado_busqueda.js"></script>
+</body>
+</html>
