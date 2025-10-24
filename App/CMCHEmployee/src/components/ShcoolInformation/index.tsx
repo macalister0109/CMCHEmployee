@@ -8,41 +8,41 @@ import FooterHome from "./FooterHome";
 import GradientBackground from "../GradientBackground";
 import { THEME_ESTUDENT } from "../../constants";
 
-const img_Mision = require("../../../assets/logos/image_1.jpg");
-const img_Vision = require("../../../assets/logos/image_2.jpg");
-const img_Egresado = require("../../../assets/logos/img_3.jpg");
+const img_Mision = require("../../../assets/logos/image_1.webp");
+const img_Vision = require("../../../assets/logos/image_2.webp");
+const img_Egresado = require("../../../assets/logos/img_3.webp");
 
-const imgNelson = require("../../../assets/img_contactos/nelson_jofre2025.jpg");
-const imgErick = require("../../../assets/img_contactos/erick_silva2025.jpg");
-const imgDaniela = require("../../../assets/img_contactos/daniela_ramirez2025.jpg");
-const imgOlivi = require("../../../assets/img_contactos/carolina_olivi2025.jpg");
+const imgNelson = require("../../../assets/img_contactos/nelson_jofre2025.webp");
+const imgErick = require("../../../assets/img_contactos/erick_silva2025.webp");
+const imgDaniela = require("../../../assets/img_contactos/daniela_ramirez2025.webp");
+const imgOlivi = require("../../../assets/img_contactos/carolina_olivi2025.webp");
 
 const defaultLogo = require("../../../assets/adaptive-icon.png");
 
 const images: Record<string, { logo: any; profile: any }> = {
     administracion_mencion_recursos_humanos: {
-        logo: require("../../../assets/especialidades/administracion/img_logo.jpg"),
-        profile: require("../../../assets/especialidades/administracion/img_profile.jpg"),
+        logo: require("../../../assets/especialidades/administracion/img_logo.webp"),
+        profile: require("../../../assets/especialidades/administracion/img_profile.webp"),
     },
     electronica: {
-        logo: require("../../../assets/especialidades/electronica/img_logo.jpg"),
-        profile: require("../../../assets/especialidades/electronica/img_profile.jpg"),
+        logo: require("../../../assets/especialidades/electronica/img_logo.webp"),
+        profile: require("../../../assets/especialidades/electronica/img_profile.webp"),
     },
     construcciones_metalicas: {
-        logo: require("../../../assets/especialidades/construcciones_metalicas/img_logo.jpg"),
-        profile: require("../../../assets/especialidades/construcciones_metalicas/img_profile.jpg"),
+        logo: require("../../../assets/especialidades/construcciones_metalicas/img_logo.webp"),
+        profile: require("../../../assets/especialidades/construcciones_metalicas/img_profile.webp"),
     },
     gastronomia: {
-        logo: require("../../../assets/especialidades/gastronomia/img_logo.jpg"),
-        profile: require("../../../assets/especialidades/gastronomia/img_profile.jpg"),
+        logo: require("../../../assets/especialidades/gastronomia/img_logo.webp"),
+        profile: require("../../../assets/especialidades/gastronomia/img_profile.webp"),
     },
     conectividad_y_redes: {
-        logo: require("../../../assets/especialidades/conectividad_redes/img_logo.jpg"),
-        profile: require("../../../assets/especialidades/conectividad_redes/img_profile.jpg"),
+        logo: require("../../../assets/especialidades/conectividad_redes/img_logo.webp"),
+        profile: require("../../../assets/especialidades/conectividad_redes/img_profile.webp"),
     },
     programacion: {
-        logo: require("../../../assets/especialidades/programacion/img_logo.jpg"),
-        profile: require("../../../assets/especialidades/programacion/img_profile.jpg"),
+        logo: require("../../../assets/especialidades/programacion/img_logo.webp"),
+        profile: require("../../../assets/especialidades/programacion/img_profile.webp"),
     },
 };
 

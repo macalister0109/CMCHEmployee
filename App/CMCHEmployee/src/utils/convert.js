@@ -3,10 +3,7 @@ const fs = require("fs");
 const path = require("path");
 
 // 📂 Ajusta esta ruta a tu carpeta real con las imágenes
-const inputFolder = path.join(
-    __dirname,
-    "../../assets/especialidades/programacion"
-);
+const inputFolder = path.join(__dirname, "../../assets/img_contactos");
 
 const files = fs.readdirSync(inputFolder);
 
