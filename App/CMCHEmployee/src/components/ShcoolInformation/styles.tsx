@@ -21,11 +21,12 @@ export const styles = StyleSheet.create({
         fontSize: THEME_ESTUDENT.font_sizes.body,
         fontWeight: THEME_ESTUDENT.font_weights.regular,
         color: THEME_ESTUDENT.colors.text,
-        marginLeft: 8,
     },
-    lineLeft: {
-        borderLeftWidth: 2,
-        borderLeftColor: THEME_ESTUDENT.colors.secondary_2,
+    line: {
+        width: THEME_ESTUDENT.device_width * THEME_ESTUDENT.width["90%"],
+        borderBottomWidth: 2,
+        borderBottomColor: THEME_ESTUDENT.colors.secondary_2,
+        marginVertical: 16,
     },
     descriptionContainer: {
         display: "flex",
@@ -36,5 +37,17 @@ export const styles = StyleSheet.create({
     img: {
         width: THEME_ESTUDENT.device_width * THEME_ESTUDENT.width["90%"],
         height: 120,
+        marginTop: 8,
+        borderRadius: 4,
+    },
+    PEcontainer: {
+        width: THEME_ESTUDENT.device_width * THEME_ESTUDENT.width["90%"],
+    },
+    titleContainer: {
+        width: THEME_ESTUDENT.device_width * THEME_ESTUDENT.width["90%"],
+    },
+    footer: {
+        width: THEME_ESTUDENT.device_width * THEME_ESTUDENT.width["100%"],
+        padding: 16,
     },
 });

@@ -51,7 +51,23 @@
         </nav>
 
         <div class="auth-buttons">
-          {% if nombre %}
+          {% if empresa_id %}
+          <!-- Usuario empresa -->
+          <div class="welcome-header">
+            <span class="welcome-text">Bienvenida empresa '{{ nombre }}'</span>
+            <div class="empresa-actions" style="display: inline-flex; gap: 10px; margin-left: 10px; align-items: center;">
+              <a href="{{ url_for('dashboard_empresa') }}" class="btn-primary btn-dashboard" title="Ir al Dashboard">
+                <i class="fas fa-tachometer-alt"></i> Dashboard Empresa
+              </a>
+              <form method="post" action="{{ url_for('logout') }}" style="display: inline; margin: 0;">
+                <button type="submit" class="btn-outline btn-logout" title="Cerrar sesión">
+                  <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </button>
+              </form>
+            </div>
+          </div>
+          {% elif nombre %}
+          <!-- Usuario normal -->
           <div class="welcome-header">
             <span class="welcome-text" id="welcome-text">
               Bienvenido, {{ nombre }}{% if apellido %} {{ apellido }}{% endif
@@ -71,22 +87,8 @@
               </button>
             </form>
           </div>
-          {% elif bienvenida %}
-<<<<<<< HEAD
-            <div class="welcome-header">
-              <span class="welcome-text">{{ bienvenida }}</span>
-              {% if aviso %}<span class="aviso">{{ aviso }}</span>{% endif %}
-              <form method="post" action="{{ url_for('logout') }}" style="display:inline; margin-left:10px;">
-                <button type="submit" class="btn-outline btn-logout">Cerrar Sesión</button>
-              </form>
-            </div>
-=======
-          <div class="welcome-header">
-            <span class="welcome-text">{{ bienvenida }}</span>
-            {% if aviso %}<span class="aviso">{{ aviso }}</span>{% endif %}
-          </div>
->>>>>>> 93ba8594a0e6605c36a03a2e76b27eb483cfc055
           {% else %}
+          <!-- No hay sesión -->
           <a href="{{ url_for('login') }}" class="btn-primary" id="btn-ingresar"
             >Ingresar</a
           >
@@ -110,32 +112,39 @@
             Más de <strong>100 oportunidades</strong> esperan a estudiantes,
             egresados y profesionales en nuestras especialidades
           </p>
-          <form class="search-box" role="search">
+          <form class="search-box" role="search" action="/resultados-busqueda" method="get" onsubmit="return realizarBusqueda(event)">
             <input
               type="text"
+              name="q"
               placeholder="Puesto, empresa o palabra clave"
               class="search-input"
-              id="search-placeholder"
+              id="search-query"
               aria-label="Buscar empleo por palabra clave"
             />
             <select
               class="search-select"
+              name="region"
               id="search-location"
               aria-label="Seleccionar ubicación"
             >
-              <option>Todo Chile</option>
-              <option>Santiago</option>
-              <option>Valparaíso</option>
-              <option>Concepción</option>
+              <option value="">Todo Chile</option>
+              <option value="Región Metropolitana">Región Metropolitana</option>
+              <option value="Valparaíso">Valparaíso</option>
+              <option value="Biobío">Biobío</option>
+              <option value="Araucanía">Araucanía</option>
+              <option value="Los Lagos">Los Lagos</option>
             </select>
             <select
               class="search-select"
+              name="modalidad"
               id="search-type"
               aria-label="Tipo de empleo"
             >
-              <option>Práctica</option>
-              <option>Part-time</option>
-              <option>Jornada Completa</option>
+              <option value="">Todos</option>
+              <option value="Práctica">Práctica</option>
+              <option value="Presencial">Presencial</option>
+              <option value="Remoto">Remoto</option>
+              <option value="Híbrido">Híbrido</option>
             </select>
             <button type="submit" class="btn-primary" id="btn-buscar">
               Buscar

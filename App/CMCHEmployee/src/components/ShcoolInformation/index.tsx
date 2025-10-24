@@ -3,10 +3,19 @@ import promotions from "../../data/promotions.json";
 import { styles } from "./styles";
 import InfoCard from "./InfoCard";
 import SpecialtyCard from "./SpecialtyCard";
+import FooterHome from "./FooterHome";
+
+import GradientBackground from "../GradientBackground";
+import { THEME_ESTUDENT } from "../../constants";
 
 const img_Mision = require("../../../assets/logos/image_1.jpg");
 const img_Vision = require("../../../assets/logos/image_2.jpg");
 const img_Egresado = require("../../../assets/logos/img_3.jpg");
+
+const imgNelson = require("../../../assets/img_contactos/nelson_jofre2025.jpg");
+const imgErick = require("../../../assets/img_contactos/erick_silva2025.jpg");
+const imgDaniela = require("../../../assets/img_contactos/daniela_ramirez2025.jpg");
+const imgOlivi = require("../../../assets/img_contactos/carolina_olivi2025.jpg");
 
 const defaultLogo = require("../../../assets/adaptive-icon.png");
 
@@ -55,7 +64,7 @@ export default function ShcoolInformation() {
                     display: "flex",
                     alignItems: "center",
                     gap: 16,
-                    marginVertical: 24,
+                    marginTop: 24,
                 }}>
                 {/* Misión */}
                 <InfoCard
@@ -68,10 +77,16 @@ export default function ShcoolInformation() {
                     text={promotions.vision}
                     title="Visión"
                 />
-                <View>
-                    <Text>Perfil Egresado</Text>
-                    <Text>{promotions.perfil_egresado.descripcion}</Text>
+                <View style={styles.PEcontainer}>
+                    <Text style={styles.title}>Perfil Egresados</Text>
+                    <Text style={styles.description}>
+                        {promotions.perfil_egresado.descripcion}
+                    </Text>
                     <Image source={img_Egresado} style={styles.img}></Image>
+                </View>
+                <View style={styles.line}></View>
+                <View style={styles.titleContainer}>
+                    <Text style={styles.title}>Especialidades</Text>
                 </View>
                 {promotions.especialidades.map((esp, index) => {
                     const key = normalizeKey(esp.nombre);
@@ -88,6 +103,46 @@ export default function ShcoolInformation() {
                         />
                     );
                 })}
+                <View style={styles.line}></View>
+
+                <GradientBackground
+                    color={[
+                        THEME_ESTUDENT.colors.primary_1,
+                        THEME_ESTUDENT.colors.primary_3,
+                    ]}>
+                    <View style={styles.footer}>
+                        <FooterHome
+                            name={promotions.contacto.rector.nombre}
+                            occupation="RECTOR"
+                            image={imgNelson}
+                            email={""}
+                        />
+                        <FooterHome
+                            name={promotions.contacto.director_tp.nombre}
+                            occupation="DIRECTOR MEDIA TP"
+                            image={imgErick}
+                            email={promotions.contacto.director_tp.correo}
+                        />
+                        <FooterHome
+                            name={
+                                promotions.contacto.orientadora_vocacional_tp
+                                    .nombre
+                            }
+                            occupation="ORIENTADORA VOCACIONAL"
+                            image={imgDaniela}
+                            email={
+                                promotions.contacto.orientadora_vocacional_tp
+                                    .correo
+                            }
+                        />
+                        <FooterHome
+                            name={promotions.contacto.coordinadora_tp.nombre}
+                            occupation="COORDINADORA"
+                            image={imgOlivi}
+                            email={promotions.contacto.coordinadora_tp.correo}
+                        />
+                    </View>
+                </GradientBackground>
             </View>
         </ScrollView>
     );
