@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title id="title-text">Perfil Profesional</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../assets/css/main.css" />
+    <link rel="stylesheet" href="../assets/css/perfil.css" />
+  </head>
+  <body>
+    <!-- HEADER -->
+    <header class="header">
+      <div class="header-container">
+        <div class="logo-container">
+          <img
+            src="../assets/img/logo.png"
+            alt="Logo institucional"
+            class="logo"
+          />
+          <h1 class="brand">レガド-TP</h1>
+        </div>
+        <nav class="nav">
+          <a href="{{ url_for('dashboard') }}" id="nav-dashboard">Dashboard</a>
+          {% if perfil_type != 'empresa' %}
+          <a href="{{ url_for('editar_perfil') }}" id="nav-editar">Editar</a>
+          {% endif %}
+        </nav>
+        <!-- SELECTOR DE IDIOMA -->
+        <div class="header-language">
+          <label for="language-select">Idioma:</label>
+          <select
+            id="language-select"
+            onchange="cambiarIdiomaPerfil(this.value)"
+          >
+            <option value="es">🇪🇸 Español</option>
+            <option value="en">🇺🇸 English</option>
+          </select>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN PERFIL -->
+    <main class="main-perfil">
+      <div class="perfil-wrapper">
+        <div class="perfil-card">
+          <div class="perfil-header-card">
+            <img
+              src="{{ foto_url or '../assets/img/perfil_usuario.jpg' }}"
+              alt="Foto Perfil"
+              class="avatar-img"
+            />
+            <div class="perfil-info">
+              <h2 id="perfil-nombre">{{ nombre }} {{ apellido or "" }}</h2>
+              {% if perfil_type == 'alumno' %}
+              <p class="rol" id="perfil-rol">RUT: {{ rut }}</p>
+              <p id="perfil-especialidad">Especialidad: {{ especialidad }}</p>
+              <p id="perfil-profesor">Profesor a cargo: {{ profesor }}</p>
+              {% elif perfil_type == 'docente' %}
+              <p class="rol" id="perfil-rol">
+                Asignaturas: {{ asignaturas | join(', ') }}
+              </p>
+              <p id="perfil-estudiantes">
+                Estudiantes a cargo: {{ estudiantes | length }}
+              </p>
+              {% elif perfil_type == 'empresa' %}
+              <p class="rol" id="perfil-rol">Rubro: {{ rubro }}</p>
+              <p id="perfil-contacto">Contacto: {{ contacto }}</p>
+              {% endif %}
+              <p id="perfil-descripcion">{{ descripcion }}</p>
+            </div>
+          </div>
+
+          <!-- SECCIONES DINÁMICAS -->
+          {% if perfil_type == 'alumno' %}
+          <section class="perfil-section">
+            <h3 id="experiencia-title">Experiencia</h3>
+            <ul>
+              {% for exp in experiencias %}
+              <li>
+                {{ exp.cargo }} en {{ exp.empresa }} ({{ exp.fecha_inicio }} -
+                {{ exp.fecha_fin }})
+              </li>
+              {% endfor %}
+            </ul>
+          </section>
+          <section class="perfil-section">
+            <h3 id="educacion-title">Educación</h3>
+            <ul>
+              {% for edu in educacion %}
+              <li>
+                {{ edu.titulo }} en {{ edu.institucion }} ({{ edu.fecha_inicio
+                }} - {{ edu.fecha_fin }})
+              </li>
+              {% endfor %}
+            </ul>
+          </section>
+          <section class="perfil-section">
+            <h3 id="habilidades-title">Habilidades</h3>
+            <ul>
+              {% for skill in skills %}
+              <li>{{ skill }}</li>
+              {% endfor %}
+            </ul>
+          </section>
+          {% elif perfil_type == 'docente' %}
+          <section class="perfil-section">
+            <h3 id="experiencia-title">Experiencia Académica</h3>
+            <ul>
+              {% for exp in experiencias %}
+              <li>
+                {{ exp.cargo }} en {{ exp.institucion }} ({{ exp.fecha_inicio }}
+                - {{ exp.fecha_fin }})
+              </li>
+              {% endfor %}
+            </ul>
+          </section>
+          <section class="perfil-section">
+            <h3 id="habilidades-title">Habilidades</h3>
+            <ul>
+              {% for skill in skills %}
+              <li>{{ skill }}</li>
+              {% endfor %}
+            </ul>
+          </section>
+          {% elif perfil_type == 'empresa' %}
+          <section class="perfil-section">
+            <h3 id="vacantes-title">Vacantes Publicadas</h3>
+            <ul>
+              {% for vac in vacantes %}
+              <li>{{ vac.titulo }} - {{ vac.estado }}</li>
+              {% endfor %}
+            </ul>
+          </section>
+          <section class="perfil-section">
+            <h3 id="habilidades-title">Habilidades o Servicios</h3>
+            <ul>
+              {% for skill in skills %}
+              <li>{{ skill }}</li>
+              {% endfor %}
+            </ul>
+          </section>
+          {% endif %}
+        </div>
+      </div>
+    </main>
+
+    <!-- SCRIPT DE IDIOMAS -->
+    <script>
+      const traduccionesPerfil = {
+        es: {
+          "title-text": "Perfil Profesional",
+          "nav-dashboard": "Dashboard",
+          "nav-editar": "Editar",
+          "perfil-rol": "Rol",
+          "experiencia-title": "Experiencia",
+          "educacion-title": "Educación",
+          "habilidades-title": "Habilidades",
+          "vacantes-title": "Vacantes Publicadas",
+        },
+        en: {
+          "title-text": "Professional Profile",
+          "nav-dashboard": "Dashboard",
+          "nav-editar": "Edit",
+          "perfil-rol": "Role",
+          "experiencia-title": "Experience",
+          "educacion-title": "Education",
+          "habilidades-title": "Skills",
+          "vacantes-title": "Published Vacancies",
+        },
+      };
+
+      function cambiarIdiomaPerfil(lang) {
+        localStorage.setItem("lang", lang);
+        const elementos = traduccionesPerfil[lang];
+        document.title = elementos["title-text"];
+
+        Object.keys(elementos).forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = elementos[id];
+        });
+
+        // Para el rol dinámico concatenado
+        const rolEl = document.getElementById("perfil-rol");
+        if (rolEl && "{{ perfil_type }}" === "alumno") {
+          rolEl.textContent = elementos["perfil-rol"] + ": {{ rut }}";
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const langGuardado = localStorage.getItem("lang") || "es";
+        document.getElementById("language-select").value = langGuardado;
+        cambiarIdiomaPerfil(langGuardado);
+      });
+    </script>
+  </body>
+</html>
