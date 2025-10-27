@@ -11,7 +11,7 @@
     />
   </head>
 
-  <body>
+  <body {% if toggle %}data-toggle="true"{% endif %}>
     <div class="container">
       <!-- FORMULARIO DE LOGIN -->
       <div class="container-form">
@@ -23,7 +23,7 @@
           <h2>Iniciar Sesión</h2>
           <h2>Empresa</h2>
 
-          {% if error %}
+          {% if error and not toggle %}
           <div class="error">{{ error }}</div>
           {% endif %}
 
@@ -63,7 +63,7 @@
         >
           <h2>Registrar Empresa</h2>
 
-          {% if error %}
+          {% if error and toggle %}
           <div class="error">{{ error }}</div>
           {% endif %}
 
@@ -96,6 +96,40 @@
               name="correo_empresa"
               id="correo_empresa"
               placeholder="Correo empresarial"
+              required
+            />
+          </div>
+
+          <!-- Información del Encargado -->
+          <div class="container-input">
+            <ion-icon name="person-outline"></ion-icon>
+            <input
+              type="text"
+              name="nombre_encargado"
+              id="nombre_encargado"
+              placeholder="Nombre del encargado"
+              required
+            />
+          </div>
+
+          <div class="container-input">
+            <ion-icon name="person-outline"></ion-icon>
+            <input
+              type="text"
+              name="apellido_encargado"
+              id="apellido_encargado"
+              placeholder="Apellido del encargado"
+              required
+            />
+          </div>
+
+          <div class="container-input">
+            <ion-icon name="card-outline"></ion-icon>
+            <input
+              type="text"
+              name="rut_encargado"
+              id="rut_encargado"
+              placeholder="RUT del encargado"
               required
             />
           </div>
