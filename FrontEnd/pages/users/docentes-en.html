@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title id="title-text">Dashboard Docente - Legado TP</title>
+    <link rel="stylesheet" href="../assets/css/dashboard.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!-- HEADER -->
+    <header class="dashboard-header">
+      <div class="logo-container">
+        <img
+          src="../assets/img/logo.png"
+          alt="Logo institucional"
+          class="logo"
+        />
+        <span class="brand">レガド-TP</span>
+      </div>
+
+      <nav class="dashboard-nav" aria-label="Main Navigation">
+        <a href="#inicio" id="nav-inicio">Inicio</a>
+        <a href="#ofertas" id="nav-ofertas">Ofertas Institución</a>
+        <a href="#ofertas-externas" id="nav-ofertas-externas"
+          >Ofertas Externas</a
+        >
+        <a href="#estudiantes" id="nav-estudiantes">Estudiantes</a>
+        <a href="{{ url_for('perfil') }}" id="nav-perfil">Perfil</a>
+      </nav>
+
+      {% if nombre %}
+      <div class="user-info">
+        <span id="welcome-text">Bienvenido, {{ nombre }} {{ apellido }}</span>
+        <form method="post" action="{{ url_for('logout') }}">
+          <button type="submit" class="btn-logout" id="btn-logout">
+            Cerrar Sesión
+          </button>
+        </form>
+      </div>
+      {% endif %}
+
+      <!-- SELECTOR DE IDIOMA -->
+      <div class="header-language">
+        <label for="language-select">Idioma:</label>
+        <select
+          id="language-select"
+          onchange="cambiarIdiomaDashboard(this.value)"
+        >
+          <option value="es">🇪🇸 Español</option>
+          <option value="en">🇺🇸 English</option>
+        </select>
+      </div>
+    </header>
+
+    <!-- MAIN DASHBOARD -->
+    <main class="dashboard-main">
+      <!-- PERFIL DOCENTE -->
+      <section class="dashboard-card profile-card" id="inicio">
+        <h2 id="perfil-title">Perfil</h2>
+        <p>
+          <strong id="nombre-text">Nombre:</strong> {{ nombre }} {{ apellido }}
+        </p>
+        <p><strong id="rut-text">RUT:</strong> {{ rut }}</p>
+        <p>
+          <strong id="asignatura-text">Asignatura:</strong> {{ asignatura }}
+        </p>
+        <a
+          href="{{ url_for('editar_perfil') }}"
+          class="btn-primary"
+          id="btn-editar-perfil"
+          >Editar Perfil</a
+        >
+      </section>
+
+      <!-- OFERTAS INSTITUCIÓN -->
+      <section class="dashboard-card" id="ofertas">
+        <h2 id="ofertas-title">Ofertas Institución</h2>
+        <a
+          href="{{ url_for('crear_oferta') }}"
+          class="btn-primary"
+          id="btn-crear-oferta"
+          >Crear Nueva Oferta</a
+        >
+        {% if ofertas %} {% for oferta in ofertas %}
+        <article class="oferta-item">
+          <p><strong>{{ oferta.titulo }}</strong> - {{ oferta.empresa }}</p>
+          <a
+            href="{{ url_for('editar_oferta', id=oferta.id) }}"
+            class="btn-secondary2"
+            >Editar</a
+          >
+        </article>
+        {% endfor %} {% else %}
+        <p id="no-ofertas">No hay ofertas disponibles.</p>
+        {% endif %}
+      </section>
+
+      <!-- OFERTAS EXTERNAS -->
+      <section class="dashboard-card" id="ofertas-externas">
+        <h2 id="ofertas-externas-title">Ofertas Externas</h2>
+        {% if ofertas_externas %} {% for oferta in ofertas_externas %}
+        <article class="oferta-externa-item">
+          <p><strong>{{ oferta.titulo }}</strong> - {{ oferta.empresa }}</p>
+          <button
+            class="btn-secondary2 btn-enviar-oferta"
+            data-oferta-id="{{ oferta.id }}"
+          >
+            Enviar a Estudiante
+          </button>
+        </article>
+        {% endfor %} {% else %}
+        <p id="no-ofertas-externas">No hay ofertas externas disponibles.</p>
+        {% endif %}
+      </section>
+
+      <!-- ESTUDIANTES -->
+      <section class="dashboard-card" id="estudiantes">
+        <h2 id="estudiantes-title">Estudiantes</h2>
+        {% if estudiantes %} {% for estudiante in estudiantes %}
+        <article class="estudiante-item">
+          <p>
+            {{ estudiante.nombre }} {{ estudiante.apellido }} - {{
+            estudiante.especialidad }}
+          </p>
+          <a
+            href="{{ url_for('ver_postulaciones_estudiante', id=estudiante.id) }}"
+            class="btn-secondary2"
+            >Ver Postulaciones</a
+          >
+          <select
+            class="select-oferta-estudiante"
+            data-estudiante-id="{{ estudiante.id }}"
+          >
+            <option value="">Enviar oferta externa...</option>
+            {% for oferta in ofertas_externas %}
+            <option value="{{ oferta.id }}">
+              {{ oferta.titulo }} - {{ oferta.empresa }}
+            </option>
+            {% endfor %}
+          </select>
+          <button
+            class="btn-enviar-oferta-estudiante"
+            data-estudiante-id="{{ estudiante.id }}"
+          >
+            Enviar
+          </button>
+        </article>
+        {% endfor %} {% else %}
+        <p id="no-estudiantes">No hay estudiantes registrados.</p>
+        {% endif %}
+      </section>
+    </main>
+
+    <!-- NAV MOBILE -->
+    <nav class="mobile-nav" role="navigation" aria-label="Mobile Navigation">
+      <a href="#inicio" id="mobile-inicio"
+        ><i class="fas fa-home"></i><span>Inicio</span></a
+      >
+      <a href="#ofertas" id="mobile-ofertas"
+        ><i class="fas fa-briefcase"></i><span>Ofertas Institución</span></a
+      >
+      <a href="#ofertas-externas" id="mobile-ofertas-externas"
+        ><i class="fas fa-briefcase"></i><span>Ofertas Externas</span></a
+      >
+      <a href="#estudiantes" id="mobile-estudiantes"
+        ><i class="fas fa-users"></i><span>Estudiantes</span></a
+      >
+      <a href="{{ url_for('perfil') }}" id="mobile-perfil"
+        ><i class="fas fa-user"></i><span>Perfil</span></a
+      >
+    </nav>
+
+    <!-- SCRIPT DE IDIOMAS -->
+    <script>
+      const traduccionesDashboard = {
+        es: {
+          "title-text": "Dashboard Docente - Legado TP",
+          "nav-inicio": "Inicio",
+          "nav-ofertas": "Ofertas Institución",
+          "nav-ofertas-externas": "Ofertas Externas",
+          "nav-estudiantes": "Estudiantes",
+          "nav-perfil": "Perfil",
+          "welcome-text": "Bienvenido, {{ nombre }} {{ apellido }}",
+          "perfil-title": "Perfil",
+          "nombre-text": "Nombre:",
+          "rut-text": "RUT:",
+          "asignatura-text": "Asignatura:",
+          "btn-editar-perfil": "Editar Perfil",
+          "ofertas-title": "Ofertas Institución",
+          "btn-crear-oferta": "Crear Nueva Oferta",
+          "no-ofertas": "No hay ofertas disponibles.",
+          "ofertas-externas-title": "Ofertas Externas",
+          "no-ofertas-externas": "No hay ofertas externas disponibles.",
+          "estudiantes-title": "Estudiantes",
+          "no-estudiantes": "No hay estudiantes registrados.",
+          "mobile-inicio": "Inicio",
+          "mobile-ofertas": "Ofertas Institución",
+          "mobile-ofertas-externas": "Ofertas Externas",
+          "mobile-estudiantes": "Estudiantes",
+          "mobile-perfil": "Perfil",
+        },
+        en: {
+          "title-text": "Teacher Dashboard - Legado TP",
+          "nav-inicio": "Home",
+          "nav-ofertas": "Institution Offers",
+          "nav-ofertas-externas": "External Offers",
+          "nav-estudiantes": "Students",
+          "nav-perfil": "Profile",
+          "welcome-text": "Welcome, {{ nombre }} {{ apellido }}",
+          "perfil-title": "Profile",
+          "nombre-text": "Name:",
+          "rut-text": "RUT:",
+          "asignatura-text": "Subject:",
+          "btn-editar-perfil": "Edit Profile",
+          "ofertas-title": "Institution Offers",
+          "btn-crear-oferta": "Create New Offer",
+          "no-ofertas": "No job offers available.",
+          "ofertas-externas-title": "External Offers",
+          "no-ofertas-externas": "No external offers available.",
+          "estudiantes-title": "Students",
+          "no-estudiantes": "No students registered.",
+          "mobile-inicio": "Home",
+          "mobile-ofertas": "Institution Offers",
+          "mobile-ofertas-externas": "External Offers",
+          "mobile-estudiantes": "Students",
+          "mobile-perfil": "Profile",
+        },
+      };
+
+      function cambiarIdiomaDashboard(lang) {
+        localStorage.setItem("lang", lang);
+        const elementos = traduccionesDashboard[lang];
+        Object.keys(elementos).forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = elementos[id];
+        });
+        document.title = elementos["title-text"];
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const langGuardado = localStorage.getItem("lang") || "es";
+        document.getElementById("language-select").value = langGuardado;
+        cambiarIdiomaDashboard(langGuardado);
+      });
+    </script>
+  </body>
+</html>
