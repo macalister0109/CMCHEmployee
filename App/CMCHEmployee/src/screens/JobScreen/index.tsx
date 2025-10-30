@@ -1,30 +1,108 @@
-import { Text, View } from "react-native";
+import {
+    Text,
+    View,
+    TouchableOpacity,
+    ScrollView,
+    ActivityIndicator,
+} from "react-native";
 import { styles } from "./styles";
 import Header from "../../components/Header";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { offerDates } from "../../types/offerDates";
 import CardOffer from "../../components/CardOffer";
 import Search from "../../components/Search";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
+import { OffersService } from "../../services/offers.service";
 
 export default function JobScreen() {
-    const [date, setDate] = useState<offerDates>({
-        title: "Desarrollador Junior",
-        description:
-            "Descripcion de la empresa Descripcion de la empresa Descripcion de la empresaDescripcion de la empresa",
-        name: "Ejemplo nombre empresa",
-        location: "Santiago, La Florida",
-        vacant: "7",
-        puntations: "2.3",
-        img: "../../../assets/adaptive-icon.png",
-    });
+    const navigation = useNavigation<any>();
+    const isFocused = useIsFocused();
+    const [offers, setOffers] = useState<offerDates[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        async function loadOffers() {
+            try {
+                setIsLoading(true);
+                setError(null);
+                const loadedOffers = await OffersService.loadOffers();
+                setOffers(loadedOffers);
+            } catch (err) {
+                setError("Error al cargar las ofertas");
+                console.error(err);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+
+        if (isFocused) {
+            const route = navigation
+                .getState()
+                .routes.find((r: any) => r.name === "Tabs");
+            const newOffer = route?.params?.params?.newOffer;
+
+            if (newOffer) {
+                OffersService.addOffer(newOffer)
+                    .then(() => loadOffers())
+                    .catch((err) => {
+                        console.error("Error al guardar la nueva oferta:", err);
+                        setError("Error al guardar la nueva oferta");
+                    });
+                navigation.setParams({ newOffer: undefined });
+            } else {
+                loadOffers();
+            }
+        }
+    }, [isFocused, navigation]);
+
     return (
-        <View style={[styles.screen, { gap: 24, alignItems: "center" }]}>
+        <View style={[styles.screen, { gap: 24 }]}>
             <Header />
             <Search />
-
-            <CardOffer dates={date} />
-            <CardOffer dates={date} />
-            <CardOffer dates={date} />
+            {isLoading ? (
+                <View
+                    style={{
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}>
+                    <ActivityIndicator size="large" />
+                </View>
+            ) : error ? (
+                <View
+                    style={{
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}>
+                    <Text style={{ color: "red" }}>{error}</Text>
+                </View>
+            ) : (
+                <ScrollView
+                    style={{ width: "100%" }}
+                    contentContainerStyle={{
+                        gap: 16,
+                        alignItems: "center",
+                        paddingBottom: 100,
+                    }}>
+                    {offers.map((offer, index) => (
+                        <CardOffer key={index} dates={offer} />
+                    ))}
+                    {offers.length === 0 && (
+                        <Text style={{ textAlign: "center", marginTop: 20 }}>
+                            No hay ofertas disponibles
+                        </Text>
+                    )}
+                </ScrollView>
+            )}
+            <View style={styles.addBtn}>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate("CreateOffer")}>
+                    <Ionicons name="add-outline" size={32}></Ionicons>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 }

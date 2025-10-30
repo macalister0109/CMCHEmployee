@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
     },
     textRegister: {
         fontSize: THEME_ESTUDENT.font_sizes.body,
-        color: THEME_ESTUDENT.colors.text,
+        color: THEME_ESTUDENT.colors.bg_1,
         fontWeight: THEME_ESTUDENT.font_weights.bold,
     },
     textRegisterLink: {

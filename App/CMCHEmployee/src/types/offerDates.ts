@@ -1,3 +1,4 @@
+type STATELESS = "inProcess" | "inMiddle" | "finalized";
 export interface offerDates {
     title: string;
     description: string;
@@ -6,4 +7,5 @@ export interface offerDates {
     vacant: string;
     puntations: string;
     img: string;
+    stateless: STATELESS;
 }

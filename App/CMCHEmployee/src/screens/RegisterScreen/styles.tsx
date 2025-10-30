@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
     },
     text: {
         fontSize: THEME_ESTUDENT.font_sizes.body,
-        color: THEME_ESTUDENT.colors.text,
+        color: THEME_ESTUDENT.colors.bg_1,
         fontWeight: THEME_ESTUDENT.font_weights.bold,
     },
     buttonText: {
@@ -32,7 +32,7 @@ export const styles = StyleSheet.create({
         borderRadius: 10,
     },
     loginText: {
-        color: THEME_ESTUDENT.colors.text,
+        color: THEME_ESTUDENT.colors.bg_1,
         fontWeight: THEME_ESTUDENT.font_weights.extraBold,
     },
 });

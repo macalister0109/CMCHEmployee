@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
         gap: 8,
     },
     input: {
-        backgroundColor: THEME_ESTUDENT.colors.text,
+        backgroundColor: THEME_ESTUDENT.colors.bg_1,
         color: THEME_ESTUDENT.colors.primary_2,
         width: THEME_ESTUDENT.width["80%"] * THEME_ESTUDENT.device_width,
         fontWeight: THEME_ESTUDENT.font_weights.bold,
@@ -30,18 +30,18 @@ export const styles = StyleSheet.create({
         borderRadius: 10,
     },
     textButton: {
-        color: THEME_ESTUDENT.colors.text,
+        color: THEME_ESTUDENT.colors.bg_1,
         fontWeight: THEME_ESTUDENT.font_weights.regular,
         fontSize: THEME_ESTUDENT.font_sizes.body,
     },
     title: {
         fontSize: THEME_ESTUDENT.font_sizes.h1,
         fontWeight: THEME_ESTUDENT.font_weights.bold,
-        color: THEME_ESTUDENT.colors.text,
+        color: THEME_ESTUDENT.colors.bg_1,
     },
     label: {
         fontSize: THEME_ESTUDENT.font_sizes.body,
-        color: THEME_ESTUDENT.colors.text,
+        color: THEME_ESTUDENT.colors.bg_1,
         fontWeight: THEME_ESTUDENT.font_weights.regular,
     },
 });
