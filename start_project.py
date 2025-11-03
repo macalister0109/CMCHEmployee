@@ -42,6 +42,8 @@ if CONFIG_FILE.exists():
     # Puertos
     BACKEND_PORT = config.getint('backend', 'port', fallback=5000)
     EXPO_PORT = config.getint('expo', 'port', fallback=8081)
+    # Usar túnel para Expo (true/false)
+    EXPO_TUNNEL = config.getboolean('expo', 'tunnel', fallback=False)
 else:
     # Valores por defecto si no existe config.ini
     DB_CONFIG = {
@@ -55,6 +57,7 @@ else:
     APP_DIR = PROJECT_ROOT / "App" / "CMCHEmployee"
     BACKEND_PORT = 5000
     EXPO_PORT = 8081
+    EXPO_TUNNEL = False
 
 REQUIREMENTS_FILE = PROJECT_ROOT / "requirements.txt"
 PACKAGE_JSON = APP_DIR / "package.json"
@@ -424,8 +427,13 @@ def start_backend():
         return None
 
 
-def start_mobile_app():
-    """Inicia la aplicación móvil con Expo"""
+def start_mobile_app(use_tunnel: bool = False):
+    """Inicia la aplicación móvil con Expo.
+
+    En Windows se crea un archivo .bat temporal que ejecuta el comando apropiado
+    (usa `npx expo start --tunnel` cuando use_tunnel es True) para evitar
+    bloqueos por la ExecutionPolicy de PowerShell al ejecutar npx.ps1.
+    """
     print_header("INICIANDO APLICACIÓN MÓVIL (EXPO)")
     
     if is_port_in_use(EXPO_PORT):
@@ -439,25 +447,35 @@ def start_mobile_app():
     try:
         # Iniciar Expo en una nueva ventana de CMD
         app_path = str(APP_DIR.resolve())
-        
-        # Crear un script batch temporal para evitar problemas con comillas
-        batch_content = f'@echo off\ncd /d "{app_path}"\necho Iniciando Expo Metro Bundler...\nnpm start'
+
+        # Elegir comando: usar túnel si se solicita
+        if use_tunnel:
+            expo_cmd = 'npx expo start --tunnel'
+        else:
+            # Mantener compatibilidad con package.json scripts
+            expo_cmd = 'npm start'
+
+        # Crear un script batch temporal para evitar problemas con PowerShell y comillas
+        batch_content = f'@echo off\ncd /d "{app_path}"\necho Iniciando Expo Metro Bundler...\n{expo_cmd}'
         batch_file = PROJECT_ROOT / 'temp_start_expo.bat'
-        
-        with open(batch_file, 'w') as f:
+
+        with open(batch_file, 'w', encoding='utf-8') as f:
             f.write(batch_content)
-        
+
         process = subprocess.Popen(
             [str(batch_file)],
             creationflags=subprocess.CREATE_NEW_CONSOLE
         )
-        
-        print_success("Expo Metro Bundler iniciado")
-        print_info("Se abrirá una nueva ventana con el servidor de Expo")
+
+        print_success("Expo Metro Bundler iniciado (abrirá una nueva ventana)")
+        if use_tunnel:
+            print_info("Modo: TÚNEL (--tunnel). Deberías ver una URL de túnel y QR disponibles.")
+        else:
+            print_info("Modo: local (npm start). Usa Expo DevTools en http://localhost:%s" % EXPO_PORT)
+
         print_info("Escanea el código QR con la app Expo Go para ver la aplicación")
-        
         return process
-        
+
     except Exception as e:
         print_error(f"Error al iniciar Expo: {e}")
         return None
@@ -514,9 +532,15 @@ def main():
         
         # Esperar un poco entre servicios
         time.sleep(2)
-        
+        # Resolver modo túnel para Expo: flag en config.ini o argumento de línea de comandos --tunnel
+        use_expo_tunnel = False
+        try:
+            use_expo_tunnel = bool(EXPO_TUNNEL) or ('--tunnel' in sys.argv)
+        except NameError:
+            use_expo_tunnel = ('--tunnel' in sys.argv)
+
         # Iniciar aplicación móvil
-        mobile_process = start_mobile_app()
+        mobile_process = start_mobile_app(use_tunnel=use_expo_tunnel)
         if mobile_process:
             processes.append(('Mobile App', mobile_process))
         
