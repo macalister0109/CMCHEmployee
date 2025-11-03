@@ -1,4 +1,11 @@
-import { View, TextInput, Alert, TouchableOpacity, Text, ActivityIndicator } from "react-native";
+import {
+    View,
+    TextInput,
+    Alert,
+    TouchableOpacity,
+    Text,
+    ActivityIndicator,
+} from "react-native";
 import { useState, useEffect } from "react";
 import { styles } from "./styles";
 import { THEME_ESTUDENT } from "../../constants";
@@ -32,7 +39,7 @@ export default function LoginForm({ onSuccess }: Props) {
 
     const handleLogin = async () => {
         // Validación básica
-        if (!credentials.rut || credentials.password.length < 6) {
+        if (!credentials.rut || credentials.password.length <= 4) {
             Alert.alert(
                 "Error de Validación",
                 "Verifica tu RUT y contraseña (mín. 6 caracteres)."
@@ -44,7 +51,7 @@ export default function LoginForm({ onSuccess }: Props) {
 
         try {
             console.log("🔐 Intentando login con:", credentials.rut);
-            
+
             // Llamada al API del backend
             const response = await apiService.login(
                 credentials.rut,
@@ -104,11 +111,10 @@ export default function LoginForm({ onSuccess }: Props) {
                     placeholderTextColor={THEME_ESTUDENT.colors.text_2}
                     secureTextEntry></TextInput>
             </View>
-            <TouchableOpacity 
-                onPress={handleLogin} 
+            <TouchableOpacity
+                onPress={handleLogin}
                 style={[styles.button, loading && { opacity: 0.6 }]}
-                disabled={loading}
-            >
+                disabled={loading}>
                 {loading ? (
                     <ActivityIndicator color={THEME_ESTUDENT.colors.text} />
                 ) : (

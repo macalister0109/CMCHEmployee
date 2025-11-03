@@ -53,4 +53,19 @@ export const OffersService = {
         const currentOffers = await this.loadOffers();
         await this.saveOffers([offer, ...currentOffers]);
     },
+
+    async clearOffers(): Promise<void> {
+        try {
+            // En desarrollo web solo loguear
+            if (__DEV__ && Platform.OS === "web") {
+                console.log("Would clear offers (dev web)");
+                return;
+            }
+
+            await this.saveOffers([]);
+        } catch (error) {
+            console.error("Error clearing offers:", error);
+            throw error;
+        }
+    },
 };

@@ -1,4 +1,11 @@
-import { View, TextInput, Alert, TouchableOpacity, Text, ActivityIndicator } from "react-native";
+import {
+    View,
+    TextInput,
+    Alert,
+    TouchableOpacity,
+    Text,
+    ActivityIndicator,
+} from "react-native";
 import { useState, useEffect } from "react";
 import { styles } from "./styles";
 import { THEME_ESTUDENT } from "../../constants";
@@ -32,7 +39,7 @@ export default function RegisterFormStudent() {
 
     const handleRegister = async () => {
         // Validación básica
-        if (!credentials.rut || credentials.password.length < 8) {
+        if (!credentials.rut || credentials.password.length < 4) {
             Alert.alert(
                 "Error de Validación",
                 "Verifica tu RUT y contraseña (mín. 8 caracteres)."
@@ -51,8 +58,12 @@ export default function RegisterFormStudent() {
         setLoading(true);
 
         try {
-            console.log("📝 Registrando estudiante:", credentials.name, credentials.lastName);
-            
+            console.log(
+                "📝 Registrando estudiante:",
+                credentials.name,
+                credentials.lastName
+            );
+
             // Llamada al API del backend
             const response = await apiService.registerStudent({
                 rut: credentials.rut,
@@ -66,12 +77,18 @@ export default function RegisterFormStudent() {
             if (response.success) {
                 Alert.alert(
                     "✅ Registro Exitoso",
-                    response.message || `Bienvenido ${credentials.name}! Tu cuenta ha sido creada.`,
+                    response.message ||
+                        `Bienvenido ${credentials.name}! Tu cuenta ha sido creada.`,
                     [
                         {
                             text: "OK",
                             onPress: () => {
-                                setCredentials({ rut: "", password: "", name: "", lastName: "" });
+                                setCredentials({
+                                    rut: "",
+                                    password: "",
+                                    name: "",
+                                    lastName: "",
+                                });
                             },
                         },
                     ]
@@ -135,11 +152,10 @@ export default function RegisterFormStudent() {
                         THEME_ESTUDENT.colors.text_2
                     }></TextInput>
             </View>
-            <TouchableOpacity 
-                onPress={handleRegister} 
+            <TouchableOpacity
+                onPress={handleRegister}
                 style={[styles.button, loading && { opacity: 0.6 }]}
-                disabled={loading}
-            >
+                disabled={loading}>
                 {loading ? (
                     <ActivityIndicator color={THEME_ESTUDENT.colors.text} />
                 ) : (

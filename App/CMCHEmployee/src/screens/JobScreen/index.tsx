@@ -4,6 +4,7 @@ import {
     TouchableOpacity,
     ScrollView,
     ActivityIndicator,
+    Alert,
 } from "react-native";
 import { styles } from "./styles";
 import Header from "../../components/Header";
@@ -57,8 +58,34 @@ export default function JobScreen() {
         }
     }, [isFocused, navigation]);
 
+    const handleClearAll = () => {
+        Alert.alert(
+            "Borrar todas las ofertas",
+            "¿Estás seguro? Esta acción eliminará todas las ofertas locales.",
+            [
+                { text: "Cancelar", style: "cancel" },
+                {
+                    text: "Borrar",
+                    style: "destructive",
+                    onPress: async () => {
+                        try {
+                            setIsLoading(true);
+                            await OffersService.clearOffers();
+                            setOffers([]);
+                        } catch (err) {
+                            console.error("Error al borrar ofertas:", err);
+                            setError("Error al borrar ofertas");
+                        } finally {
+                            setIsLoading(false);
+                        }
+                    },
+                },
+            ]
+        );
+    };
+
     return (
-        <View style={[styles.screen, { gap: 24 }]}>
+        <View style={[styles.screen, { gap: 24, alignItems: "center" }]}>
             <Header />
             <Search />
             {isLoading ? (
@@ -97,9 +124,10 @@ export default function JobScreen() {
                     )}
                 </ScrollView>
             )}
-            <View style={styles.addBtn}>
+            <View style={[styles.addBtn, { flexDirection: "row", gap: 12 }]}>
                 <TouchableOpacity
-                    onPress={() => navigation.navigate("CreateOffer")}>
+                    onPress={() => navigation.navigate("CreateOffer")}
+                    style={{ padding: 8 }}>
                     <Ionicons name="add-outline" size={32}></Ionicons>
                 </TouchableOpacity>
             </View>

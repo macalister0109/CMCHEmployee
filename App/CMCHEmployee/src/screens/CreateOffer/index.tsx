@@ -38,7 +38,7 @@ export default function CreateOffer() {
         location: "",
         vacant: "",
         puntations: "",
-        img: `assets/especialidades/programacion/img_profile.jpg`,
+        img: `assets/especialidades/programacion/img_logo.jpg`,
         stateless: "inProcess",
     });
 
@@ -50,7 +50,7 @@ export default function CreateOffer() {
         setEspecialidad(esp);
         setForm((prev) => ({
             ...prev,
-            img: `assets/especialidades/${esp}/img_profile.jpg`,
+            img: `./assets/especialidades/${esp}/img_logo.wevp`,
         }));
     };
 
