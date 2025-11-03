@@ -10,10 +10,28 @@ interface Props {
 
 export default function CardOffer({ dates }: Props) {
     const image = require("../../../assets/adaptive-icon.png");
+    const getStatusColor = (state: offerDates["stateless"]) => {
+        switch (state) {
+            case "inProcess":
+                return "#4CAF50"; // verde
+            case "inMiddle":
+                return "#FFD733"; // amarillo
+            case "finalized":
+                return "#FF3B30"; // rojo
+            default:
+                return "transparent";
+        }
+    };
+
     return (
         <View style={styles.card}>
             <Image source={image} style={styles.img} />
-            <View style={styles.stateless}></View>
+            <View
+                style={[
+                    styles.stateless,
+                    { backgroundColor: getStatusColor(dates.stateless) },
+                ]}
+            />
             <View style={styles.info}>
                 <View style={styles.headerCard}>
                     <Text style={styles.titleCard}>{dates.title}</Text>

@@ -19,6 +19,7 @@
   },
   {
     "rut": "223504841",
+<<<<<<< HEAD
     "nombre": "Luis ",
     "apellido": "Gonzalez",
     "correo": "user_223504841@example.com",
@@ -105,6 +106,13 @@
     "correo": "user_225366373@example.com",
     "telefono": "000000000",
     "hashed_password": "pbkdf2:sha256:600000$h589OM5R1SMsrGHl$a92a3f209164572e918bd98cdeb9b03a359bd5e61c8cc05b6682722afa2e4bff",
+=======
+    "nombre": "Luis",
+    "apellido": "Gonzalez",
+    "correo": "user_223504841@example.com",
+    "telefono": "000000000",
+    "hashed_password": "pbkdf2:sha256:600000$niHM6Y46Zc1igkXX$35896ecaf4b5be4f3d4e5e0b3380327e57fb4c73908181e948c59b2aedc19d78",
+>>>>>>> 95de6820c5330b4cbd74384af5b9fe3efbb1adf2
     "fecha_solicitud": "2025-10-30"
   }
 ]
