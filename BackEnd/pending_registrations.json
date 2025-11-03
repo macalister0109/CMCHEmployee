@@ -16,5 +16,14 @@
     "telefono": "000000000",
     "hashed_password": "pbkdf2:sha256:600000$P8WRHojxPpu8HLsz$8d3f7c5edbd2c8745adfeb799522c694acff726b6dcb7ead649583b1ae066185",
     "fecha_solicitud": "2025-10-13"
+  },
+  {
+    "rut": "223504841",
+    "nombre": "Luis",
+    "apellido": "Gonzalez",
+    "correo": "user_223504841@example.com",
+    "telefono": "000000000",
+    "hashed_password": "pbkdf2:sha256:600000$niHM6Y46Zc1igkXX$35896ecaf4b5be4f3d4e5e0b3380327e57fb4c73908181e948c59b2aedc19d78",
+    "fecha_solicitud": "2025-10-30"
   }
 ]
