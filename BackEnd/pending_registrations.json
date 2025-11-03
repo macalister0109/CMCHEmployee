@@ -16,5 +16,95 @@
     "telefono": "000000000",
     "hashed_password": "pbkdf2:sha256:600000$P8WRHojxPpu8HLsz$8d3f7c5edbd2c8745adfeb799522c694acff726b6dcb7ead649583b1ae066185",
     "fecha_solicitud": "2025-10-13"
+  },
+  {
+    "rut": "223504841",
+    "nombre": "Luis ",
+    "apellido": "Gonzalez",
+    "correo": "user_223504841@example.com",
+    "telefono": "000000000",
+    "hashed_password": "pbkdf2:sha256:600000$nPhlZiT8bZ1s8Oa0$0a4c0843bbbfbd03f2724fb3988f7732a74ed566ffc61560429df8dcfee00aa9",
+    "fecha_solicitud": "2025-10-15"
+  },
+  {
+    "rut": "225366373",
+    "nombre": "Gabriel",
+    "apellido": "Pedreros",
+    "correo": "user_225366373@example.com",
+    "telefono": "000000000",
+    "hashed_password": "pbkdf2:sha256:600000$scZJ968i58cDe0HT$6f375d31b131111aa321140c721f5f8e17cc5891d6555cd62a14669695945f68",
+    "fecha_solicitud": "2025-10-27"
+  },
+  {
+    "rut": "",
+    "nombre": " ",
+    "apellido": " ",
+    "correo": "user_@example.com",
+    "telefono": "000000000",
+    "hashed_password": "pbkdf2:sha256:600000$yLTQghtG2TB8o3Ic$bf79f842539d81f446cb65301e3f20c7fdee95052d63446eaad4aa8937c8186b",
+    "fecha_solicitud": "2025-10-29"
+  },
+  {
+    "rut": "",
+    "nombre": " ",
+    "apellido": " ",
+    "correo": "user_@example.com",
+    "telefono": "000000000",
+    "hashed_password": "pbkdf2:sha256:600000$wJ5awr5R0FtFoqhC$4216f535c222039cc08fbe49163efe83c4d78af07557efc6f049d3154bf2d6c3",
+    "fecha_solicitud": "2025-10-29"
+  },
+  {
+    "rut": "11111111",
+    "nombre": "h",
+    "apellido": "h",
+    "correo": "user_11111111@example.com",
+    "telefono": "000000000",
+    "hashed_password": "pbkdf2:sha256:600000$BBzy6lO8De498j7t$919d38c45e5f36e81d661433f79c3f746a9a36e73e93392b62f80fa3f7fcb756",
+    "fecha_solicitud": "2025-10-29"
+  },
+  {
+    "rut": "150835364",
+    "nombre": "Macarena",
+    "apellido": "Jamett",
+    "correo": "user_150835364@example.com",
+    "telefono": "000000000",
+    "hashed_password": "pbkdf2:sha256:600000$aNhVNlsD9YtAv5vn$e3afb1e5c9a7bef4dcda8b49467d5832df64c0694d398d21e444decae0c42549",
+    "fecha_solicitud": "2025-10-30"
+  },
+  {
+    "rut": "150835364",
+    "nombre": "Macarena",
+    "apellido": "Jamett",
+    "correo": "user_150835364@example.com",
+    "telefono": "000000000",
+    "hashed_password": "pbkdf2:sha256:600000$2LGrOgF93Mbjv7af$724fe8764788afd314eb1e9c63d0ef0d357da2884fb45212bdb5dbd1a620fabf",
+    "fecha_solicitud": "2025-10-30"
+  },
+  {
+    "rut": "225269483",
+    "nombre": "Vicente ",
+    "apellido": "Soto",
+    "correo": "user_225269483@example.com",
+    "telefono": "000000000",
+    "hashed_password": "pbkdf2:sha256:600000$BU9BEVZeOnuOROgN$e0366f8b89567b901c6f0f12ad977f809e81cb22526fdda180926c8789811e88",
+    "fecha_solicitud": "2025-10-30"
+  },
+  {
+    "rut": "225366373",
+    "nombre": "Gabriel ",
+    "apellido": "Pedreros",
+    "correo": "user_225366373@example.com",
+    "telefono": "000000000",
+    "hashed_password": "pbkdf2:sha256:600000$lhjZ0QluxQdfyk1m$311821c52a93095c3fb91bb3e84e082e573fd63a35f4c28e6e1b35a76af879bb",
+    "fecha_solicitud": "2025-10-30"
+  },
+  {
+    "rut": "225366373",
+    "nombre": "Gabriel Ignacio",
+    "apellido": "Pedreros",
+    "correo": "user_225366373@example.com",
+    "telefono": "000000000",
+    "hashed_password": "pbkdf2:sha256:600000$h589OM5R1SMsrGHl$a92a3f209164572e918bd98cdeb9b03a359bd5e61c8cc05b6682722afa2e4bff",
+    "fecha_solicitud": "2025-10-30"
   }
 ]
