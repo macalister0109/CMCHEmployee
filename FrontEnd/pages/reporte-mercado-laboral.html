@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reportes del Mercado Laboral | CMCHEmployee</title>
+
+  <!-- CSS se pedirá aparte -->
+  <link rel="stylesheet" href="assets/css/reportes.css">
+</head>
+
+<body>
+
+<header class="header">
+  <div class="container">
+    <h1 class="title">Reportes del Mercado Laboral</h1>
+    <p class="subtitle">Análisis de tendencias laborales para estudiantes y empresas</p>
+  </div>
+</header>
+
+<main class="report-section">
+
+  <!-- INDUSTRIAS -->
+  <section class="card">
+    <h2>Industrias más demandadas</h2>
+    <div class="chart-box">
+      <canvas id="chartIndustria"></canvas>
+    </div>
+  </section>
+
+  <!-- MODALIDAD -->
+  <section class="card">
+    <h2>Modalidad de trabajo en el mercado actual</h2>
+    <div class="chart-box">
+      <canvas id="chartModalidad"></canvas>
+    </div>
+  </section>
+
+  <!-- ESTADÍSTICAS -->
+  <section class="card">
+    <h2>Estadísticas globales</h2>
+    
+    <div class="stats-grid">
+
+      <div class="stat-card">
+        <div class="stat-number">230</div>
+        <div class="stat-label">Ofertas este mes</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-number">72%</div>
+        <div class="stat-label">Prácticas TP</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-number">18</div>
+        <div class="stat-label">Industrias activas</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-number">56</div>
+        <div class="stat-label">Empresas publicando</div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>CMCHEmployee — Plataforma de Empleabilidad</p>
+  </div>
+</footer>
+
+<!-- JS se pedirá en el siguiente prompt -->
+<script src="assets/js/reportes.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</body>
+</html>
