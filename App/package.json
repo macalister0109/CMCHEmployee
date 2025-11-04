@@ -1,5 +1,12 @@
 {
   "devDependencies": {
     "webp-converter": "^2.3.3"
+  },
+  "dependencies": {
+    "@expo/vector-icons": "^15.0.3",
+    "react-native-gesture-handler": "^2.29.1",
+    "react-native-reanimated": "^4.1.3",
+    "react-native-safe-area-context": "^5.6.2",
+    "react-native-screens": "^4.18.0"
   }
 }

@@ -1,0 +1,97 @@
+{
+    "institucion": {
+        "nombre": "Colegio Marista Marcelino Champagnat",
+        "sigla": "CMCH",
+        "ubicacion": "La Pintana, Santiago, Chile",
+        "tipo": "Particular subvencionado",
+        "años_en_comuna": 35,
+        "dependencia": "Fundación San Marcelino Champagnat",
+        "descripcion": "Institución técnico-profesional marista dedicada a la formación integral de jóvenes, con enfoque en valores cristianos, innovación, inclusión y conciencia ecológica."
+    },
+    "mision": "Formar buenos cristianos y ciudadanos comprometidos, desarrollando talentos y valores para la vida en el siglo XXI.",
+    "vision": "Ser un colegio marista que potencie los talentos y valores de cada estudiante, generando aprendizaje, plenitud y realización personal.",
+    "especialidades": [
+        {
+            "nombre": "Administración Mención Recursos Humanos",
+            "descripcion": "Forma técnicos en gestión del personal, organización, procesos administrativos y atención al cliente.",
+            "inicio": 1998,
+            "imagen": "./../../assets/adaptive-icon.png",
+            "profesor_jefe": {
+                "nombre": "Luis Ramirez",
+                "correo": "lramirez@cmch.maristas.cl"
+            }
+        },
+        {
+            "nombre": "Electrónica",
+            "descripcion": "Capacita en análisis, diseño, mantenimiento y automatización de sistemas eléctricos y electrónicos.",
+            "inicio": 2004,
+            "profesor_jefe": {
+                "nombre": "Claudio Cayún",
+                "correo": "ccayun@cmch.maristas.cl"
+            }
+        },
+        {
+            "nombre": "Construcciones Metálicas",
+            "descripcion": "Prepara para fabricar, soldar, reparar y montar estructuras metálicas siguiendo normas de seguridad y medio ambiente.",
+            "inicio": 1998,
+            "profesor_jefe": {
+                "nombre": "César Moriz",
+                "correo": "cmoriz@cmch.maristas.cl"
+            }
+        },
+        {
+            "nombre": "Gastronomía",
+            "descripcion": "Forma técnicos en higiene, preparación y presentación de alimentos nacionales e internacionales.",
+            "inicio": 2020,
+            "profesor_jefe": {
+                "nombre": "Quinny Candia",
+                "correo": "qcandia@cmch.maristas.cl"
+            }
+        },
+        {
+            "nombre": "Conectividad y Redes",
+            "descripcion": "Prepara especialistas en instalación, configuración y mantenimiento de redes cableadas e inalámbricas, con énfasis en seguridad informática.",
+            "inicio": 2020,
+            "profesor_jefe": {
+                "nombre": "Aldo Vera",
+                "correo": "avera@cmch.maristas.cl"
+            }
+        },
+        {
+            "nombre": "Programación",
+            "descripcion": "Forma programadores capaces de desarrollar aplicaciones web, móviles y de escritorio, gestionar bases de datos y brindar soporte técnico.",
+            "inicio": 2024,
+            "profesor_jefe": {
+                "nombre": "Macarena Jamett",
+                "correo": "mjamett@cmch.maristas.cl"
+            }
+        }
+    ],
+    "perfil_egresado": {
+        "descripcion": "Personas honestas, solidarias y comprometidas con los valores cristianos. Técnicos responsables, éticos y preparados para los desafíos laborales y tecnológicos actuales.",
+        "enfoque": [
+            "ética",
+            "bien común",
+            "responsabilidad",
+            "justicia social",
+            "competencias técnicas"
+        ]
+    },
+    "contacto": {
+        "rector": {
+            "nombre": "Nelson Jofré Sasso"
+        },
+        "director_tp": {
+            "nombre": "Erick Silva Soto",
+            "correo": "esilva@cmch.maristas.cl"
+        },
+        "coordinadora_tp": {
+            "nombre": "Carolina Olivi Ahumada",
+            "correo": "colivi@cmch.maristas.cl"
+        },
+        "orientadora_vocacional_tp": {
+            "nombre": "Daniela Ramírez Carrera",
+            "correo": "dramirez@cmch.maristas.cl"
+        }
+    }
+}
