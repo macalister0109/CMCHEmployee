@@ -1,6 +1,7 @@
 type colors = {
     bg_1: string;
     text: string;
+    text_2: string;
     alert: string;
     uccess: string;
     primary_1: string;
@@ -13,12 +14,13 @@ type colors = {
     third_2: string;
     border: string;
     dark: string;
-    text_2: string;
+    ligth: string;
 };
 
 export const ESTUDENT_VIEW: colors = {
     bg_1: "#fefFff",
-    text: "#000",
+    text: "#080516ff",
+    text_2: "#342f47ff",
     alert: "#D92631",
     uccess: "#0CF500",
     primary_1: "#211261",
@@ -31,5 +33,5 @@ export const ESTUDENT_VIEW: colors = {
     third_2: "#E1515A",
     border: "#5D5F88",
     dark: "#151515ff",
-    text_2: "#b9b9b9ff",
+    ligth: "#fff",
 } as const;
