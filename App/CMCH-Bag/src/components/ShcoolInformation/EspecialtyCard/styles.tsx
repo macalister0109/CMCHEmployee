@@ -1,9 +1,11 @@
 import { StyleSheet } from "react-native";
-import { THEME_ESTUDENT } from "../../../constants";
-
-export const styles = StyleSheet.create({
-    card: {
-        width: THEME_ESTUDENT.device_width * THEME_ESTUDENT.width["90%"],
+import { useMemo } from "react";
+import useAppTheme from "../../../context/ThemeContext";
+import type { AppTheme } from "../../../constants/Theme";
+export const useSyles = () => {
+    const { theme } = useAppTheme();
+    return useMemo(() => StyleSheet.create({card: {
+        width: theme.device_width * THEME_ESTUDENT.width["90%"],
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
@@ -35,5 +37,6 @@ export const styles = StyleSheet.create({
         height: 120,
         borderRadius: 100,
         alignSelf: "center",
-    },
-});
+    },})
+};
+
