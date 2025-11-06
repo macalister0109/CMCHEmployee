@@ -1,11 +1,19 @@
 import React, { useState } from "react";
-import { View, Text, Button, StyleSheet, Alert } from "react-native";
+import {
+    View,
+    Text,
+    StyleSheet,
+    Alert,
+    TouchableOpacity,
+    ScrollView,
+} from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/AppNavigator";
 import { useAuth } from "../../context/AuthContext";
 import Input from "../../components/Input";
 import Label from "../../components/Label";
 import useStyles from "./styles";
+import GradientBackground from "../../components/GradientBackground";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
@@ -55,24 +63,36 @@ export default function LoginScreen({ navigation }: Props) {
     };
     const styles = useStyles();
     return (
-        <View style={styles.screen}>
-            <Text style={styles.title}>Login</Text>
-            <Label text="RUT (sin puntos ni guion)" />
-            <Input
-                onChangeTxt={setRut}
-                keyboardType="numeric"
-                secureText={false}
-                placeholder="RUT"
-            />
-            <Label text="Contraseña" />
-            <Input
-                onChangeTxt={setPassword}
-                keyboardType="ascii-capable"
-                secureText={true}
-                placeholder="Contraseña"
-            />
-            <Button title="Ingresar" onPress={handleLogin} />
-        </View>
+        <GradientBackground>
+            <ScrollView>
+                <View style={styles.screen}>
+                    <View>
+                        <Text style={styles.title}>Login</Text>
+                        <Label text="RUT (sin puntos ni guion)" />
+                        <Input
+                            onChangeTxt={setRut}
+                            keyboardType="numeric"
+                            secureText={false}
+                            placeholder="RUT"
+                        />
+                        <Label text="Contraseña" />
+                        <Input
+                            onChangeTxt={setPassword}
+                            keyboardType="ascii-capable"
+                            secureText={true}
+                            placeholder="Contraseña"
+                        />
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity
+                                onPress={handleLogin}
+                                style={styles.button}>
+                                <Text style={styles.textButton}>Ingresar</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </ScrollView>
+        </GradientBackground>
     );
 }
 

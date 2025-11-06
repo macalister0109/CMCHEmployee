@@ -6,7 +6,7 @@ const useStyles = () => {
     return StyleSheet.create({
         label: {
             fontSize: theme.font_sizes.body,
-            color: theme.colors.primary_1,
+            color: theme.colors.ligth,
             fontWeight: theme.font_weights.bold,
         },
         container: {
