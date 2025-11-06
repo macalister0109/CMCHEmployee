@@ -2,6 +2,7 @@ import { View } from "react-native";
 import JobOfferCard from "../../../components/JobOfferCard";
 import { offerDates } from "../../../types/offerDates";
 import Header from "../../../components/Header";
+import useStyles from "./styles";
 export default function JobScreen() {
     const offers: offerDates[] = [
         {
@@ -27,8 +28,10 @@ export default function JobScreen() {
             labels: ["Gastronomia"],
         },
     ];
+    const styles = useStyles();
+
     return (
-        <View style={{ flex: 1 }}>
+        <View style={styles.screen}>
             <Header />
             <JobOfferCard dates={offers[0]} />
         </View>

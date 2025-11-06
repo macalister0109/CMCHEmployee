@@ -1,17 +1,17 @@
 import React from "react";
 import { View, Text, Button } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import useRoleStyles from "../../../utils/useRoleStyles";
 import Header from "../../../components/Header";
+import useStyles from "./styles";
 export default function ProfileScreen() {
     const navigation = useNavigation();
-    const styles = useRoleStyles();
+
+    const styles = useStyles();
 
     return (
-        <View style={styles.container}>
+        <View style={styles.screen}>
             <Header />
 
-            <Text style={styles.title}>Perfil (Company)</Text>
             <Button
                 title="Editar perfil"
                 onPress={() => (navigation as any).navigate("EditProfile")}

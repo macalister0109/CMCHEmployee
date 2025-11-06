@@ -5,6 +5,7 @@ import { RootStackParamList } from "../../navigation/AppNavigator";
 import { useAuth } from "../../context/AuthContext";
 import Input from "../../components/Input";
 import Label from "../../components/Label";
+import useStyles from "./styles";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
@@ -52,9 +53,9 @@ export default function LoginScreen({ navigation }: Props) {
         login(role);
         navigation.replace(role === "student" ? "StudentTabs" : "CompanyTabs");
     };
-
+    const styles = useStyles();
     return (
-        <View style={styles.container}>
+        <View style={styles.screen}>
             <Text style={styles.title}>Login</Text>
             <Label text="RUT (sin puntos ni guion)" />
             <Input
@@ -75,12 +76,4 @@ export default function LoginScreen({ navigation }: Props) {
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        padding: 16,
-    },
-    title: { fontSize: 24, marginBottom: 16 },
-});
+const styles = StyleSheet.create({});

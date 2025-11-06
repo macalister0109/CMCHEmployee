@@ -2,7 +2,7 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "../screens/TabNavigationCompany/HomeScreen";
-import JobScreen from "../screens/TabNavigationCompany/JobScreen";
+import JobScreen from "../screens/Jobs";
 import ProfileScreen from "../screens/TabNavigationCompany/ProfileScreen";
 import EditProfileScreen from "../screens/EditProfileScreen";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -47,9 +47,27 @@ export default function CompanyTabs() {
                     );
                 },
             })}>
-            <Tab.Screen name="Home" component={HomeScreen} />
-            <Tab.Screen name="Jobs" component={JobScreen} />
-            <Tab.Screen name="Profile" component={ProfileStack} />
+            <Tab.Screen
+                name="Home"
+                component={HomeScreen}
+                options={{
+                    title: "Inicio",
+                }}
+            />
+            <Tab.Screen
+                name="Jobs"
+                component={JobScreen}
+                options={{
+                    title: "Ofertas",
+                }}
+            />
+            <Tab.Screen
+                name="Profile"
+                component={ProfileStack}
+                options={{
+                    title: "Perfil",
+                }}
+            />
         </Tab.Navigator>
     );
 }
