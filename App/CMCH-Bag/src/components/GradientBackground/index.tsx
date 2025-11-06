@@ -1,21 +1,19 @@
 import { LinearGradient } from "expo-linear-gradient";
-import {} from "react-native";
-import { THEME_ESTUDENT } from "./../../constants/index";
 import { styles } from "./styles";
 import { ReactNode } from "react";
-
+import useAppTheme from "../../context/ThemeContext";
 type GradientBackgroundProps = {
     children: ReactNode;
-    color: [string, string];
 };
 
 export default function GradientBackground({
     children,
-    color,
 }: GradientBackgroundProps) {
+    const theme = useAppTheme();
+
     return (
         <LinearGradient
-            colors={[color[0], color[1]]}
+            colors={[theme.colors.primary_1, theme.colors.primary_2]}
             start={{ x: 0, y: 0.5 }}
             end={{ x: 1, y: 0.5 }}
             style={styles.linearGradient}>

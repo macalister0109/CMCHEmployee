@@ -2,41 +2,75 @@ import { StyleSheet } from "react-native";
 import { useMemo } from "react";
 import useAppTheme from "../../../context/ThemeContext";
 import type { AppTheme } from "../../../constants/Theme";
-export const useSyles = () => {
-    const { theme } = useAppTheme();
-    return useMemo(() => StyleSheet.create({card: {
-        width: theme.device_width * THEME_ESTUDENT.width["90%"],
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-around",
-        backgroundColor: THEME_ESTUDENT.colors.primary_3,
-        padding: 12,
-        borderRadius: 16,
-    },
-    title: {
-        fontSize: THEME_ESTUDENT.font_sizes.h1,
-        fontWeight: THEME_ESTUDENT.font_weights.regular,
-        color: THEME_ESTUDENT.colors.bg_1,
-    },
-    description: {
-        fontSize: THEME_ESTUDENT.font_sizes.body,
-        fontWeight: THEME_ESTUDENT.font_weights.regular,
-        color: THEME_ESTUDENT.colors.bg_1,
-    },
-    descriptionContainer: {
-        gap: 8,
-        marginLeft: 6,
-        width: "60%",
-    },
-    imgContainer: {
-        width: "40%",
-    },
-    img: {
-        width: 120,
-        height: 120,
-        borderRadius: 100,
-        alignSelf: "center",
-    },})
-};
 
+// Hook de estilos memoizados: se recalculan sólo cuando cambia el theme
+export const useStyles = () => {
+    // `useAppTheme()` devuelve el objeto theme directamente
+    const theme = useAppTheme();
+
+    return useMemo(
+        () =>
+            StyleSheet.create({
+                card: {
+                    width: theme.device_width * theme.width["90%"],
+                    backgroundColor: "#fff",
+                    borderRadius: 16,
+                    // --- SOMBRA iOS ---
+                    shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 4 },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 4,
+
+                    // --- SOMBRA Android ---
+                    elevation: 8,
+                },
+                imgLogo: {
+                    width: "100%",
+                    height: 75,
+                    borderTopRightRadius: 16,
+                    borderTopLeftRadius: 16,
+                },
+                info: {
+                    display: "flex",
+                    margin: 8,
+                },
+                title: {
+                    fontSize: theme.font_sizes.h2,
+                    fontWeight: theme.font_weights.regular,
+                    color: theme.colors.primary_2,
+                },
+                description: {
+                    fontSize: theme.font_sizes.body,
+                    fontWeight: theme.font_weights.bold,
+                    marginLeft: 4,
+                },
+                owner: {
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: 8,
+                    margin: 4,
+                    alignItems: "center",
+                },
+                imgProfile: {
+                    width: 50,
+                    height: 50,
+                    borderRadius: 100,
+                },
+                ownerText: {
+                    color: theme.colors.secondary_2,
+                    fontStyle: "italic",
+                },
+                name: {
+                    fontSize: theme.font_sizes.body,
+                    fontWeight: theme.font_weights.bold,
+                    color: theme.colors.primary_1,
+                },
+                emailText: {
+                    color: theme.colors.primary_1,
+                    fontStyle: "italic",
+                    textDecorationLine: "underline",
+                },
+            }),
+        [theme]
+    );
+};
