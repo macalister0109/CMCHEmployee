@@ -11,7 +11,7 @@ const img_Mision = require("../../../assets/extraImages/image_1.webp");
 const img_Vision = require("../../../assets/extraImages/image_2.webp");
 const img_Egresado = require("../../../assets/extraImages/img_3.webp");
 
-const imgNelson = require("../../../assets/contactImages");
+const imgNelson = require("../../../assets/contactImages/nelson_jofre2025.webp");
 const imgErick = require("../../../assets/contactImages/erick_silva2025.webp");
 const imgDaniela = require("../../../assets/contactImages/daniela_ramirez2025.webp");
 const imgOlivi = require("../../../assets/contactImages/carolina_olivi2025.webp");
@@ -20,28 +20,28 @@ const defaultLogo = require("../../../assets/adaptive-icon.png");
 
 const images: Record<string, { logo: any; profile: any }> = {
     administracion_mencion_recursos_humanos: {
-        logo: require("../../../assets/especialidades/administracion/banner.webp"),
-        profile: require("../../../assets/especialidades/administracion/profile-icon.webp"),
+        logo: require("./../../../assets/specialties/administracion/banner.webp"),
+        profile: require("../../../assets/specialties/administracion/profile-icon.webp"),
     },
     electronica: {
-        logo: require("../../../assets/especialidades/electronica/banner.webp"),
-        profile: require("../../../assets/especialidades/electronica/profile-icon.webp"),
+        logo: require("../../../assets/specialties/electronica/banner.webp"),
+        profile: require("../../../assets/specialties/electronica/profile-icon.webp"),
     },
     construcciones_metalicas: {
-        logo: require("../../../assets/especialidades/construcciones_metalicas/banner.webp"),
-        profile: require("../../../assets/especialidades/construcciones_metalicas/profile-icon.webp"),
+        logo: require("./../../../assets/specialties/construcciones-metalicas/banner.webp"),
+        profile: require("../../../assets/specialties/construcciones-metalicas/profile-icon.webp"),
     },
     gastronomia: {
-        logo: require("../../../assets/especialidades/gastronomia/banner.webp"),
-        profile: require("../../../assets/especialidades/gastronomia/profile-icon.webp"),
+        logo: require("./../../../assets/specialties/gastronomia/banner.webp"),
+        profile: require("../../../assets/specialties/gastronomia/profile-icon.webp"),
     },
     conectividad_y_redes: {
-        logo: require("../../../assets/especialidades/conectividad_redes/banner.webp"),
-        profile: require("../../../assets/especialidades/conectividad_redes/profile-icon.webp"),
+        logo: require("./../../../assets/specialties/conectividad-redes/banner.webp"),
+        profile: require("../../../assets/specialties/conectividad-redes/profile-icon.webp"),
     },
     programacion: {
-        logo: require("../../../assets/especialidades/programacion/banner.webp"),
-        profile: require("../../../assets/especialidades/programacion/profile-icon.webp"),
+        logo: require("../../../assets/specialties/programacion/banner.webp"),
+        profile: require("../../../assets/specialties/programacion/profile-icon.webp"),
     },
 };
 
