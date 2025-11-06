@@ -4,13 +4,14 @@ import useAppTheme from "../../context/ThemeContext";
 const useStyles = () => {
     const theme = useAppTheme();
     return StyleSheet.create({
-        input: {
-            backgroundColor: theme.colors.bg_1,
-            color: theme.colors.primary_2,
-            width: theme.width["80%"] * theme.device_width,
+        label: {
+            fontSize: theme.font_sizes.body,
+            color: theme.colors.primary_1,
             fontWeight: theme.font_weights.bold,
-            borderRadius: 5,
-            padding: 12,
+        },
+        container: {
+            width: theme.width["80%"] * theme.device_width,
+            marginVertical: 4,
         },
     });
 };

@@ -4,6 +4,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/AppNavigator";
 import { useAuth } from "../../context/AuthContext";
 import Input from "../../components/Input";
+import Label from "../../components/Label";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
@@ -55,13 +56,14 @@ export default function LoginScreen({ navigation }: Props) {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Login</Text>
-
+            <Label text="RUT (sin puntos ni guion)" />
             <Input
                 onChangeTxt={setRut}
                 keyboardType="numeric"
                 secureText={false}
                 placeholder="RUT"
             />
+            <Label text="Contraseña" />
             <Input
                 onChangeTxt={setPassword}
                 keyboardType="ascii-capable"
