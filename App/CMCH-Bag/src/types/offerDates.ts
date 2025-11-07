@@ -1,4 +1,4 @@
-type LABELS =
+export type LABELS =
     | "Programacion"
     | "Conectividad y Redes"
     | "Construcciones Metalicas"
