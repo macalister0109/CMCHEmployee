@@ -248,3 +248,36 @@ body {
   background-color: var(--white);
   color: var(--red);
 }
+
+/* Role selector styles - small horizontal buttons */
+.role-select {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 8px;
+  margin-bottom: 6px;
+}
+
+.role-select .role-btn {
+  background: transparent;
+  color: var(--white);
+  border: 1px solid rgba(255,255,255,0.18);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.role-select .role-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--yellow);
+}
+
+.role-select .role-btn.active {
+  background: var(--white);
+  color: var(--dark-blue);
+  border-color: var(--yellow);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+}

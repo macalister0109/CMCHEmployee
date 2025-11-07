@@ -37,7 +37,7 @@ if CONFIG_FILE.exists():
     
     # Rutas del proyecto
     BACKEND_DIR = PROJECT_ROOT / config.get('paths', 'backend_dir', fallback='BackEnd')
-    APP_DIR = PROJECT_ROOT / config.get('paths', 'app_dir', fallback='App/CMCHEmployee')
+    APP_DIR = PROJECT_ROOT / config.get('paths', 'app_dir', fallback='App/CMCH-bag')
     
     # Puertos
     BACKEND_PORT = config.getint('backend', 'port', fallback=5000)
@@ -54,7 +54,7 @@ else:
         'port': 3306
     }
     BACKEND_DIR = PROJECT_ROOT / "BackEnd"
-    APP_DIR = PROJECT_ROOT / "App" / "CMCHEmployee"
+    APP_DIR = PROJECT_ROOT / "App" / "CMCH-bag"
     BACKEND_PORT = 5000
     EXPO_PORT = 8081
     EXPO_TUNNEL = False

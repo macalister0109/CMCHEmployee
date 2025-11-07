@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Perfil - Empresa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="assets/css/login.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="container-form">
+        <form method="post" action="/profile-empresa">
+          <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:12px;">
+            <h2 style="margin:0;">Perfil Empresa</h2>
+            <a href="{{ url_for('main') }}" class="button" style="width:auto; height:36px; padding:6px 12px;">Inicio</a>
+          </div>
+          {% if error %}
+          <div class="error">{{ error }}</div>
+          {% endif %}
+          {% if success %}
+          <div class="error" style="background: rgba(0,255,0,0.08); border-color: rgba(0,255,0,0.2); color: #eaffea;">Guardado correctamente</div>
+          {% endif %}
+
+          <div class="container-input">
+            <input type="text" name="nombre_empresa" value="{{ empresa.nombre_empresa }}" placeholder="Nombre de la empresa" required />
+          </div>
+          <div class="container-input">
+            <input type="text" name="rubro" value="{{ empresa.rubro }}" placeholder="Rubro" />
+          </div>
+          <div class="container-input">
+            <input type="text" name="direccion" value="{{ empresa.direccion }}" placeholder="Dirección" />
+          </div>
+          <div class="container-input">
+            <input type="text" name="telefono" value="{{ empresa.telefono }}" placeholder="Teléfono" />
+          </div>
+          <div class="container-input">
+            <input type="email" name="correo_empresa" value="{{ empresa.correo_empresa }}" placeholder="Correo de la empresa" />
+          </div>
+          <div class="container-input">
+            <input type="text" name="sitio_web" value="{{ empresa.sitio_web }}" placeholder="Sitio web" />
+          </div>
+          <div class="container-input">
+            <input type="text" name="descripcion_empresa" value="{{ empresa.descripcion_empresa }}" placeholder="Descripción" />
+          </div>
+          <div class="container-input">
+            <input type="text" name="tipo_empresa" value="{{ empresa.tipo_empresa }}" placeholder="Tipo (Nacional/Internacional)" />
+          </div>
+
+          <button class="button" type="submit">Guardar perfil</button>
+        </form>
+      </div>
+    </div>
+
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+    ></script>
+  </body>
+</html>

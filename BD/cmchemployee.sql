@@ -19,27 +19,41 @@
 CREATE DATABASE IF NOT EXISTS `cmchemployee` ;
 USE `cmchemployee`;
 
--- Volcando estructura para tabla cmchemployee.alumnos
 CREATE TABLE IF NOT EXISTS `alumnos` (
   `id_usuario` int(10) unsigned NOT NULL,
-  `carrera` varchar(50) NOT NULL,
-  `anio_ingreso` year(4) NOT NULL,
-  `experiencia_laboral` varchar(100) NOT NULL,
+  `carrera` varchar(100) DEFAULT NULL,
+  `anio_ingreso` year(4) DEFAULT NULL,
+  `anio_egreso` year(4) DEFAULT NULL,
+  `experiencia_laboral` varchar(500) DEFAULT NULL,
+  `descripcion` varchar(1000) DEFAULT NULL,
+  `linkedin` varchar(255) DEFAULT NULL,
+  `foto_perfil` varchar(255) DEFAULT NULL,
+  `ciudad` varchar(100) DEFAULT NULL,
+  `region` varchar(100) DEFAULT NULL,
+  `habilidades` varchar(1000) DEFAULT NULL,
+  `nivel_estudios` varchar(100) DEFAULT NULL,
+  `estado_profesional` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id_usuario`),
   CONSTRAINT `FK_Alumnos_Usuarios` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- La exportación de datos fue deseleccionada.
 
--- Volcando estructura para tabla cmchemployee.docentes
 CREATE TABLE IF NOT EXISTS `docentes` (
   `id_usuario` int(10) unsigned NOT NULL,
-  `rut` varchar(12) NOT NULL,
-  `carrera` varchar(50) NOT NULL,
-  `anio_ingreso` year(4) NOT NULL,
-  `experiencia_laboral` varchar(100) NOT NULL,
+  `institucional_id` varchar(50) DEFAULT NULL,
+  `departamento` varchar(100) DEFAULT NULL,
+  `area_academica` varchar(100) DEFAULT NULL,
+  `cargo` varchar(100) DEFAULT NULL,
+  `bio_academica` varchar(2000) DEFAULT NULL,
+  `correo_institucional` varchar(150) DEFAULT NULL,
+  `telefono_contacto` varchar(30) DEFAULT NULL,
+  `oficina` varchar(100) DEFAULT NULL,
+  `horario_atencion` varchar(200) DEFAULT NULL,
+  `foto_perfil` varchar(255) DEFAULT NULL,
+  `cv_url` varchar(255) DEFAULT NULL,
+  `certificado_docente` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id_usuario`),
-  UNIQUE KEY `rut` (`rut`),
   CONSTRAINT `FK_Docentes_Usuarios` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -107,14 +121,22 @@ CREATE TABLE IF NOT EXISTS `empresas` (
 
 -- La exportación de datos fue deseleccionada.
 
--- Volcando estructura para tabla cmchemployee.exalumnos
 CREATE TABLE IF NOT EXISTS `exalumnos` (
   `id_usuario` int(10) unsigned NOT NULL,
-  `carrera` varchar(50) NOT NULL,
-  `anio_egreso` year(4) NOT NULL,
-  `experiencia_laboral` varchar(100) NOT NULL,
-  `estudiando` tinyint(1) NOT NULL,
+  `carrera` varchar(100) DEFAULT NULL,
+  `anio_egreso` year(4) DEFAULT NULL,
+  `estudiando` tinyint(1) NOT NULL DEFAULT 0,
+  `tipo_institucion` varchar(100) DEFAULT NULL,
   `casa_estudio` varchar(250) DEFAULT NULL,
+  `trabajando` tinyint(1) NOT NULL DEFAULT 0,
+  `empresa_actual` varchar(150) DEFAULT NULL,
+  `puesto_actual` varchar(150) DEFAULT NULL,
+  `descripcion` varchar(1000) DEFAULT NULL,
+  `linkedin` varchar(255) DEFAULT NULL,
+  `foto_perfil` varchar(255) DEFAULT NULL,
+  `ciudad` varchar(100) DEFAULT NULL,
+  `region` varchar(100) DEFAULT NULL,
+  `habilidades` varchar(1000) DEFAULT NULL,
   PRIMARY KEY (`id_usuario`),
   CONSTRAINT `FK_ExAlumnos_Usuarios` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

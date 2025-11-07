@@ -339,7 +339,7 @@ def install_nodejs_packages():
     """Instala las dependencias de Node.js"""
     print_header("INSTALANDO DEPENDENCIAS DE NODE.JS")
     
-    app_dir = PROJECT_ROOT / "App" / "CMCHEmployee"
+    app_dir = PROJECT_ROOT / "App" / "CMCH-bag"
     package_json = app_dir / "package.json"
     
     if not package_json.exists():
@@ -506,7 +506,7 @@ port = 8081
 [paths]
 # Rutas relativas desde la raíz del proyecto
 backend_dir = BackEnd
-app_dir = App/CMCHEmployee
+app_dir = App/CMCH-bag
 frontend_dir = FrontEnd
 
 [options]

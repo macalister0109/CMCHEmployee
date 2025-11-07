@@ -100,6 +100,14 @@
             />
           </div>
 
+          <!-- Role selector: alumno / exalumno / docente -->
+          <div class="role-select" role="radiogroup" aria-label="Seleccionar rol">
+            <input type="hidden" name="role" id="register-role" value="student" />
+            <button type="button" class="role-btn active" data-role="student">Alumno</button>
+            <button type="button" class="role-btn" data-role="exalumno">Exalumno</button>
+            <button type="button" class="role-btn" data-role="docente">Docente</button>
+          </div>
+
           <button class="button" type="submit">Registrarse</button>
         </form>
       </div>
@@ -127,6 +135,7 @@
     </div>
 
     <script src="assets/js/login.js"></script>
+  <script src="assets/js/role-select.js"></script>
     <script
       type="module"
       src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"

@@ -56,8 +56,11 @@
           <div class="welcome-header">
             <span class="welcome-text">Bienvenida empresa '{{ nombre }}'</span>
             <div class="empresa-actions" style="display: inline-flex; gap: 10px; margin-left: 10px; align-items: center;">
+              <a href="{{ url_for('profile_empresa') }}" class="btn-primary btn-profile" title="Ver perfil">
+                <i class="fas fa-user"></i> Perfil
+              </a>
               <a href="{{ url_for('dashboard_empresa') }}" class="btn-primary btn-dashboard" title="Ir al Dashboard">
-                <i class="fas fa-tachometer-alt"></i> Dashboard Empresa
+                <i class="fas fa-tachometer-alt"></i> Dashboard
               </a>
               <form method="post" action="{{ url_for('logout') }}" style="display: inline; margin: 0;">
                 <button type="submit" class="btn-outline btn-logout" title="Cerrar sesión">
@@ -73,19 +76,12 @@
               Bienvenido, {{ nombre }}{% if apellido %} {{ apellido }}{% endif
               %}
             </span>
-            <form
-              method="post"
-              action="{{ url_for('logout') }}"
-              class="logout-form"
-            >
-              <button
-                type="submit"
-                class="btn-outline btn-logout"
-                id="logout-button"
-              >
-                Cerrar Sesión
-              </button>
-            </form>
+            <div style="display:inline-flex; gap:8px; align-items:center; margin-left:10px">
+              <a href="{{ url_for('profile') }}" class="btn-primary btn-profile">Perfil</a>
+              <form method="post" action="{{ url_for('logout') }}" class="logout-form" style="margin:0;">
+                <button type="submit" class="btn-outline btn-logout" id="logout-button">Cerrar Sesión</button>
+              </form>
+            </div>
           </div>
           {% else %}
           <!-- No hay sesión -->

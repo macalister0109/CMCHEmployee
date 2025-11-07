@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Perfil - Usuario</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="assets/css/login.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="container-form">
+        <form method="post" action="/profile">
+          <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:12px;">
+            <h2 style="margin:0;">Mi Perfil</h2>
+            <a href="{{ url_for('main') }}" class="button" style="width:auto; height:36px; padding:6px 12px;">Inicio</a>
+          </div>
+          {% if error %}
+          <div class="error">{{ error }}</div>
+          {% endif %}
+          {% if success %}
+          <div class="error" style="background: rgba(0,255,0,0.08); border-color: rgba(0,255,0,0.2); color: #eaffea;">Guardado correctamente</div>
+          {% endif %}
+
+          <div class="container-input">
+            <ion-icon name="person-outline"></ion-icon>
+            <input type="text" name="nombre" value="{{ user.nombre }}" placeholder="Nombre" required />
+          </div>
+          <div class="container-input">
+            <ion-icon name="person-outline"></ion-icon>
+            <input type="text" name="apellido" value="{{ user.apellido }}" placeholder="Apellido" required />
+          </div>
+          <div class="container-input">
+            <ion-icon name="mail-outline"></ion-icon>
+            <input type="email" name="correo" value="{{ user.correo }}" placeholder="Correo" required />
+          </div>
+          <div class="container-input">
+            <ion-icon name="call-outline"></ion-icon>
+            <input type="text" name="telefono" value="{{ user.telefono }}" placeholder="Teléfono" />
+          </div>
+
+          <h3 style="color:#fff; margin-top:10px">Tipo: {{ role|capitalize }}</h3>
+
+          {% if role == 'alumno' %}
+          <div class="container-input">
+            <input type="text" name="carrera" value="{{ perfil.carrera if perfil else '' }}" placeholder="Carrera" />
+          </div>
+          <div class="container-input">
+            <input type="number" name="anio_ingreso" value="{{ perfil.anio_ingreso if perfil else '' }}" placeholder="Año de ingreso" />
+          </div>
+          <div class="container-input">
+            <input type="number" name="anio_egreso" value="{{ perfil.anio_egreso if perfil else '' }}" placeholder="Año de egreso" />
+          </div>
+          <div class="container-input">
+            <input type="text" name="experiencia_laboral" value="{{ perfil.experiencia_laboral if perfil else '' }}" placeholder="Experiencia laboral" />
+          </div>
+          <div class="container-input">
+            <input type="text" name="linkedin" value="{{ perfil.linkedin if perfil else '' }}" placeholder="LinkedIn" />
+          </div>
+          <div class="container-input">
+            <input type="text" name="ciudad" value="{{ perfil.ciudad if perfil else '' }}" placeholder="Ciudad" />
+          </div>
+          <div class="container-input">
+            <input type="text" name="region" value="{{ perfil.region if perfil else '' }}" placeholder="Región" />
+          </div>
+          <div class="container-input">
+            <input type="text" name="habilidades" value="{{ perfil.habilidades if perfil else '' }}" placeholder="Habilidades (coma separado)" />
+          </div>
+          {% elif role == 'docente' %}
+          <div class="container-input">
+            <input type="text" name="institucional_id" value="{{ perfil.institucional_id if perfil else '' }}" placeholder="ID institucional" />
+          </div>
+          <div class="container-input">
+            <input type="text" name="departamento" value="{{ perfil.departamento if perfil else '' }}" placeholder="Departamento" />
+          </div>
+          <div class="container-input">
+            <input type="text" name="area_academica" value="{{ perfil.area_academica if perfil else '' }}" placeholder="Área académica" />
+          </div>
+          <div class="container-input">
+            <input type="text" name="cargo" value="{{ perfil.cargo if perfil else '' }}" placeholder="Cargo" />
+          </div>
+          <div class="container-input">
+            <input type="text" name="bio_academica" value="{{ perfil.bio_academica if perfil else '' }}" placeholder="Biografía académica" />
+          </div>
+          {% elif role == 'exalumno' %}
+          <div style="display:flex; gap:8px; margin-bottom:8px;">
+            <label style="color:#fff;"><input type="checkbox" name="estudiando" {% if perfil and perfil.estudiando %}checked{% endif %}/> Estudiando</label>
+            <label style="color:#fff;"><input type="checkbox" name="trabajando" {% if perfil and perfil.trabajando %}checked{% endif %}/> Trabajando</label>
+          </div>
+          <div class="container-input">
+            <input type="text" name="tipo_institucion" value="{{ perfil.tipo_institucion if perfil else '' }}" placeholder="Tipo (Universidad / Instituto)" />
+          </div>
+          <div class="container-input">
+            <input type="text" name="casa_estudio" value="{{ perfil.casa_estudio if perfil else '' }}" placeholder="Casa de estudio" />
+          </div>
+          <div class="container-input">
+            <input type="text" name="empresa_actual" value="{{ perfil.empresa_actual if perfil else '' }}" placeholder="Empresa actual" />
+          </div>
+          <div class="container-input">
+            <input type="text" name="puesto_actual" value="{{ perfil.puesto_actual if perfil else '' }}" placeholder="Puesto actual" />
+          </div>
+          <div class="container-input">
+            <input type="text" name="linkedin" value="{{ perfil.linkedin if perfil else '' }}" placeholder="LinkedIn" />
+          </div>
+          {% endif %}
+
+          <button class="button" type="submit">Guardar perfil</button>
+        </form>
+      </div>
+    </div>
+
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+    ></script>
+  </body>
+</html>

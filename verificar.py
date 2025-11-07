@@ -58,7 +58,7 @@ def main():
     checks.append(check_file(root / "config.ini", "Configuración"))
     checks.append(check_file(root / "requirements.txt", "Dependencias Python"))
     checks.append(check_file(root / "BackEnd" / "app.py", "Backend Flask"))
-    checks.append(check_file(root / "App" / "CMCHEmployee" / "package.json", "Mobile App"))
+    checks.append(check_file(root / "App" / "CMCH-bag" / "package.json", "Mobile App"))
     
     print("\n" + "="*60)
     if all(checks):

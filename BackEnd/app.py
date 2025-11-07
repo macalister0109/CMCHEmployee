@@ -32,6 +32,17 @@ def get_client_ip():
         return request.headers.get('X-Real-IP')
     return request.remote_addr or 'Unknown'
 
+
+class _IsJsonProxy:
+    def __bool__(self):
+        try:
+            return bool(request.is_json)
+        except Exception:
+            return False
+
+
+is_json = _IsJsonProxy()
+
 @app.before_request
 def track_visitor():
     """Registra cada visita de IP en la terminal"""
@@ -84,9 +95,58 @@ class Usuarios(db.Model):
 class Alumnos(db.Model):
     __tablename__ = 'Alumnos'
     id_usuario = db.Column(db.Integer, db.ForeignKey('Usuarios.id_usuario'), primary_key=True)
-    carrera = db.Column(db.String(50), nullable=False)
-    anio_ingreso = db.Column(db.Integer, nullable=False)
-    experiencia_laboral = db.Column(db.String(100), nullable=False)
+    # Campos de perfil para alumnos - serán completados en la sección de perfil
+    carrera = db.Column(db.String(100), nullable=True)
+    anio_ingreso = db.Column(db.Integer, nullable=True)
+    anio_egreso = db.Column(db.Integer, nullable=True)
+    experiencia_laboral = db.Column(db.String(500), nullable=True)
+    descripcion = db.Column(db.String(1000), nullable=True)
+    linkedin = db.Column(db.String(255), nullable=True)
+    foto_perfil = db.Column(db.String(255), nullable=True)
+    ciudad = db.Column(db.String(100), nullable=True)
+    region = db.Column(db.String(100), nullable=True)
+    habilidades = db.Column(db.String(1000), nullable=True)
+    nivel_estudios = db.Column(db.String(100), nullable=True)
+    estado_profesional = db.Column(db.String(100), nullable=True)
+
+
+# Docentes - perfil específico para docentes (vinculado a Usuarios)
+class Docentes(db.Model):
+    __tablename__ = 'Docentes'
+    id_docente = db.Column(db.Integer, db.ForeignKey('Usuarios.id_usuario'), primary_key=True)
+    institucional_id = db.Column(db.String(50), nullable=True)
+    departamento = db.Column(db.String(100), nullable=True)
+    area_academica = db.Column(db.String(100), nullable=True)
+    cargo = db.Column(db.String(100), nullable=True)
+    bio_academica = db.Column(db.String(2000), nullable=True)
+    correo_institucional = db.Column(db.String(150), nullable=True)
+    telefono_contacto = db.Column(db.String(30), nullable=True)
+    oficina = db.Column(db.String(100), nullable=True)
+    horario_atencion = db.Column(db.String(200), nullable=True)
+    foto_perfil = db.Column(db.String(255), nullable=True)
+    cv_url = db.Column(db.String(255), nullable=True)
+    certificado_docente = db.Column(db.Boolean, default=False)
+
+
+# Exalumnos - perfil para exalumnos (vinculado a Usuarios)
+class Exalumnos(db.Model):
+    __tablename__ = 'Exalumnos'
+    id_exalumno = db.Column(db.Integer, db.ForeignKey('Usuarios.id_usuario'), primary_key=True)
+    # Puede estar estudiando, trabajando o ambos. Campos opcionales para completar en perfil.
+    carrera = db.Column(db.String(100), nullable=True)
+    anio_egreso = db.Column(db.Integer, nullable=True)
+    estudiando = db.Column(db.Boolean, default=False, nullable=False)
+    tipo_institucion = db.Column(db.String(100), nullable=True)  # Universidad / Instituto / Otro
+    casa_estudio = db.Column(db.String(250), nullable=True)
+    trabajando = db.Column(db.Boolean, default=False, nullable=False)
+    empresa_actual = db.Column(db.String(150), nullable=True)
+    puesto_actual = db.Column(db.String(150), nullable=True)
+    descripcion = db.Column(db.String(1000), nullable=True)
+    linkedin = db.Column(db.String(255), nullable=True)
+    foto_perfil = db.Column(db.String(255), nullable=True)
+    ciudad = db.Column(db.String(100), nullable=True)
+    region = db.Column(db.String(100), nullable=True)
+    habilidades = db.Column(db.String(1000), nullable=True)
 
 
 class Empresarios(db.Model):
@@ -176,31 +236,21 @@ def get_default_pais_id():
 @app.route('/register_empresa', methods=['POST'])
 def register_empresa():
     """Maneja el registro de empresas - Solo POST"""
-    # Detectar si es JSON (desde app móvil) o form-data (desde web)
-    is_json = request.is_json
-    if is_json:
-        data = request.get_json()
-        nombre_empresa = data.get('nombre_empresa')
-        nombre_encargado = data.get('nombre_encargado')
-        apellido_encargado = data.get('apellido_encargado')
-        rut_empresa = data.get('rut_empresa')
-        rut_encargado = data.get('rut_encargado')
-        direccion = data.get('direccion', '-')
-        email = data.get('email')
-        rubro = data.get('rubro', '-')
-        sitio_web = data.get('sitio_web', '-')
-        password = data.get('password')
-    else:
-        nombre_empresa = request.form.get('nombre_empresa')
-        nombre_encargado = request.form.get('nombre_encargado')
-        apellido_encargado = request.form.get('apellido_encargado')
-        rut_empresa = request.form.get('rut_empresa')
-        rut_encargado = request.form.get('rut_encargado')
-        direccion = request.form.get('direccion') or '-'
-        email = request.form.get('email') or request.form.get('correo_empresa')  # Cambio aquí para coincidir con el formulario
-        rubro = request.form.get('rubro') or '-'
-        sitio_web = request.form.get('sitio_web') or '-'
-        password = request.form.get('password')
+    # Solo aceptar registro desde formulario web; bloquear registros JSON (desde app móvil)
+    if request.is_json:
+        return jsonify({'success': False, 'error': 'Registro vía app deshabilitado'}), 403
+
+    # Obtener datos desde form-data (web)
+    nombre_empresa = request.form.get('nombre_empresa')
+    nombre_encargado = request.form.get('nombre_encargado')
+    apellido_encargado = request.form.get('apellido_encargado')
+    rut_empresa = request.form.get('rut_empresa')
+    rut_encargado = request.form.get('rut_encargado')
+    direccion = request.form.get('direccion') or '-'
+    email = request.form.get('email') or request.form.get('correo_empresa')  # Cambio aquí para coincidir con el formulario
+    rubro = request.form.get('rubro') or '-'
+    sitio_web = request.form.get('sitio_web') or '-'
+    password = request.form.get('password')
     
     rut_empresa_normalizado = re.sub(r'[^0-9kK]', '', rut_empresa)
     rut_encargado_normalizado = re.sub(r'[^0-9kK]', '', rut_encargado) if rut_encargado else None
@@ -340,10 +390,9 @@ def register_empresa():
         session['apellido'] = ''
         session['user_id'] = None
         session['empresa_id'] = empresa.id_empresa
-        
-        # Redirigir a la página principal (main)
-        return redirect(url_for('main'))
-        
+
+        # Redirigir al perfil de la empresa
+        return redirect(url_for('profile_empresa'))
     except Exception as e:
         db.session.rollback()
         error_msg = 'Error al registrar la empresa. Por favor, verifica los datos e intenta nuevamente.'
@@ -418,8 +467,8 @@ def login_empresa():
                                 'rut_empresa': rut_empresa_normalizado
                             }
                         })
-                    # Redirigir a la página principal (main)
-                    return redirect(url_for('main'))
+                    # Redirigir al perfil de la empresa
+                    return redirect(url_for('profile_empresa'))
             except Exception:
                 # Si hay cualquier error al chequear hash, continuamos con el flujo antiguo
                 pass
@@ -523,6 +572,119 @@ def resultados_busqueda():
                          nombre=nombre,
                          apellido=apellido)
 
+
+# Perfil de usuario (Alumnos / Docentes / Exalumnos)
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('login'))
+
+    user = Usuarios.query.get(user_id)
+    # detectar rol comprobando existencia de registros
+    role = 'usuario'
+    perfil = None
+    if Alumnos.query.get(user_id):
+        role = 'alumno'
+        perfil = Alumnos.query.get(user_id)
+    elif Docentes.query.get(user_id):
+        role = 'docente'
+        perfil = Docentes.query.get(user_id)
+    elif Exalumnos.query.get(user_id):
+        role = 'exalumno'
+        perfil = Exalumnos.query.get(user_id)
+
+    if request.method == 'POST':
+        # campos básicos de usuario
+        user.nombre = request.form.get('nombre') or user.nombre
+        user.apellido = request.form.get('apellido') or user.apellido
+        user.correo = request.form.get('correo') or user.correo
+        user.telefono = request.form.get('telefono') or user.telefono
+
+        # actualizar perfil según rol
+        try:
+            if role == 'alumno':
+                if not perfil:
+                    perfil = Alumnos(id_usuario=user.id_usuario)
+                    db.session.add(perfil)
+                perfil.carrera = request.form.get('carrera') or perfil.carrera
+                perfil.anio_ingreso = request.form.get('anio_ingreso') or perfil.anio_ingreso
+                perfil.anio_egreso = request.form.get('anio_egreso') or perfil.anio_egreso
+                perfil.experiencia_laboral = request.form.get('experiencia_laboral') or perfil.experiencia_laboral
+                perfil.descripcion = request.form.get('descripcion') or perfil.descripcion
+                perfil.linkedin = request.form.get('linkedin') or perfil.linkedin
+                perfil.ciudad = request.form.get('ciudad') or perfil.ciudad
+                perfil.region = request.form.get('region') or perfil.region
+                perfil.habilidades = request.form.get('habilidades') or perfil.habilidades
+                perfil.nivel_estudios = request.form.get('nivel_estudios') or perfil.nivel_estudios
+                perfil.estado_profesional = request.form.get('estado_profesional') or perfil.estado_profesional
+
+            elif role == 'docente':
+                if not perfil:
+                    perfil = Docentes(id_docente=user.id_usuario)
+                    db.session.add(perfil)
+                perfil.institucional_id = request.form.get('institucional_id') or perfil.institucional_id
+                perfil.departamento = request.form.get('departamento') or perfil.departamento
+                perfil.area_academica = request.form.get('area_academica') or perfil.area_academica
+                perfil.cargo = request.form.get('cargo') or perfil.cargo
+                perfil.bio_academica = request.form.get('bio_academica') or perfil.bio_academica
+                perfil.correo_institucional = request.form.get('correo_institucional') or perfil.correo_institucional
+                perfil.telefono_contacto = request.form.get('telefono_contacto') or perfil.telefono_contacto
+                perfil.oficina = request.form.get('oficina') or perfil.oficina
+
+            elif role == 'exalumno':
+                if not perfil:
+                    perfil = Exalumnos(id_exalumno=user.id_usuario)
+                    db.session.add(perfil)
+                perfil.carrera = request.form.get('carrera') or perfil.carrera
+                perfil.anio_egreso = request.form.get('anio_egreso') or perfil.anio_egreso
+                perfil.estudiando = bool(request.form.get('estudiando'))
+                perfil.tipo_institucion = request.form.get('tipo_institucion') or perfil.tipo_institucion
+                perfil.casa_estudio = request.form.get('casa_estudio') or perfil.casa_estudio
+                perfil.trabajando = bool(request.form.get('trabajando'))
+                perfil.empresa_actual = request.form.get('empresa_actual') or perfil.empresa_actual
+                perfil.puesto_actual = request.form.get('puesto_actual') or perfil.puesto_actual
+                perfil.descripcion = request.form.get('descripcion') or perfil.descripcion
+                perfil.linkedin = request.form.get('linkedin') or perfil.linkedin
+                perfil.ciudad = request.form.get('ciudad') or perfil.ciudad
+                perfil.region = request.form.get('region') or perfil.region
+                perfil.habilidades = request.form.get('habilidades') or perfil.habilidades
+
+            db.session.commit()
+            return render_template('profile_user.html', user=user, role=role, perfil=perfil, success=True)
+        except Exception as e:
+            db.session.rollback()
+            return render_template('profile_user.html', user=user, role=role, perfil=perfil, error=str(e))
+
+    return render_template('profile_user.html', user=user, role=role, perfil=perfil)
+
+
+# Perfil de empresa (ver/editar)
+@app.route('/profile-empresa', methods=['GET', 'POST'])
+def profile_empresa():
+    empresa_id = session.get('empresa_id')
+    if not empresa_id:
+        return redirect(url_for('login_empresa'))
+    empresa = Empresas.query.get(empresa_id)
+
+    if request.method == 'POST':
+        empresa.nombre_empresa = request.form.get('nombre_empresa') or empresa.nombre_empresa
+        empresa.rubro = request.form.get('rubro') or empresa.rubro
+        empresa.direccion = request.form.get('direccion') or empresa.direccion
+        empresa.telefono = request.form.get('telefono') or empresa.telefono
+        empresa.correo_empresa = request.form.get('correo_empresa') or empresa.correo_empresa
+        empresa.sitio_web = request.form.get('sitio_web') or empresa.sitio_web
+        empresa.descripcion_empresa = request.form.get('descripcion_empresa') or empresa.descripcion_empresa
+        empresa.tipo_empresa = request.form.get('tipo_empresa') or empresa.tipo_empresa
+        try:
+            db.session.commit()
+            return render_template('profile_empresa.html', empresa=empresa, success=True)
+        except Exception as e:
+            db.session.rollback()
+            return render_template('profile_empresa.html', empresa=empresa, error=str(e))
+
+    return render_template('profile_empresa.html', empresa=empresa)
+
 # Página de login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -566,26 +728,21 @@ def login():
                     'user_id': user.id_usuario
                 }
             })
-        return redirect(url_for('main'))
+        return redirect(url_for('profile'))
     return render_template('login.html')
 
 # Página de registro
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        # Detectar si es JSON (desde app móvil) o form-data (desde web)
-        is_json = request.is_json
-        if is_json:
-            data = request.get_json()
-            rut = data.get('rut')
-            nombre = data.get('nombre')
-            apellido = data.get('apellido')
-            password = data.get('password')
-        else:
-            rut = request.form.get('rut')
-            nombre = request.form.get('nombre')
-            apellido = request.form.get('apellido')
-            password = request.form.get('password')
+        # Bloquear registros enviados como JSON desde la app móvil
+        if request.is_json:
+            return jsonify({'success': False, 'error': 'Registro vía app deshabilitado'}), 403
+
+        rut = request.form.get('rut')
+        nombre = request.form.get('nombre')
+        apellido = request.form.get('apellido')
+        password = request.form.get('password')
         
         # hace que el rut se pueda ingresar sin puntos ni guiones
         rut_normalizado = re.sub(r'[^0-9kK]', '', rut)
