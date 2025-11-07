@@ -147,6 +147,8 @@ temp/
 *.bak
 *.swp
 .cache/
+temp_start_backend.bat
+temp_start_expo.bat
 
 # Testing
 coverage/
