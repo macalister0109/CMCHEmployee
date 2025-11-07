@@ -34,6 +34,13 @@ const useStyles = () => {
             margin: 4,
             width: 100,
             borderRadius: 10,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 4,
+
+            // --- SOMBRA Android ---
+            elevation: 8,
         },
         textButton: {
             color: theme.colors.ligth,

@@ -12,7 +12,6 @@ export interface offerDates {
     name: string;
     location: string;
     vacant: string;
-    puntations: string;
     img: string;
     labels: LABELS[];
 }
