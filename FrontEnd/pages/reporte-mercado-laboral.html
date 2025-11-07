@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reportes del Mercado Laboral | CMCHEmployee</title>
+
+  <link rel="stylesheet" href="assets/css/reportes.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<header class="hero">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1 class="hero-title">Reportes del Mercado Laboral</h1>
+    <p class="hero-subtitle">Visión estratégica del panorama laboral para estudiantes y empresas CMCH</p>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="card fade-in">
+    <div class="card-header">
+      <h2>📈 Tendencia por Industria</h2>
+      <span class="tag">Últimos 30 días</span>
+    </div>
+    <div class="chart-wrapper">
+      <canvas id="chartIndustria"></canvas>
+    </div>
+  </section>
+
+
+  <section class="card fade-in">
+    <div class="card-header">
+      <h2>🏢 Modalidad de Trabajo</h2>
+      <span class="tag">Distribución Actual</span>
+    </div>
+    <div class="chart-wrapper">
+      <canvas id="chartModalidad"></canvas>
+    </div>
+  </section>
+
+  <section class="stats fade-in">
+
+    <div class="stat-card">
+      <h3>230</h3>
+      <p>Ofertas activas</p>
+    </div>
+
+    <div class="stat-card">
+      <h3>72%</h3>
+      <p>Prácticas TP</p>
+    </div>
+
+    <div class="stat-card">
+      <h3>18</h3>
+      <p>Industrias activas</p>
+    </div>
+
+    <div class="stat-card">
+      <h3>56</h3>
+      <p>Empresas publicando</p>
+    </div>
+
+  </section>
+
+</main>
+
+<footer class="footer">
+  <p>© CMCHEmployee — Conectando talento con oportunidades</p>
+</footer>
+
+<script src="assets/js/reportes.js"></script>
+</body>
+</html>

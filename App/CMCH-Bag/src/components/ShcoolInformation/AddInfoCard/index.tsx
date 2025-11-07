@@ -1,0 +1,26 @@
+import { View, Text, Image } from "react-native";
+import { useStyles } from "./styles";
+
+export default function AddInfoCard({
+    img,
+    text,
+    title,
+}: {
+    img: any;
+    text: string;
+    title: string;
+}) {
+    const styles = useStyles();
+
+    return (
+        <View style={styles.card}>
+            <View style={styles.imgContainer}>
+                <Image source={img} style={styles.img} />
+            </View>
+            <View style={styles.descriptionContainer}>
+                <Text style={styles.title}>{title}</Text>
+                <Text style={styles.description}>{text}</Text>
+            </View>
+        </View>
+    );
+}

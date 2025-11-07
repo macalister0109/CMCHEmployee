@@ -4,7 +4,7 @@ import subprocess
 
 repo_path = r"C:\WebSite\CMCHEmployee"
 
-INTERVAL = 3 * 3600
+INTERVAL = 3600
 I = 0
 
 while True:
