@@ -1,13 +1,17 @@
 import React from "react";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Header from "../../../components/Header";
 import useStyles from "./styles";
+import profileCompany from "../../../data/profileCompany.json";
+import * as Clipboard from "expo-clipboard";
 
 export default function ProfileScreen() {
     const navigation = useNavigation();
     const styles = useStyles();
-
+    const copiar = () => {
+        Clipboard.setStringAsync(profileCompany.email);
+    };
     return (
         <View style={styles.screen}>
             <Header />
@@ -29,12 +33,33 @@ export default function ProfileScreen() {
             </View>
 
             {/* Información del usuario */}
-            <View style={styles.infoContainer}>
-                <Text style={styles.email}>juan@example.com</Text>
-                <Text style={styles.location}>Valparaíso, Chile.</Text>
-                <Text style={styles.location}>https://techinnovators.cl</Text>
-                <Text style={styles.name}>Juan Ignacio Yañez Aravena</Text>
-                <Text style={styles.career}>PROGRAMACIÓN</Text>
+            <View style={styles.profileContainer}>
+                <View style={styles.infoContainer}>
+                    <Text style={styles.name}>{profileCompany.name}</Text>
+                    <Text style={styles.career}>
+                        {profileCompany.sector[0]} y {profileCompany.sector[1]}
+                    </Text>
+                    <TouchableOpacity onPress={copiar}>
+                        <Text style={styles.email}>{profileCompany.email}</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.location}>
+                        {profileCompany.location}
+                    </Text>
+                    <Text style={styles.location}>
+                        {profileCompany.website}
+                    </Text>
+                </View>
+                <View style={styles.descriptionContainer}>
+                    <Text style={styles.title}>Descripción</Text>
+                    <View style={styles.line}></View>
+                    <Text style={styles.textDescription}>
+                        {profileCompany.description}
+                    </Text>
+                </View>
+                <View style={styles.descriptionContainer}>
+                    <Text style={styles.title}>Ofertas Publicadas</Text>
+                    <View style={styles.line}></View>
+                </View>
             </View>
         </View>
     );

@@ -6,14 +6,16 @@ import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import GradientBackground from "../../components/GradientBackground";
 import Header from "../../components/Header";
+import Search from "../../components/Search";
 
 export default function JobScreen() {
     const { role } = useAuth();
     const styles = useStyles();
     const navigation = useNavigation();
     return (
-        <View style={{ flex: 1, alignItems: "center" }}>
+        <View style={{ flex: 1, alignItems: "center", gap: 12 }}>
             <Header />
+            <Search />
             <View style={styles.container}>
                 {role === "company" && (
                     <View style={styles.btnContainer}>

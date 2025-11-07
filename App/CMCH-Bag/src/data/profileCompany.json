@@ -1,0 +1,10 @@
+{
+    "id": "comp-001",
+    "name": "Tech Innovators SPA",
+    "email": "contacto@techinnovators.cl",
+    "location": "Santiago, Chile",
+    "description": "Empresa dedicada al desarrollo de soluciones tecnológicas innovadoras.",
+    "website": "https://techinnovators.cl",
+    "offers": [],
+    "sector": ["Programacion", "Conectividad y Redes"]
+}
