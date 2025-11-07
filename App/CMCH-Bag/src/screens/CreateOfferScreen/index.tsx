@@ -13,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import { offerDates } from "../../types/offerDates";
 import useStyles from "./styles";
 import { Ionicons } from "@expo/vector-icons";
+import ProfileCompany from "../../data/profileCompany.json";
 
 const ALLOWED_LABELS = [
     "Programacion",
@@ -27,47 +28,56 @@ export default function CreateOfferScreen() {
     const navigation = useNavigation();
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [name, setName] = useState("");
+    const [name, setName] = useState(ProfileCompany.name);
     const [location, setLocation] = useState("");
     const [vacant, setVacant] = useState("");
-    const [puntations, setPuntations] = useState("");
     const [img, setImg] = useState("");
     const [labelsText, setLabelsText] = useState("");
 
-    const handleCreate = () => {
-        // Validaciones básicas
-        if (!title.trim()) {
-            Alert.alert("Error", "El título es obligatorio.");
-            return;
-        }
-        // Parse labels: separadas por coma
-        const labels = labelsText
-            .split(",")
-            .map((l) => l.trim())
-            .filter((l) => l.length > 0);
+    // const handleCreate = () => {
+    //     // Validaciones básicas
+    //     if (!title.trim()) {
+    //         Alert.alert("Error", "El título es obligatorio.");
+    //         return;
+    //     }
+    //     // Parse labels: separadas por coma
+    //     const labels = labelsText
+    //         .split(",")
+    //         .map((l) => l.trim())
+    //         .filter((l) => l.length > 0);
 
-        const invalid = labels.filter((l) => !ALLOWED_LABELS.includes(l));
-        if (invalid.length > 0) {
-            Alert.alert(
-                "Error",
-                `Las siguientes etiquetas no son válidas: ${invalid.join(", ")}`
-            );
-            return;
-        }
+    //     const invalid = labels.filter((l) => !ALLOWED_LABELS.includes(l));
+    //     if (invalid.length > 0) {
+    //         Alert.alert(
+    //             "Error",
+    //             `Las siguientes etiquetas no son válidas: ${invalid.join(", ")}`
+    //         );
+    //         return;
+    //     }
 
-        const offer: offerDates = {
-            title: title.trim(),
-            description: description.trim(),
-            name: name.trim(),
-            location: location.trim(),
-            vacant: vacant.trim(),
-            img: img.trim(),
-            labels: labels as any,
-        };
+    //     const offer: offerDates = {
+    //         title: title.trim(),
+    //         description: description.trim(),
+    //         name: name.trim(),
+    //         location: location.trim(),
+    //         vacant: vacant.trim(),
+    //         img: img.trim(),
+    //         labels: labels as any,
+    //     };
 
-        // Por ahora solo mostramos la oferta creada
-        Alert.alert("Oferta creada", JSON.stringify(offer, null, 2));
-    };
+    //     // Guardar la oferta y volver a la pantalla anterior
+    //     (async () => {
+    //         try {
+    //             await OffersService.addOffer(offer);
+    //             Alert.alert("Éxito", "Oferta creada correctamente.", [
+    //                 { text: "OK", onPress: () => (navigation as any).goBack() },
+    //             ]);
+    //         } catch (error) {
+    //             console.error("Error guardando oferta:", error);
+    //             Alert.alert("Error", "No se pudo guardar la oferta.");
+    //         }
+    //     })();
+    // };
     const styles = useStyles();
     return (
         <ScrollView>
@@ -137,7 +147,7 @@ export default function CreateOfferScreen() {
 
                         <View style={styles.button}>
                             <TouchableOpacity
-                                onPress={handleCreate}
+                                onPress={() => navigation.goBack()}
                                 style={styles.createButton}>
                                 <Text style={styles.createText}>
                                     Publicar Oferta

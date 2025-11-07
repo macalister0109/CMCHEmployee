@@ -1,0 +1,26 @@
+{
+    "id": "user-001",
+    "name": "Juan Ignacio Yañez",
+    "email": "juan@example.com",
+    "location": "Valparaíso, Chile",
+    "bio": "Soy estudiante de Técnico Programador con un fuerte interés en el desarrollo de software y la creación de soluciones tecnológicas que generen un impacto real. Me apasiona aprender nuevas tecnologías, experimentar con proyectos personales y aplicar mis conocimientos de manera práctica. Disfruto trabajar en equipo, liderar proyectos y enseñar a otros lo que he aprendido en mi camino como programador.",
+    "skills": [
+        "JavaScript",
+        "React Native",
+        "Python",
+        "HTML",
+        "CSS",
+        "Tailwind CSS",
+        "Astro"
+    ],
+    "experience": "Más de un año de experiencia desarrollando proyectos personales centrados en el desarrollo móvil y web. He trabajado con interfaces modernas, integración de componentes y optimización de código. Además, cuento con conocimientos en soporte técnico, mantenimiento de equipos y liderazgo de grupos de trabajo.",
+    "education": "Estudiante de primer año en la carrera de Técnico Programador, con enfoque en programación estructurada, desarrollo web y fundamentos de bases de datos.",
+    "interests": [
+        "Desarrollo Web Fullstack",
+        "Creación de Aplicaciones Móviles",
+        "Automatización con Python",
+        "Videojuegos y Robótica",
+        "Aprendizaje continuo y enseñanza"
+    ],
+    "labels": "Programacion"
+}

@@ -6,8 +6,7 @@ const useStyles = () => {
     return StyleSheet.create({
         container: {
             width: theme.device_width * theme.width["90%"],
-            paddingVertical: 32,
-            gap: 12,
+            gap: 24,
         },
         title: {
             fontSize: theme.font_sizes.h1,

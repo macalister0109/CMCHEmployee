@@ -25,7 +25,7 @@ const useStyles = () => {
         imgLogo: {
             width: 130,
             height: 130,
-            borderRadius: 60,
+            borderRadius: 100,
             borderWidth: 3,
             borderColor: "#fff",
             position: "absolute",
@@ -37,36 +37,63 @@ const useStyles = () => {
             shadowRadius: 4,
             elevation: 6,
         },
-
+        profileContainer: {
+            width: theme.device_width * theme.width["100%"],
+            display: "flex",
+            alignItems: "center",
+        },
         infoContainer: {
-            marginTop: 70, // espacio después de la imagen circular
-            alignItems: "flex-start",
+            width: "100%",
+            marginTop: 70,
             paddingHorizontal: 25,
         },
 
         email: {
             fontSize: 14,
-            color: "#555",
+            color: theme.colors.text_2,
             marginBottom: 2,
         },
 
         location: {
             fontSize: 14,
-            color: "#777",
-            marginBottom: 10,
+            color: theme.colors.text_2,
+            marginBottom: 2,
         },
 
         name: {
-            fontSize: 18,
-            fontWeight: "600",
-            color: "#000",
+            fontSize: theme.font_sizes.h2,
+            fontWeight: theme.font_weights.bold,
+            color: theme.colors.text,
         },
 
         career: {
             fontSize: 16,
             fontWeight: "bold",
-            color: "#3B3B98",
+            color: theme.colors.third_3,
             marginTop: 4,
+        },
+        descriptionContainer: {
+            width: theme.device_width * theme.width["90%"],
+        },
+        line: {
+            width: "100%",
+            height: 1,
+            borderBottomWidth: 3,
+            borderBottomColor: theme.colors.primary_2,
+        },
+        title: {
+            marginTop: 16,
+            fontSize: theme.font_sizes.h2,
+            fontWeight: theme.font_weights.bold,
+            color: theme.colors.third_2,
+            marginBottom: 4,
+        },
+        textDescription: {
+            fontSize: theme.font_sizes.body,
+            fontWeight: theme.font_weights.bold,
+            color: theme.colors.text,
+            marginTop: 8,
+            marginBottom: 4,
         },
     });
 };
