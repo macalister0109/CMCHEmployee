@@ -29,11 +29,11 @@
             <div class="auth-buttons">
                 {% if nombre %}
                 <span class="welcome-text">{{ nombre }} {{ apellido }}</span>
-                <form method="post" action="{{ url_for('logout') }}" style="display:inline; margin-left:10px;">
+                <form method="post" action="{{ url_for('auth.logout') }}" style="display:inline; margin-left:10px;">
                     <button type="submit" class="btn-outline btn-logout">Cerrar Sesión</button>
                 </form>
                 {% else %}
-                <a href="{{ url_for('login') }}" class="btn-primary">Ingresar</a>
+                <a href="{{ url_for('auth.login') }}" class="btn-primary">Ingresar</a>
                 {% endif %}
             </div>
         </div>
@@ -44,7 +44,7 @@
         <div class="container">
             <h1><i class="fas fa-search"></i> Búsqueda de Ofertas Laborales</h1>
             
-            <form class="search-form" method="get" onsubmit="return realizarBusqueda(event)">
+            <form class="search-form" method="get" action="{{ url_for('busqueda.resultados_busqueda') }}">
                 <div class="search-row">
                     <input
                         type="text"

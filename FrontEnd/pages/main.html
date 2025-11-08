@@ -56,13 +56,13 @@
           <div class="welcome-header">
             <span class="welcome-text">Bienvenida empresa '{{ nombre }}'</span>
             <div class="empresa-actions" style="display: inline-flex; gap: 10px; margin-left: 10px; align-items: center;">
-              <a href="{{ url_for('profile_empresa') }}" class="btn-primary btn-profile" title="Ver perfil">
+              <a href="{{ url_for('empresas.profile_empresa') }}" class="btn-primary btn-profile" title="Ver perfil">
                 <i class="fas fa-user"></i> Perfil
               </a>
-              <a href="{{ url_for('dashboard_empresa') }}" class="btn-primary btn-dashboard" title="Ir al Dashboard">
+              <a href="{{ url_for('empresas.dashboard_empresa') }}" class="btn-primary btn-dashboard" title="Ir al Dashboard">
                 <i class="fas fa-tachometer-alt"></i> Dashboard
               </a>
-              <form method="post" action="{{ url_for('logout') }}" style="display: inline; margin: 0;">
+              <form method="post" action="{{ url_for('auth.logout') }}" style="display: inline; margin: 0;">
                 <button type="submit" class="btn-outline btn-logout" title="Cerrar sesión">
                   <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
                 </button>
@@ -77,19 +77,19 @@
               %}
             </span>
             <div style="display:inline-flex; gap:8px; align-items:center; margin-left:10px">
-              <a href="{{ url_for('profile') }}" class="btn-primary btn-profile">Perfil</a>
-              <form method="post" action="{{ url_for('logout') }}" class="logout-form" style="margin:0;">
+              <a href="{{ url_for('usuarios.profile') }}" class="btn-primary btn-profile">Perfil</a>
+              <form method="post" action="{{ url_for('auth.logout') }}" class="logout-form" style="margin:0;">
                 <button type="submit" class="btn-outline btn-logout" id="logout-button">Cerrar Sesión</button>
               </form>
             </div>
           </div>
           {% else %}
           <!-- No hay sesión -->
-          <a href="{{ url_for('login') }}" class="btn-primary" id="btn-ingresar"
+          <a href="{{ url_for('auth.login') }}" class="btn-primary" id="btn-ingresar"
             >Ingresar</a
           >
           <a
-            href="{{ url_for('login_empresa') }}"
+            href="{{ url_for('empresas.login_empresa') }}"
             class="btn-outline"
             id="btn-empresas"
             >Empresas</a
@@ -108,7 +108,7 @@
             Más de <strong>100 oportunidades</strong> esperan a estudiantes,
             egresados y profesionales en nuestras especialidades
           </p>
-          <form class="search-box" role="search" action="/resultados-busqueda" method="get" onsubmit="return realizarBusqueda(event)">
+          <form class="search-box" role="search" action="{{ url_for('busqueda.resultados_busqueda') }}" method="get">
             <input
               type="text"
               name="q"

@@ -1,6 +1,11 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const searchForm = document.querySelector('.search-form');
-    const resultsList = document.getElementById('results-container');
+document.addEventListener('DOMContentLoaded', function() {
+    // Obtener los resultados iniciales
+    cargarResultados();
+});
+
+function cargarResultados() {
+    const params = new URLSearchParams(window.location.search);
+    const resultsContainer = document.getElementById('results-container');
     const loadingState = document.querySelector('.loading-state');
     const emptyState = document.querySelector('.empty-state');
     const resultsCount = document.getElementById('results-count');

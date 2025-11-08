@@ -28,7 +28,7 @@
             
             <div class="auth-buttons">
                 <span class="welcome-text">{{ nombre_empresa }}</span>
-                <form method="post" action="{{ url_for('logout') }}" style="display:inline; margin-left:10px;">
+                <form method="post" action="{{ url_for('auth.logout') }}" style="display:inline; margin-left:10px;">
                     <button type="submit" class="btn-outline btn-logout">Cerrar Sesión</button>
                 </form>
             </div>

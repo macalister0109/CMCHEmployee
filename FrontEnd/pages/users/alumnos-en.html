@@ -28,15 +28,15 @@
 
       <nav class="dashboard-nav" aria-label="Main Navigation">
         <a href="#inicio" id="nav-inicio">Inicio</a>
-        <a href="{{ url_for('ofertas') }}" id="nav-ofertas">Ofertas</a>
-        <a href="{{ url_for('empresas') }}" id="nav-empresas">Empresas</a>
-        <a href="{{ url_for('perfil') }}" id="nav-perfil">Perfil</a>
+        <a href="{{ url_for('postulaciones.ofertas') }}" id="nav-ofertas">Ofertas</a>
+        <a href="{{ url_for('empresas.listar') }}" id="nav-empresas">Empresas</a>
+        <a href="{{ url_for('usuarios.perfil') }}" id="nav-perfil">Perfil</a>
       </nav>
 
       {% if nombre %}
       <div class="user-info">
         <span id="welcome-text">Bienvenido, {{ nombre }} {{ apellido }}</span>
-        <form method="post" action="{{ url_for('logout') }}">
+        <form method="post" action="{{ url_for('auth.logout') }}">
           <button type="submit" class="btn-logout" id="btn-logout">
             Cerrar Sesión
           </button>
@@ -72,7 +72,7 @@
           <strong id="profesor-text">Profesor a cargo:</strong> {{ profesor }}
         </p>
         <a
-          href="{{ url_for('editar_perfil') }}"
+          href="{{ url_for('usuarios.editar_perfil') }}"
           class="btn-primary"
           id="btn-editar-perfil"
           >Editar Perfil</a
@@ -86,7 +86,7 @@
         <article class="oferta-item">
           <p><strong>{{ oferta.titulo }}</strong> - {{ oferta.empresa }}</p>
           <a
-            href="{{ url_for('postular', id=oferta.id) }}"
+            href="{{ url_for('postulaciones.postular', id=oferta.id) }}"
             class="btn-secondary2 btn-postular"
             >Postular</a
           >
@@ -115,7 +115,7 @@
         <article class="empresa-item">
           <p>{{ empresa.nombre }}</p>
           <a
-            href="{{ url_for('ver_empresa', id=empresa.id) }}"
+            href="{{ url_for('empresas.ver_empresa', id=empresa.id) }}"
             class="btn-secondary2 btn-ver-empresa"
             >Ver Empresa</a
           >
@@ -131,13 +131,13 @@
       <a href="#inicio" id="mobile-inicio"
         ><i class="fas fa-home"></i><span>Inicio</span></a
       >
-      <a href="{{ url_for('ofertas') }}" id="mobile-ofertas"
+      <a href="{{ url_for('postulaciones.ofertas') }}" id="mobile-ofertas"
         ><i class="fas fa-briefcase"></i><span>Ofertas</span></a
       >
-      <a href="{{ url_for('empresas') }}" id="mobile-empresas"
+      <a href="{{ url_for('empresas.listar') }}" id="mobile-empresas"
         ><i class="fas fa-building"></i><span>Empresas</span></a
       >
-      <a href="{{ url_for('perfil') }}" id="mobile-perfil"
+      <a href="{{ url_for('usuarios.perfil') }}" id="mobile-perfil"
         ><i class="fas fa-user"></i><span>Perfil</span></a
       >
     </nav>
