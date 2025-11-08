@@ -92,4 +92,9 @@ def profile():
             db.session.rollback()
             return render_template('profile_user.html', user=user, role=role, perfil=perfil, error=str(e))
 
+    # Si se especifica redirect_to, redirigir a esa ruta
+    redirect_to = request.args.get('redirect_to')
+    if redirect_to:
+        return redirect(url_for(redirect_to))
+
     return render_template('profile_user.html', user=user, role=role, perfil=perfil)

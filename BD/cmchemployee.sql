@@ -110,6 +110,8 @@ CREATE TABLE IF NOT EXISTS `empresas` (
   `descripcion_empresa` varchar(1000) NOT NULL,
   `password_empresa` varchar(300) NOT NULL,
   `tipo_empresa` varchar(20) NOT NULL,
+  `email_verificado` tinyint(1) NOT NULL DEFAULT 0,
+  `fecha_verificacion_email` datetime DEFAULT NULL,
   `Pais_id_pais` int(10) unsigned NOT NULL,
   `Empresarios_id_usuario` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id_empresa`),
@@ -162,7 +164,7 @@ CREATE TABLE IF NOT EXISTS `postulaciones` (
   PRIMARY KEY (`id_postulacion`),
   KEY `FK_Postulaciones_Puesto` (`id_trabajo`),
   KEY `FK_Postulaciones_Usuarios` (`id_usuario`),
-  CONSTRAINT `FK_Postulaciones_Puesto` FOREIGN KEY (`id_trabajo`) REFERENCES `puestodetrabajo` (`id_trabajo`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `FK_Postulaciones_Puesto` FOREIGN KEY (`id_trabajo`) REFERENCES `puestodetrabajo` (`id_trabajo`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_Postulaciones_Usuarios` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -180,9 +182,11 @@ CREATE TABLE IF NOT EXISTS `puestodetrabajo` (
   `tamanio_empresa` varchar(50) NOT NULL,
   `descripcion_trabajo` varchar(300) NOT NULL,
   `calificaciones` varchar(1000) DEFAULT NULL,
+  `fecha_publicacion` date NOT NULL DEFAULT CURRENT_DATE,
+  `estado` varchar(20) NOT NULL DEFAULT 'Activo',
   PRIMARY KEY (`id_trabajo`),
   KEY `FK_PuestoTrabajo_Empresas` (`Empresas_id_empresa`),
-  CONSTRAINT `FK_PuestoTrabajo_Empresas` FOREIGN KEY (`Empresas_id_empresa`) REFERENCES `empresas` (`id_empresa`) ON DELETE NO ACTION ON UPDATE NO ACTION
+    CONSTRAINT `FK_PuestoTrabajo_Empresas` FOREIGN KEY (`id_empresa`) REFERENCES `empresas` (`id_empresa`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- La exportación de datos fue deseleccionada.
@@ -206,6 +210,8 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   `password` varchar(300) NOT NULL,
   `correo` varchar(100) NOT NULL,
   `telefono` varchar(20) NOT NULL,
+  `email_verificado` tinyint(1) NOT NULL DEFAULT 0,
+  `fecha_verificacion_email` datetime DEFAULT NULL,
   `Pais_id_pais` int(10) unsigned NOT NULL,
   `Rut_usuario` varchar(30) NOT NULL,
   `UsuarioAutorizado_ID` int(10) unsigned NOT NULL,
@@ -217,6 +223,26 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   CONSTRAINT `FK_Usuarios_Rut` FOREIGN KEY (`Rut_usuario`) REFERENCES `usuarioautorizado` (`numero_documento`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_Usuarios_Pais` FOREIGN KEY (`Pais_id_pais`) REFERENCES `pais` (`id_pais`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- La exportación de datos fue deseleccionada.
+
+-- Volcando estructura para tabla cmchemployee.tokens
+CREATE TABLE IF NOT EXISTS `Tokens` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `usuario_id` int(10) unsigned DEFAULT NULL,
+  `empresa_id` int(10) unsigned DEFAULT NULL,
+  `token` varchar(100) NOT NULL,
+  `tipo` varchar(20) NOT NULL,
+  `fecha_creacion` datetime DEFAULT CURRENT_TIMESTAMP,
+  `fecha_expiracion` datetime NOT NULL,
+  `usado` tinyint(1) DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `token` (`token`),
+  KEY `FK_Tokens_Usuarios` (`usuario_id`),
+  KEY `FK_Tokens_Empresas` (`empresa_id`),
+  CONSTRAINT `FK_Tokens_Usuarios` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `FK_Tokens_Empresas` FOREIGN KEY (`empresa_id`) REFERENCES `empresas` (`id_empresa`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- La exportación de datos fue deseleccionada.
 

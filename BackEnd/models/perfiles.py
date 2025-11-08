@@ -3,7 +3,7 @@ from .usuarios import Usuarios
 
 class Alumnos(db.Model):
     __tablename__ = 'Alumnos'
-    id_usuario = db.Column(db.Integer, db.ForeignKey('Usuarios.id_usuario'), primary_key=True)
+    id_usuario = db.Column(db.Integer, db.ForeignKey('Usuarios.id_usuario', ondelete='CASCADE'), primary_key=True)
     carrera = db.Column(db.String(100), nullable=True)
     anio_ingreso = db.Column(db.Integer, nullable=True)
     anio_egreso = db.Column(db.Integer, nullable=True)
@@ -19,7 +19,7 @@ class Alumnos(db.Model):
 
 class Docentes(db.Model):
     __tablename__ = 'Docentes'
-    id_usuario = db.Column(db.Integer, db.ForeignKey('Usuarios.id_usuario'), primary_key=True)
+    id_usuario = db.Column(db.Integer, db.ForeignKey('Usuarios.id_usuario', ondelete='CASCADE'), primary_key=True)
     institucional_id = db.Column(db.String(50), nullable=True)
     departamento = db.Column(db.String(100), nullable=True)
     area_academica = db.Column(db.String(100), nullable=True)
@@ -35,7 +35,7 @@ class Docentes(db.Model):
 
 class Exalumnos(db.Model):
     __tablename__ = 'Exalumnos'
-    id_usuario = db.Column(db.Integer, db.ForeignKey('Usuarios.id_usuario'), primary_key=True)
+    id_usuario = db.Column(db.Integer, db.ForeignKey('Usuarios.id_usuario', ondelete='CASCADE'), primary_key=True)
     carrera = db.Column(db.String(100), nullable=True)
     anio_egreso = db.Column(db.Integer, nullable=True)
     estudiando = db.Column(db.Boolean, default=False, nullable=False)

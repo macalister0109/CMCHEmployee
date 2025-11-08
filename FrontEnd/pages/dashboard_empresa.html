@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Empresa - Legado TP</title>
 
-    <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="assets/css/dashboard_empresa.css">
-    <link rel="icon" href="assets/img/logo.png" type="image/png">
+    <link rel="stylesheet" href="{{ url_for('assets_files', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('assets_files', filename='css/dashboard_empresa.css') }}">
+    <link rel="icon" href="{{ url_for('assets_files', filename='img/logo.png') }}" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -240,6 +240,19 @@
     <!-- Toast para notificaciones -->
     <div id="toast" class="toast"></div>
 
-    <script src="assets/js/dashboard_empresa.js"> </script>
+    <script type="text/javascript">
+        // Variables globales para los datos de la empresa (inyectadas desde Flask)
+        window.EMPRESA_ID = {{ empresa_id | tojson | safe }};
+        window.NOMBRE_EMPRESA = {{ nombre_empresa | tojson | safe }};
+        window.API_BASE = window.location.origin;
+        
+        // Debug info
+        console.log('Debug info:', {
+            EMPRESA_ID: window.EMPRESA_ID,
+            NOMBRE_EMPRESA: window.NOMBRE_EMPRESA,
+            API_BASE: window.API_BASE
+        });
+    </script>
+    <script src="{{ url_for('assets_files', filename='js/dashboard_empresa.js') }}"></script>
 </body>
 </html>

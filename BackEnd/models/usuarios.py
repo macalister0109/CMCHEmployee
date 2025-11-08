@@ -14,7 +14,7 @@ class UsuarioAutorizado(db.Model):
 
 class Usuarios(db.Model):
     __tablename__ = 'Usuarios'
-    id_usuario = db.Column(db.Integer, primary_key=True)
+    id_usuario = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nombre = db.Column(db.String(50), nullable=False)
     apellido = db.Column(db.String(70), nullable=False)
     password = db.Column(db.String(300), nullable=False)
@@ -23,3 +23,5 @@ class Usuarios(db.Model):
     Pais_id_pais = db.Column(db.Integer, db.ForeignKey('Pais.id_pais'), nullable=False)
     Rut_usuario = db.Column(db.String(30), db.ForeignKey('UsuarioAutorizado.numero_documento'), nullable=False)
     UsuarioAutorizado_ID = db.Column(db.Integer, db.ForeignKey('UsuarioAutorizado.id_usuario_autorizado'), nullable=False)
+    email_verificado = db.Column(db.Boolean, default=False)
+    fecha_verificacion_email = db.Column(db.DateTime, nullable=True)

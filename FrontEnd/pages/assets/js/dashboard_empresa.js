@@ -1,14 +1,16 @@
- // Variable global para empresa_id (será inyectada desde Flask)
-        const EMPRESA_ID = {{ empresa_id }};
-        const API_BASE = window.location.origin;
-
         // ========================================
         // FUNCIONES DE CARGA DE DATOS
         // ========================================
 
         async function cargarOfertas() {
             try {
-                const response = await fetch(`${API_BASE}/api/empresa/mis-puestos?empresa_id=${EMPRESA_ID}`);
+                console.log('Cargando ofertas...');
+                const response = await fetch(`${API_BASE}/api/empresa/mis-puestos`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'same-origin'
+                });
                 const data = await response.json();
                 
                 if (data.success) {
@@ -129,7 +131,6 @@
             const ofertaId = document.getElementById('oferta-id').value;
             
             const data = {
-                empresa_id: EMPRESA_ID,
                 area_trabajo: formData.get('area_trabajo'),
                 tipo_industria: formData.get('tipo_industria'),
                 region_trabajo: formData.get('region_trabajo'),
@@ -141,14 +142,22 @@
             };
             
             try {
-                const url = ofertaId ? `${API_BASE}/api/puesto/${ofertaId}` : `${API_BASE}/api/puesto`;
+                const url = ofertaId ? `${API_BASE}/puesto/${ofertaId}` : `${API_BASE}/puesto`;
                 const method = ofertaId ? 'PUT' : 'POST';
                 
+                console.log('Enviando datos:', {
+                    url,
+                    method,
+                    data
+                });
+
                 const response = await fetch(url, {
                     method: method,
                     headers: {
                         'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
                     },
+                    credentials: 'same-origin',
                     body: JSON.stringify(data)
                 });
                 
@@ -173,7 +182,7 @@
             }
             
             try {
-                const response = await fetch(`${API_BASE}/api/puesto/${id}?empresa_id=${EMPRESA_ID}&format=json`, {
+                const response = await fetch(`${API_BASE}/puesto/${id}`, {
                     method: 'DELETE'
                 });
                 

@@ -18,6 +18,15 @@ STATIC_FOLDER = os.path.join(FRONTEND_PAGES, "assets")
 def create_app():
     app = Flask(__name__, template_folder=FRONTEND_PAGES, static_folder=STATIC_FOLDER)
 
+    # Habilitar CORS para desarrollo
+    @app.after_request
+    def after_request(response):
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,X-Requested-With')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+        response.headers.add('Access-Control-Allow-Credentials', 'true')
+        return response
+
     # Configuración de la aplicación
     app.secret_key = os.environ.get("SECRET_KEY", "ClaveSuperSecreta")
     DATABASE_URL = os.environ.get("DATABASE_URL", "mysql+pymysql://root@localhost/CMCHEmployee")
@@ -112,7 +121,19 @@ app.register_blueprint(usuarios_bp)
 app.register_blueprint(postulaciones_bp)
 app.register_blueprint(busqueda_bp)
 
-# Definir carpeta de archivos estáticos
+# Manejador de errores para JSON
+@app.errorhandler(404)
+def not_found_error(error):
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return jsonify({'success': False, 'error': 'Recurso no encontrado'}), 404
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    db.session.rollback()
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return jsonify({'success': False, 'error': 'Error interno del servidor'}), 500
+    return render_template('500.html'), 500# Definir carpeta de archivos estáticos
 @app.route("/assets/<path:filename>")
 def assets_files(filename):
     return send_from_directory(STATIC_FOLDER, filename)

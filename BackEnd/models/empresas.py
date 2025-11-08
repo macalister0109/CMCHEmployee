@@ -25,6 +25,8 @@ class Empresas(db.Model):
     password_empresa = db.Column(db.String(300), nullable=False)
     Pais_id_pais = db.Column(db.Integer, db.ForeignKey('Pais.id_pais'), nullable=False)
     Empresarios_id_usuario = db.Column(db.Integer, db.ForeignKey('Empresarios.id_usuario'), nullable=False)
+    email_verificado = db.Column(db.Boolean, default=False)
+    fecha_verificacion_email = db.Column(db.DateTime, nullable=True)
 
 class EmpresaNacional(db.Model):
     __tablename__ = 'EmpresaNacional'
@@ -43,3 +45,9 @@ class PuestoDeTrabajo(db.Model):
     tamanio_empresa = db.Column(db.String(50), nullable=False)
     descripcion_trabajo = db.Column(db.String(300), nullable=False)
     calificaciones = db.Column(db.String(1000))
+    fecha_publicacion = db.Column(db.Date, nullable=False)
+    estado = db.Column(db.String(20), nullable=False, default='Activo')
+    
+    # Relaciones
+    empresa = db.relationship('Empresas', backref='puestos')
+    postulaciones = db.relationship('Postulaciones', backref='puesto', lazy='joined')

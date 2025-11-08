@@ -13,30 +13,51 @@ def register_empresa():
         return jsonify({'success': False, 'error': 'Registro vía app deshabilitado'}), 403
 
     # Obtener datos del formulario
-    nombre_empresa = request.form.get('nombre_empresa')
-    nombre_encargado = request.form.get('nombre_encargado')
-    apellido_encargado = request.form.get('apellido_encargado')
-    rut_empresa = request.form.get('rut_empresa')
-    rut_encargado = request.form.get('rut_encargado')
-    direccion = request.form.get('direccion') or '-'
-    email = request.form.get('email') or request.form.get('correo_empresa')
-    rubro = request.form.get('rubro') or '-'
-    sitio_web = request.form.get('sitio_web') or '-'
-    password = request.form.get('password')
+    nombre_empresa = request.form.get('nombre_empresa', '').strip()
+    rut_empresa = request.form.get('rut_empresa', '').strip()
+    correo_empresa = request.form.get('correo_empresa', '').strip()
+    nombre_encargado = request.form.get('nombre_encargado', '').strip()
+    apellido_encargado = request.form.get('apellido_encargado', '').strip()
+    rut_encargado = request.form.get('rut_encargado', '').strip()
+    password = request.form.get('password', '').strip()
+    
+    print("Datos recibidos del formulario:")
+    print(f"Nombre empresa: {nombre_empresa}")
+    print(f"RUT empresa: {rut_empresa}")
+    print(f"Correo empresa: {correo_empresa}")
+    print(f"Nombre encargado: {nombre_encargado}")
+    print(f"Apellido encargado: {apellido_encargado}")
+    print(f"RUT encargado: {rut_encargado}")
+    print(f"Password length: {len(password)}")
+    
+    # Validar campos obligatorios
+    if not nombre_empresa:
+        return render_template('login_empresa.html', error='El nombre de la empresa es obligatorio', toggle=True)
+    
+    if not rut_empresa:
+        return render_template('login_empresa.html', error='El RUT de la empresa es obligatorio', toggle=True)
+    
+    if not correo_empresa:
+        return render_template('login_empresa.html', error='El correo de la empresa es obligatorio', toggle=True)
+    
+    if not nombre_encargado:
+        return render_template('login_empresa.html', error='El nombre del encargado es obligatorio', toggle=True)
+    
+    if not apellido_encargado:
+        return render_template('login_empresa.html', error='El apellido del encargado es obligatorio', toggle=True)
+    
+    if not rut_encargado:
+        return render_template('login_empresa.html', error='El RUT del encargado es obligatorio', toggle=True)
+    
+    if not password:
+        return render_template('login_empresa.html', error='La contraseña es obligatoria', toggle=True)
+    
+    if len(password) < 8:
+        return render_template('login_empresa.html', error='La contraseña debe tener al menos 8 caracteres', toggle=True)
     
     # Normalizar RUTs
     rut_empresa_normalizado = re.sub(r'[^0-9kK]', '', rut_empresa)
-    rut_encargado_normalizado = re.sub(r'[^0-9kK]', '', rut_encargado) if rut_encargado else None
-    
-    # Validaciones
-    if not rut_encargado_normalizado:
-        return render_template('login_empresa.html', error='El RUT del encargado es obligatorio', toggle=True)
-    
-    if not nombre_encargado or not apellido_encargado:
-        return render_template('login_empresa.html', error='El nombre y apellido del encargado son obligatorios', toggle=True)
-    
-    if not email:
-        email = f'empresa_{rut_empresa_normalizado}@example.com'
+    rut_encargado_normalizado = re.sub(r'[^0-9kK]', '', rut_encargado)
     
     # Verificar RUT empresa único
     existing = EmpresaNacional.query.filter_by(rut_empresa=rut_empresa_normalizado).first()
@@ -44,84 +65,101 @@ def register_empresa():
         return render_template('login_empresa.html', error='El RUT de empresa ya está registrado', toggle=True)
     
     # Verificar correo único
-    existing_empresa = Empresas.query.filter_by(correo_empresa=email).first()
+    existing_empresa = Empresas.query.filter_by(correo_empresa=correo_empresa).first()
     if existing_empresa:
         return render_template('login_empresa.html', error='El correo electrónico ya está registrado', toggle=True)
     
     # Procesar empresa y encargado
     try:
         from routes.auth import get_default_pais_id
+        pais_id = get_default_pais_id()
+        if not pais_id:
+            return render_template('login_empresa.html', error='Error: No se pudo determinar el país', toggle=True)
+            
+        print(f"Iniciando registro de empresa: {nombre_empresa}")
+        print(f"RUT empresa: {rut_empresa_normalizado}")
+        print(f"Correo empresa: {correo_empresa}")
+        print(f"RUT encargado: {rut_encargado_normalizado}")
+        print(f"País ID: {pais_id}")
         
         # Crear o encontrar encargado
         from models.usuarios import UsuarioAutorizado
+        
+        print("Buscando o creando usuario autorizado...")
+        # Crear o encontrar UsuarioAutorizado
         auth = UsuarioAutorizado.query.filter_by(numero_documento=rut_encargado_normalizado).first()
-        user_encargado = None
-        
-        if auth:
-            user_encargado = Usuarios.query.filter_by(UsuarioAutorizado_ID=auth.id_usuario_autorizado).first()
-        
-        empresario_obj = None
-        aviso = None
-        
-        if user_encargado:
-            empresario_obj = Empresarios.query.get(user_encargado.id_usuario)
-            if not empresario_obj:
-                empresario_obj = Empresarios(
-                    id_usuario=user_encargado.id_usuario,
-                    empresa_principal=nombre_empresa,
-                    cargo='Encargado'
-                )
-                db.session.add(empresario_obj)
-                db.session.flush()
-        else:
-            new_auth = UsuarioAutorizado(tipo_documento='RUT', numero_documento=rut_encargado_normalizado)
-            db.session.add(new_auth)
+        if not auth:
+            auth = UsuarioAutorizado(tipo_documento='RUT', numero_documento=rut_encargado_normalizado)
+            db.session.add(auth)
             db.session.flush()
-            
-            new_user = Usuarios(
+            print(f"Creado nuevo UsuarioAutorizado con ID: {auth.id_usuario_autorizado}")
+        else:
+            print(f"Encontrado UsuarioAutorizado existente con ID: {auth.id_usuario_autorizado}")
+
+        # Crear o encontrar Usuario
+        print("Buscando o creando usuario...")
+        user = Usuarios.query.filter_by(UsuarioAutorizado_ID=auth.id_usuario_autorizado).first()
+        if not user:
+            user = Usuarios(
                 nombre=nombre_encargado,
                 apellido=apellido_encargado,
-                password=generate_password_hash('012345A'),
-                correo=f'encargado_{rut_encargado_normalizado}@example.com',
-                telefono='000000000',
-                Pais_id_pais=get_default_pais_id(),
-                Rut_usuario=new_auth.numero_documento,
-                UsuarioAutorizado_ID=new_auth.id_usuario_autorizado
+                password=generate_password_hash(password),  # Usar la contraseña proporcionada
+                correo=f'encargado_{rut_encargado_normalizado}@cmchemployee.com',
+                telefono='Sin especificar',
+                Pais_id_pais=pais_id,
+                Rut_usuario=auth.numero_documento,
+                UsuarioAutorizado_ID=auth.id_usuario_autorizado,
+                email_verificado=False
             )
-            db.session.add(new_user)
+            db.session.add(user)
             db.session.flush()
-            
-            new_empresario = Empresarios(
-                id_usuario=new_user.id_usuario,
+            print(f"Creado nuevo Usuario con ID: {user.id_usuario}")
+        else:
+            print(f"Encontrado Usuario existente con ID: {user.id_usuario}")
+
+        # Crear o encontrar Empresario
+        print("Buscando o creando empresario...")
+        empresario_obj = Empresarios.query.filter_by(id_usuario=user.id_usuario).first()
+        if not empresario_obj:
+            empresario_obj = Empresarios(
+                id_usuario=user.id_usuario,
                 empresa_principal=nombre_empresa,
                 cargo='Encargado'
             )
-            db.session.add(new_empresario)
+            db.session.add(empresario_obj)
             db.session.flush()
-            empresario_obj = new_empresario
-            aviso = f"Usuario encargado creado con RUT {rut_encargado_normalizado} y contraseña predeterminada: 012345A"
+            print(f"Creado nuevo Empresario para usuario {user.id_usuario}")
+        else:
+            print(f"Encontrado Empresario existente para usuario {user.id_usuario}")
+        
+        aviso = None
+        if not user.email_verificado:
+            aviso = "Se enviará un correo de verificación al encargado."
         
         # Validar contraseña empresa
         if not password or len(password) < 8:
             return render_template('login_empresa.html', error='La contraseña de empresa debe tener al menos 8 caracteres', toggle=True)
         
-        # Crear empresa
+        print(f"Creando empresa con encargado ID: {empresario_obj.id_usuario}")
+        
+        # Crear empresa con solo los campos esenciales
         empresa = Empresas(
             nombre_empresa=nombre_empresa,
-            rubro=rubro,
-            direccion=direccion,
-            telefono='000000000',
-            correo_contacto=email,
-            correo_empresa=email,
+            rubro='-',
+            direccion='-',
+            telefono='-',
+            correo_contacto=correo_empresa,
+            correo_empresa=correo_empresa,
             cantidad_empleados=0,
-            logo='-',
-            sitio_web=sitio_web,
+            logo='default-logo.png',
+            sitio_web='-',
             estado_empresa='Activa',
             descripcion_empresa='-',
             tipo_empresa='Nacional',
             password_empresa=generate_password_hash(password),
-            Pais_id_pais=get_default_pais_id(),
-            Empresarios_id_usuario=empresario_obj.id_usuario
+            Pais_id_pais=pais_id,
+            Empresarios_id_usuario=empresario_obj.id_usuario,
+            email_verificado=False
         )
         db.session.add(empresa)
         db.session.flush()
@@ -137,22 +175,36 @@ def register_empresa():
         session['user_id'] = None
         session['empresa_id'] = empresa.id_empresa
         
-        return redirect(url_for('empresas.profile_empresa'))
+        flash('Empresa registrada exitosamente. Bienvenido(a) a Legado TP.', 'success')
+        return redirect(url_for('main'))
         
     except Exception as e:
         db.session.rollback()
+        print(f"Error detallado: {str(e)}")  # Imprime el error completo en la consola
         error_msg = 'Error al registrar la empresa. Por favor, verifica los datos e intenta nuevamente.'
         
-        if 'Duplicate entry' in str(e):
-            if 'rut_empresa' in str(e):
+        error_details = str(e).lower()  # Convertir a minúsculas para hacer la búsqueda más fácil
+        
+        if 'duplicate entry' in error_details:
+            if 'rut_empresa' in error_details:
                 error_msg = 'El RUT de empresa ya está registrado'
-            elif 'correo' in str(e):
+            elif 'correo' in error_details:
                 error_msg = 'El correo electrónico ya está registrado'
-            elif 'numero_documento' in str(e):
+            elif 'numero_documento' in error_details:
                 error_msg = 'Ya existe un usuario con ese documento de identidad'
             else:
                 error_msg = 'Ya existe un registro con esos datos'
+        elif 'foreign key constraint' in error_details:
+            if 'pais_id_pais' in error_details:
+                error_msg = 'Error: País no válido'
+            elif 'empresarios_id_usuario' in error_details:
+                error_msg = 'Error al crear el perfil del empresario'
+            else:
+                error_msg = f'Error de referencia en la base de datos: {str(e)}'
+        elif 'null' in error_details:
+            error_msg = 'Error: Algunos campos requeridos están vacíos'
         
+        print(f"Mensaje de error para usuario: {error_msg}")  # Imprime el mensaje que verá el usuario
         return render_template('login_empresa.html', error=error_msg, toggle=True)
 
 # Resto de rutas de empresas (login, perfil, etc)
@@ -238,4 +290,70 @@ def profile_empresa():
     
     return render_template('profile_empresa.html', empresa=empresa)
 
-# ... Más rutas de empresas según sea necesario
+@empresas_bp.route('/dashboard-empresa')
+def dashboard_empresa():
+    empresa_id = session.get('empresa_id')
+    if not empresa_id:
+        return redirect(url_for('empresas.login_empresa'))
+    
+    empresa = Empresas.query.get(empresa_id)
+    if not empresa:
+        session.clear()
+        return redirect(url_for('empresas.login_empresa'))
+    
+    # Obtener trabajos publicados por la empresa
+    trabajos = PuestoDeTrabajo.query.filter_by(Empresas_id_empresa=empresa_id).all()
+    
+    # Obtener postulaciones a trabajos de la empresa
+    postulaciones = Postulaciones.query.join(
+        PuestoDeTrabajo, 
+        Postulaciones.id_trabajo == PuestoDeTrabajo.id_trabajo
+    ).filter(
+        PuestoDeTrabajo.Empresas_id_empresa == empresa_id
+    ).all()
+    
+    # Contar las estadísticas
+    total_postulaciones = len(postulaciones)
+    pendientes = sum(1 for p in postulaciones if p.estado == 'Enviado')
+    aceptados = sum(1 for p in postulaciones if p.estado == 'Aceptado')
+    
+    return render_template(
+        'dashboard_empresa.html',
+        empresa=empresa,
+        empresa_id=empresa_id,
+        nombre_empresa=empresa.nombre_empresa,
+        trabajos=trabajos,
+        postulaciones=postulaciones,
+        total_ofertas=len(trabajos),
+        total_postulaciones=total_postulaciones,
+        pendientes=pendientes,
+        aceptados=aceptados
+    )
+
+# Ruta para listar todas las empresas
+@empresas_bp.route('/empresas')
+def listar_empresas():
+    try:
+        empresas = Empresas.query.filter_by(estado_empresa='Activa').all()
+        
+        # Si es una solicitud AJAX, devolver JSON
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({
+                'success': True,
+                'empresas': [{
+                    'id': empresa.id_empresa,
+                    'nombre': empresa.nombre_empresa,
+                    'rubro': empresa.rubro,
+                    'descripcion': empresa.descripcion_empresa,
+                    'logo': empresa.logo,
+                    'sitio_web': empresa.sitio_web
+                } for empresa in empresas]
+            })
+        
+        # Si no es AJAX, renderizar la plantilla
+        return render_template('empresas.html', empresas=empresas)
+    except Exception as e:
+        print(f"Error al listar empresas: {str(e)}")
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': False, 'error': str(e)}), 500
+        return render_template('error.html', error='Error al cargar las empresas'), 500

@@ -1,8 +1,10 @@
-from flask import Blueprint, request, session, redirect, url_for, render_template, jsonify
+from flask import Blueprint, request, session, redirect, url_for, render_template, jsonify, flash
 from werkzeug.security import check_password_hash, generate_password_hash
 import re
 from models.usuarios import db, Usuarios, UsuarioAutorizado
 from models.perfiles import Alumnos, Docentes, Exalumnos
+from models.tokens import Token
+from utils.email_service import send_email, get_verification_email_template
 from datetime import date
 import json
 import os
@@ -119,45 +121,83 @@ def register():
             nombre=nombre,
             apellido=apellido,
             password=generate_password_hash(password),
-            correo=f'user_{rut_normalizado}@example.com',
-            telefono='000000000',
+            correo=f'user_{rut_normalizado}@cmchemployee.com',  # Cambiado a un dominio más profesional
+            telefono='Sin especificar',  # Cambiado para ser más descriptivo
             Pais_id_pais=get_default_pais_id(),
             Rut_usuario=existing_auth.numero_documento,
-            UsuarioAutorizado_ID=existing_auth.id_usuario_autorizado
+            UsuarioAutorizado_ID=existing_auth.id_usuario_autorizado,
+            email_verificado=False  # Explícitamente establecido
         )
         db.session.add(new_user)
         db.session.flush()
 
         role = (request.form.get('role') or 'student').strip().lower()
         try:
+            # Asegurarnos de que el nuevo usuario existe y tiene un ID válido
+            db.session.refresh(new_user)
+            print(f"Usuario creado con ID: {new_user.id_usuario}")
+            
             if role == 'exalumno' or role == 'ex-alumno' or role == 'exalum':
                 new_profile = Exalumnos(id_usuario=new_user.id_usuario)
+                print("Creando perfil de Exalumno")
             elif role == 'docente' or role == 'teacher':
                 new_profile = Docentes(id_usuario=new_user.id_usuario)
+                print("Creando perfil de Docente")
             else:
+                print("Creando perfil de Alumno")
                 new_profile = Alumnos(
                     id_usuario=new_user.id_usuario,
                     carrera='Sin especificar',
                     anio_ingreso=date.today().year,
                     experiencia_laboral=''
                 )
-            db.session.add(new_profile)
-            db.session.commit()
             
-            session['nombre'] = nombre
-            session['apellido'] = apellido
-            session['user_id'] = new_user.id_usuario
+            db.session.add(new_profile)
+            try:
+                db.session.commit()
+                print("Perfil creado exitosamente")
+                
+                # Solo si el commit fue exitoso, configuramos la sesión
+                session['nombre'] = nombre
+                session['apellido'] = apellido
+                session['user_id'] = new_user.id_usuario
+                
+                # Intentar enviar el email de verificación
+                try:
+                    token = Token.generar_token(
+                        usuario_id=new_user.id_usuario,
+                        tipo='verify_email',
+                        horas_validez=24
+                    )
+                    
+                    template = get_verification_email_template(token, new_user.nombre)
+                    if send_email(new_user.correo, 'Verifica tu Email', template):
+                        flash('Se ha enviado un email de verificación a tu correo', 'info')
+                except Exception as email_error:
+                    print(f"Error al enviar email: {str(email_error)}")
+                    flash('Error al enviar email de verificación. El perfil se creó correctamente.', 'warning')
+                
+            except Exception as commit_error:
+                print(f"Error al hacer commit del perfil: {str(commit_error)}")
+                db.session.rollback()
+                raise
             
             return redirect(url_for('main'))
             
         except Exception as e:
+            print(f"Error durante el registro: {str(e)}")
             db.session.rollback()
             try:
-                Usuarios.query.filter_by(id_usuario=new_user.id_usuario).delete()
-                db.session.commit()
-            except Exception:
+                if new_user and new_user.id_usuario:
+                    print(f"Eliminando usuario fallido con ID: {new_user.id_usuario}")
+                    Usuarios.query.filter_by(id_usuario=new_user.id_usuario).delete()
+                    db.session.commit()
+                    print("Usuario fallido eliminado correctamente")
+            except Exception as cleanup_error:
+                print(f"Error durante la limpieza: {str(cleanup_error)}")
                 db.session.rollback()
-            return render_template('login.html', error='Error al crear perfil de usuario', is_register=True, toggle=True)
+            error_msg = f"Error al crear perfil de usuario: {str(e)}"
+            return render_template('login.html', error=error_msg, is_register=True, toggle=True)
             
     return render_template('login.html', toggle=True)
 

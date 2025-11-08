@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página no encontrada - Legado TP</title>
+
+    <link rel="stylesheet" href="{{ url_for('assets_files', filename='css/main.css') }}">
+    <link rel="icon" href="{{ url_for('assets_files', filename='img/logo.png') }}" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        .error-container {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        .error-icon {
+            font-size: 4rem;
+            color: #e74c3c;
+            margin-bottom: 1rem;
+        }
+
+        .error-title {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .error-message {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            margin-bottom: 2rem;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="header">
+        <div class="container header-inner">
+            <div class="logo-container">
+                <img src="{{ url_for('assets_files', filename='img/logo.png') }}" alt="Logo institucional" class="logo">
+                <h1 class="brand">レガド-TP</h1>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENIDO -->
+    <main class="error-container">
+        <i class="fas fa-exclamation-circle error-icon"></i>
+        <h1 class="error-title">Página no encontrada</h1>
+        <p class="error-message">Lo sentimos, la página que estás buscando no existe.</p>
+        <a href="{{ url_for('main') }}" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+            Volver al inicio
+        </a>
+    </main>
+</body>
+</html>

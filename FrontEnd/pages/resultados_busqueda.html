@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resultados de Búsqueda - Legado TP</title>
 
-    <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="assets/css/resultados.css">
-    <link rel="icon" href="assets/img/logo.png" type="image/png">
+    <link rel="stylesheet" href="{{ url_for('assets_files', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('assets_files', filename='css/resultados.css') }}">
+    <link rel="icon" href="{{ url_for('assets_files', filename='img/logo.png') }}" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -136,6 +136,6 @@
     <!-- Toast -->
     <div id="toast" class="toast"></div>
 
-    <script src="assets/js/resultados_busqueda.js"></script>
+    <script src="{{ url_for('assets_files', filename='js/resultados_busqueda.js') }}"></script>
 </body>
 </html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empresas - Legado TP</title>
+
+    <link rel="stylesheet" href="{{ url_for('assets_files', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('assets_files', filename='css/empresas.css') }}">
+    <link rel="icon" href="{{ url_for('assets_files', filename='img/logo.png') }}" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="header">
+        <div class="container header-inner">
+            <div class="logo-container">
+                <img src="{{ url_for('assets_files', filename='img/logo.png') }}" alt="Logo institucional" class="logo">
+                <h1 class="brand">レガド-TP</h1>
+            </div>
+            
+            <nav class="nav">
+                <a href="{{ url_for('main') }}">Inicio</a>
+                <a href="#" class="active">Empresas</a>
+            </nav>
+            
+            <div class="auth-buttons">
+                {% if session.get('nombre') %}
+                    <span class="welcome-text">{{ session.get('nombre') }} {{ session.get('apellido', '') }}</span>
+                    <form method="post" action="{{ url_for('auth.logout') }}" style="display:inline; margin-left:10px;">
+                        <button type="submit" class="btn-outline btn-logout">Cerrar Sesión</button>
+                    </form>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="btn-primary">Ingresar</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENIDO -->
+    <main class="empresas-container">
+        <h1><i class="fas fa-building"></i> Empresas Registradas</h1>
+        
+        {% if empresas %}
+        <div class="empresas-grid">
+            {% for empresa in empresas %}
+            <div class="empresa-card">
+                <div class="empresa-logo">
+                    <img src="{{ url_for('assets_files', filename='img/' + empresa.logo) }}" 
+                         alt="Logo de {{ empresa.nombre_empresa }}"
+                         onerror="this.src='{{ url_for('assets_files', filename='img/default-logo.png') }}'">
+                </div>
+                <div class="empresa-info">
+                    <h3 class="empresa-nombre">{{ empresa.nombre_empresa }}</h3>
+                    <p class="empresa-rubro">{{ empresa.rubro }}</p>
+                    <p class="empresa-descripcion">{{ empresa.descripcion_empresa }}</p>
+                    <div class="empresa-actions">
+                        <a href="{{ url_for('busqueda.resultados_busqueda', empresa_id=empresa.id_empresa) }}" 
+                           class="btn-empresa btn-primary">
+                            <i class="fas fa-briefcase"></i> Ver Ofertas
+                        </a>
+                        {% if empresa.sitio_web and empresa.sitio_web != '-' %}
+                        <a href="{{ empresa.sitio_web }}" 
+                           class="btn-empresa btn-secondary" 
+                           target="_blank"
+                           rel="noopener noreferrer">
+                            <i class="fas fa-globe"></i> Sitio Web
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-building"></i>
+            <h2>No hay empresas registradas</h2>
+            <p>Sé el primero en registrar tu empresa</p>
+            <a href="{{ url_for('empresas.register_empresa') }}" class="btn-primary">
+                <i class="fas fa-plus"></i> Registrar Empresa
+            </a>
+        </div>
+        {% endif %}
+    </main>
+</body>
+</html>

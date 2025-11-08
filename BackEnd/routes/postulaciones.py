@@ -3,7 +3,126 @@ from models.postulaciones import db, Postulaciones
 from models.empresas import PuestoDeTrabajo
 from datetime import date
 
-postulaciones_bp = Blueprint('postulaciones', __name__)
+postulaciones_bp = Blueprint('postulaciones', __name__, url_prefix='/api')
+
+# Rutas para CRUD de puestos de trabajo
+@postulaciones_bp.route('/empresa/mis-puestos', methods=['GET'])
+def obtener_puestos():
+    """Obtiene todos los puestos de una empresa"""
+    empresa_id = session.get('empresa_id')
+    if not empresa_id:
+        return jsonify({'success': False, 'error': 'No autorizado'}), 401
+
+    try:
+        puestos = PuestoDeTrabajo.query.filter_by(Empresas_id_empresa=empresa_id).all()
+        return jsonify({
+            'success': True,
+            'puestos': [{
+                'id_trabajo': p.id_trabajo,
+                'area_trabajo': p.area_trabajo,
+                'tipo_industria': p.tipo_industria,
+                'region_trabajo': p.region_trabajo,
+                'comuna_trabajo': p.comuna_trabajo,
+                'modalidad_trabajo': p.modalidad_trabajo,
+                'tamanio_empresa': p.tamanio_empresa,
+                'descripcion_trabajo': p.descripcion_trabajo,
+                'calificaciones': p.calificaciones,
+                'total_postulaciones': len(p.postulaciones)
+            } for p in puestos]
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@postulaciones_bp.route('/puesto', methods=['POST'])
+def crear_puesto():
+    """Crea un nuevo puesto de trabajo"""
+    empresa_id = session.get('empresa_id')
+    if not empresa_id:
+        return jsonify({'success': False, 'error': 'No autorizado'}), 401
+
+    try:
+        data = request.get_json()
+        nuevo_puesto = PuestoDeTrabajo(
+            area_trabajo=data['area_trabajo'],
+            tipo_industria=data['tipo_industria'],
+            region_trabajo=data['region_trabajo'],
+            comuna_trabajo=data['comuna_trabajo'],
+            modalidad_trabajo=data['modalidad_trabajo'],
+            tamanio_empresa=data['tamanio_empresa'],
+            descripcion_trabajo=data['descripcion_trabajo'],
+            calificaciones=data.get('calificaciones', ''),
+            fecha_publicacion=date.today(),
+            estado='Activo',
+            Empresas_id_empresa=empresa_id
+        )
+        db.session.add(nuevo_puesto)
+        db.session.commit()
+
+        return jsonify({
+            'success': True,
+            'message': 'Puesto creado exitosamente',
+            'id_trabajo': nuevo_puesto.id_trabajo
+        })
+    except KeyError as e:
+        return jsonify({'success': False, 'error': f'Campo requerido faltante: {str(e)}'}), 400
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@postulaciones_bp.route('/puesto/<int:id>', methods=['PUT'])
+def actualizar_puesto(id):
+    """Actualiza un puesto de trabajo existente"""
+    empresa_id = session.get('empresa_id')
+    if not empresa_id:
+        return jsonify({'success': False, 'error': 'No autorizado'}), 401
+
+    puesto = PuestoDeTrabajo.query.get(id)
+    if not puesto or puesto.Empresas_id_empresa != empresa_id:
+        return jsonify({'success': False, 'error': 'Puesto no encontrado o no autorizado'}), 404
+
+    try:
+        data = request.get_json()
+        puesto.area_trabajo = data['area_trabajo']
+        puesto.tipo_industria = data['tipo_industria']
+        puesto.region_trabajo = data['region_trabajo']
+        puesto.comuna_trabajo = data['comuna_trabajo']
+        puesto.modalidad_trabajo = data['modalidad_trabajo']
+        puesto.tamanio_empresa = data['tamanio_empresa']
+        puesto.descripcion_trabajo = data['descripcion_trabajo']
+        puesto.calificaciones = data.get('calificaciones', '')
+        
+        db.session.commit()
+        return jsonify({
+            'success': True,
+            'message': 'Puesto actualizado exitosamente'
+        })
+    except KeyError as e:
+        return jsonify({'success': False, 'error': f'Campo requerido faltante: {str(e)}'}), 400
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@postulaciones_bp.route('/puesto/<int:id>', methods=['DELETE'])
+def eliminar_puesto(id):
+    """Elimina un puesto de trabajo"""
+    empresa_id = session.get('empresa_id')
+    if not empresa_id:
+        return jsonify({'success': False, 'error': 'No autorizado'}), 401
+
+    puesto = PuestoDeTrabajo.query.get(id)
+    if not puesto or puesto.Empresas_id_empresa != empresa_id:
+        return jsonify({'success': False, 'error': 'Puesto no encontrado o no autorizado'}), 404
+
+    try:
+        db.session.delete(puesto)
+        db.session.commit()
+        return jsonify({
+            'success': True,
+            'message': 'Puesto eliminado exitosamente'
+        })
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
 
 @postulaciones_bp.route('/postular/<int:job_id>', methods=['POST'])
 def postular(job_id):
@@ -51,7 +170,7 @@ def mis_postulaciones():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@postulaciones_bp.route('/api/puesto/<int:id>/postulantes', methods=['GET'])
+@postulaciones_bp.route('/puesto/<int:id>/postulantes', methods=['GET'])
 def ver_postulantes(id):
     """Permite a una empresa ver los postulantes a uno de sus puestos"""
     empresa_id = session.get('empresa_id')
@@ -103,7 +222,7 @@ def ver_postulantes(id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@postulaciones_bp.route('/api/postulacion/<int:id>', methods=['PUT'])
+@postulaciones_bp.route('/postulacion/<int:id>', methods=['PUT'])
 def cambiar_estado_postulacion(id):
     """Permite a una empresa cambiar el estado de una postulación"""
     empresa_id = session.get('empresa_id')

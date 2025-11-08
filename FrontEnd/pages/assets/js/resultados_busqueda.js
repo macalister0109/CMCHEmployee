@@ -1,22 +1,44 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Obtener los resultados iniciales
-    cargarResultados();
-});
-
-function cargarResultados() {
-    const params = new URLSearchParams(window.location.search);
     const resultsContainer = document.getElementById('results-container');
     const loadingState = document.querySelector('.loading-state');
     const emptyState = document.querySelector('.empty-state');
     const resultsCount = document.getElementById('results-count');
+    const searchForm = document.querySelector('.search-form');
+    
+    console.log('DOM Content Loaded');
+
+    // Crear template para las ofertas
+    const ofertaTemplate = document.createElement('template');
+
+    ofertaTemplate.innerHTML = `
+        <div class="oferta-card">
+            <h3 class="oferta-titulo"></h3>
+            <h4 class="oferta-empresa"></h4>
+            <p class="oferta-descripcion"></p>
+            <div class="oferta-detalles">
+                <span class="oferta-ubicacion"></span>
+                <span class="oferta-modalidad"></span>
+                <span class="oferta-area"></span>
+            </div>
+            <div class="oferta-acciones">
+                <button class="btn-detalles">Ver Detalles</button>
+                <button class="btn-postular">Postular</button>
+            </div>
+        </div>
+    `;
 
     // Función para mostrar las ofertas
-    const mostrarOfertas = (ofertas) => {
-        // Eliminar ofertas anteriores, manteniendo los estados
-        const existingCards = resultsList.querySelectorAll('.oferta-card');
-        existingCards.forEach(card => card.remove());
+    function mostrarOfertas(ofertas) {
+        // Limpiar el contenedor de resultados
+        while (resultsContainer.firstChild) {
+            if (!resultsContainer.firstChild.classList || 
+                (!resultsContainer.firstChild.classList.contains('loading-state') && 
+                 !resultsContainer.firstChild.classList.contains('empty-state'))) {
+                resultsContainer.removeChild(resultsContainer.firstChild);
+            }
+        }
         
-        // Ocultar todos los estados
+        // Ocultar estados
         loadingState.style.display = 'none';
         emptyState.style.display = 'none';
         
@@ -34,42 +56,47 @@ function cargarResultados() {
             const ofertaCard = ofertaTemplate.content.cloneNode(true);
             
             // Llenar los datos de la oferta
-            ofertaCard.querySelector('.oferta-titulo').textContent = oferta.area_trabajo;
-            ofertaCard.querySelector('.oferta-empresa').textContent = oferta.empresa.nombre_empresa;
-            ofertaCard.querySelector('.oferta-descripcion').textContent = oferta.descripcion_trabajo;
-            ofertaCard.querySelector('.oferta-ubicacion').textContent = `${oferta.comuna_trabajo}, ${oferta.region_trabajo}`;
-            ofertaCard.querySelector('.oferta-modalidad').textContent = oferta.modalidad_trabajo;
+            ofertaCard.querySelector('.oferta-titulo').textContent = oferta.titulo;
+            ofertaCard.querySelector('.oferta-empresa').textContent = oferta.empresa;
+            ofertaCard.querySelector('.oferta-descripcion').textContent = oferta.descripcion;
+            ofertaCard.querySelector('.oferta-ubicacion').textContent = oferta.region;
+            ofertaCard.querySelector('.oferta-modalidad').textContent = oferta.modalidad;
             ofertaCard.querySelector('.oferta-area').textContent = oferta.tipo_industria;
+
+            console.log('Agregando oferta:', oferta); // Debug
 
             // Agregar eventos a los botones
             const btnPostular = ofertaCard.querySelector('.btn-postular');
-            btnPostular.addEventListener('click', () => postular(oferta.id_trabajo));
+            btnPostular.addEventListener('click', () => postular(oferta.id));
 
             const btnDetalles = ofertaCard.querySelector('.btn-detalles');
-            btnDetalles.addEventListener('click', () => verDetalles(oferta.id_trabajo));
+            btnDetalles.addEventListener('click', () => verDetalles(oferta.id));
 
-            resultsList.appendChild(ofertaCard);
+            resultsContainer.appendChild(ofertaCard);
         });
     };
 
     // Función para postular a una oferta
-    const postular = async (idTrabajo) => {
+    async function postular(idTrabajo) {
         try {
             const response = await fetch(`/postular/${idTrabajo}`, {
-                method: 'POST'
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
             });
             const data = await response.json();
             
             if (response.ok) {
-                alert('Postulación enviada exitosamente');
+                mostrarToast('Postulación enviada exitosamente', 'success');
             } else {
-                alert(data.error || 'Error al postular');
+                mostrarToast(data.error || 'Error al postular', 'error');
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('Error al enviar la postulación');
+            mostrarToast('Error al enviar la postulación', 'error');
         }
-    };
+    }
 
     // Función para ver detalles de una oferta
     const verDetalles = (idTrabajo) => {
@@ -104,30 +131,39 @@ function cargarResultados() {
         }
     });
 
-    // Cargar ofertas iniciales
-    const cargarOfertasIniciales = async () => {
-        try {
-            // Mostrar estado de carga inicial
-            loadingState.style.display = 'block';
-            emptyState.style.display = 'none';
-            resultsCount.textContent = 'Cargando ofertas...';
+    // Función para cargar resultados
+    async function cargarResultados() {
+        // Mostrar estado de carga
+        loadingState.style.display = 'block';
+        emptyState.style.display = 'none';
+        resultsCount.textContent = 'Buscando...';
 
-            const response = await fetch('/api/buscar');
-            const data = await response.json();
+        try {
+            console.log("Solicitando resultados..."); // Debug
+            const response = await fetch(window.location.href, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
             
-            if (response.ok) {
+            console.log("Respuesta recibida:", response.status); // Debug
+            const data = await response.json();
+            console.log("Datos recibidos:", data); // Debug
+
+            if (data.success) {
                 mostrarOfertas(data.resultados);
             } else {
-                throw new Error('Error al cargar ofertas');
+                throw new Error(data.error || 'Error al cargar resultados');
             }
         } catch (error) {
             console.error('Error:', error);
             loadingState.style.display = 'none';
             emptyState.style.display = 'block';
-            resultsCount.textContent = 'No hay ofertas disponibles';
+            resultsCount.textContent = 'Error al cargar resultados';
+            mostrarToast('Error al cargar los resultados', 'error');
         }
-    };
+    }
 
-    // Cargar ofertas al iniciar la página
-    cargarOfertasIniciales();
+    // Cargar resultados iniciales
+    cargarResultados();
 });
