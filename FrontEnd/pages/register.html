@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - CMCH Employee</title>
+    <link rel="stylesheet" href="assets/css/register.css">
+</head>
+<body>
+    <div class="container">
+        <div class="register-form">
+            <h2>Registro</h2>
+            
+            <div class="role-selector">
+                <h3>Selecciona tu rol:</h3>
+                <div class="role-buttons">
+                    <button type="button" class="role-btn" data-role="alumno">Alumno</button>
+                    <button type="button" class="role-btn" data-role="docente">Docente</button>
+                    <button type="button" class="role-btn" data-role="exalumno">Exalumno</button>
+                </div>
+            </div>
+
+            <form id="registerForm">
+                <input type="hidden" id="register-role" name="role" value="">
+                
+                <!-- Campos comunes -->
+                <div class="form-group">
+                    <input type="text" id="nombre" name="nombre" required placeholder="Nombre completo">
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" name="email" required placeholder="Correo electrónico">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" name="password" required placeholder="Contraseña">
+                </div>
+
+                <!-- Campos específicos para Alumno -->
+                <div class="role-fields alumno-fields" style="display: none;">
+                    <div class="form-group">
+                        <input type="text" id="matricula" name="matricula" placeholder="Matrícula">
+                    </div>
+                    <div class="form-group">
+                        <select id="carrera" name="carrera">
+                            <option value="">Selecciona tu carrera</option>
+                            <option value="informatica">Informática</option>
+                            <option value="sistemas">Sistemas</option>
+                            <!-- Agregar más carreras según sea necesario -->
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Campos específicos para Docente -->
+                <div class="role-fields docente-fields" style="display: none;">
+                    <div class="form-group">
+                        <input type="text" id="num_empleado" name="num_empleado" placeholder="Número de empleado">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="departamento" name="departamento" placeholder="Departamento">
+                    </div>
+                </div>
+
+                <!-- Campos específicos para Exalumno -->
+                <div class="role-fields exalumno-fields" style="display: none;">
+                    <div class="form-group">
+                        <input type="text" id="anio_graduacion" name="anio_graduacion" placeholder="Año de graduación">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="carrera_cursada" name="carrera_cursada" placeholder="Carrera cursada">
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Registrarse</button>
+            </form>
+            
+            <p class="login-link">¿Ya tienes una cuenta? <a href="login.html">Inicia sesión aquí</a></p>
+        </div>
+    </div>
+
+    <script src="assets/js/role-select.js"></script>
+    <script src="assets/js/register.js"></script>
+</body>
+</html>

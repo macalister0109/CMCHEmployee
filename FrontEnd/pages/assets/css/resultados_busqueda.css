@@ -1,0 +1,161 @@
+/* Estilos para la sección de filtros */
+.search-filters {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+.search-form {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.search-form .form-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.search-btn {
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.search-btn:hover {
+    background-color: #2980b9;
+}
+
+/* Estilos para los resultados */
+.results-container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.no-results {
+    text-align: center;
+    padding: 40px 20px;
+    color: #7f8c8d;
+}
+
+.no-results h3 {
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+/* Estilos para las tarjetas de ofertas */
+.oferta-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+.oferta-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.oferta-header {
+    margin-bottom: 15px;
+}
+
+.oferta-titulo {
+    margin: 0 0 5px 0;
+    color: #2c3e50;
+}
+
+.oferta-empresa {
+    color: #7f8c8d;
+    font-size: 0.9em;
+}
+
+.oferta-body {
+    margin-bottom: 20px;
+}
+
+.oferta-descripcion {
+    color: #34495e;
+    margin-bottom: 15px;
+}
+
+.oferta-detalles {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.oferta-detalles span {
+    background-color: #f8f9fa;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    color: #2c3e50;
+}
+
+.oferta-footer {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.btn-postular, .btn-detalles {
+    padding: 8px 15px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-postular {
+    background-color: #3498db;
+    color: white;
+}
+
+.btn-postular:hover {
+    background-color: #2980b9;
+}
+
+.btn-detalles {
+    background-color: #f8f9fa;
+    color: #2c3e50;
+    border: 1px solid #e0e0e0;
+}
+
+.btn-detalles:hover {
+    background-color: #e9ecef;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .search-form {
+        flex-direction: column;
+    }
+    
+    .search-form .form-group {
+        width: 100%;
+    }
+    
+    .oferta-detalles {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .oferta-footer {
+        flex-direction: column;
+    }
+    
+    .btn-postular, .btn-detalles {
+        width: 100%;
+    }
+}

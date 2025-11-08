@@ -7,6 +7,8 @@ import json
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import text
 from collections import defaultdict
+import logging
+import traceback
 
 # Rutas de templates y estáticos
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -20,6 +22,10 @@ DATABASE_URL = os.environ.get('DATABASE_URL', 'mysql+pymysql://root@localhost/CM
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+# Configure basic logging to console
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger('cmchemployee')
 
 # Sistema de seguimiento de IPs (en memoria)
 ip_tracker = defaultdict(lambda: {'count': 0, 'last_seen': None, 'pages': set()})
@@ -113,7 +119,7 @@ class Alumnos(db.Model):
 # Docentes - perfil específico para docentes (vinculado a Usuarios)
 class Docentes(db.Model):
     __tablename__ = 'Docentes'
-    id_docente = db.Column(db.Integer, db.ForeignKey('Usuarios.id_usuario'), primary_key=True)
+    id_usuario = db.Column(db.Integer, db.ForeignKey('Usuarios.id_usuario'), primary_key=True)
     institucional_id = db.Column(db.String(50), nullable=True)
     departamento = db.Column(db.String(100), nullable=True)
     area_academica = db.Column(db.String(100), nullable=True)
@@ -131,7 +137,7 @@ class Docentes(db.Model):
 # Exalumnos - perfil para exalumnos (vinculado a Usuarios)
 class Exalumnos(db.Model):
     __tablename__ = 'Exalumnos'
-    id_exalumno = db.Column(db.Integer, db.ForeignKey('Usuarios.id_usuario'), primary_key=True)
+    id_usuario = db.Column(db.Integer, db.ForeignKey('Usuarios.id_usuario'), primary_key=True)
     # Puede estar estudiando, trabajando o ambos. Campos opcionales para completar en perfil.
     carrera = db.Column(db.String(100), nullable=True)
     anio_egreso = db.Column(db.Integer, nullable=True)
@@ -394,6 +400,8 @@ def register_empresa():
         # Redirigir al perfil de la empresa
         return redirect(url_for('profile_empresa'))
     except Exception as e:
+        logger.exception('Error al registrar empresa: %s', e)
+        print(traceback.format_exc())
         db.session.rollback()
         error_msg = 'Error al registrar la empresa. Por favor, verifica los datos e intenta nuevamente.'
         
@@ -584,15 +592,21 @@ def profile():
     # detectar rol comprobando existencia de registros
     role = 'usuario'
     perfil = None
-    if Alumnos.query.get(user_id):
+    
+    # Usar filter_by en lugar de get para buscar por id_usuario
+    alumno = Alumnos.query.filter_by(id_usuario=user_id).first()
+    docente = Docentes.query.filter_by(id_usuario=user_id).first()
+    exalumno = Exalumnos.query.filter_by(id_usuario=user_id).first()
+    
+    if alumno:
         role = 'alumno'
-        perfil = Alumnos.query.get(user_id)
-    elif Docentes.query.get(user_id):
+        perfil = alumno
+    elif docente:
         role = 'docente'
-        perfil = Docentes.query.get(user_id)
-    elif Exalumnos.query.get(user_id):
+        perfil = docente
+    elif exalumno:
         role = 'exalumno'
-        perfil = Exalumnos.query.get(user_id)
+        perfil = exalumno
 
     if request.method == 'POST':
         # campos básicos de usuario
@@ -735,8 +749,10 @@ def login():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
+        # Detectar si es JSON (desde app móvil) o form-data (desde web)
+        is_json = request.is_json
         # Bloquear registros enviados como JSON desde la app móvil
-        if request.is_json:
+        if is_json:
             return jsonify({'success': False, 'error': 'Registro vía app deshabilitado'}), 403
 
         rut = request.form.get('rut')
@@ -794,29 +810,72 @@ def register():
                 return jsonify({'success': False, 'error': 'El RUT ya está registrado'}), 409
             return render_template('login.html', error='El RUT ya está registrado', is_register=True, toggle=True)
         
-        # Crear Usuarios y Alumnos vinculados al UsuarioAutorizado existente
+        # Crear Usuarios y perfil vinculado según rol seleccionado
         hashed_password = generate_password_hash(password)
-        new_user = Usuarios(nombre=nombre, apellido=apellido, password=hashed_password, correo=f'user_{rut_normalizado}@example.com', telefono='000000000', Pais_id_pais=get_default_pais_id(), Rut_usuario=existing_auth.numero_documento, UsuarioAutorizado_ID=existing_auth.id_usuario_autorizado)
+        new_user = Usuarios(
+            nombre=nombre,
+            apellido=apellido,
+            password=hashed_password,
+            correo=f'user_{rut_normalizado}@example.com',
+            telefono='000000000',
+            Pais_id_pais=get_default_pais_id(),
+            Rut_usuario=existing_auth.numero_documento,
+            UsuarioAutorizado_ID=existing_auth.id_usuario_autorizado
+        )
         db.session.add(new_user)
         db.session.flush()
-        new_alumno = Alumnos(id_usuario=new_user.id_usuario, carrera='Sin especificar', anio_ingreso=date.today().year, experiencia_laboral='')
-        db.session.add(new_alumno)
-        db.session.commit()
-        session['nombre'] = nombre
-        session['apellido'] = apellido
-        session['user_id'] = new_user.id_usuario
-        
-        if is_json:
-            return jsonify({
-                'success': True,
-                'message': 'Registro exitoso',
-                'user': {
-                    'nombre': nombre,
-                    'apellido': apellido,
-                    'user_id': new_user.id_usuario
-                }
-            })
-        return redirect(url_for('main'))
+
+        # Determinar rol desde el formulario (student/exalumno/docente)
+        role = (request.form.get('role') or 'student').strip().lower()
+        try:
+            if role == 'exalumno' or role == 'ex-alumno' or role == 'exalum':
+                new_profile = Exalumnos(id_usuario=new_user.id_usuario)
+                db.session.add(new_profile)
+            elif role == 'docente' or role == 'teacher':
+                new_profile = Docentes(id_usuario=new_user.id_usuario)
+                db.session.add(new_profile)
+            else:
+                # Por defecto: alumno
+                new_profile = Alumnos(
+                    id_usuario=new_user.id_usuario,
+                    carrera='Sin especificar',
+                    anio_ingreso=date.today().year,
+                    experiencia_laboral=''
+                )
+                db.session.add(new_profile)
+
+            db.session.commit()
+            session['nombre'] = nombre
+            session['apellido'] = apellido
+            session['user_id'] = new_user.id_usuario
+
+            if is_json:
+                return jsonify({
+                    'success': True,
+                    'message': 'Registro exitoso',
+                    'user': {
+                        'nombre': nombre,
+                        'apellido': apellido,
+                        'user_id': new_user.id_usuario,
+                        'role': role
+                    }
+                })
+            return redirect(url_for('main'))  # Redirigir al main en lugar del perfil
+        except Exception as e:
+            logger.exception('Error creando perfil en registro: %s', e)
+            print(traceback.format_exc())
+            db.session.rollback()
+            # intentar eliminar usuario huérfano si existe
+            try:
+                Usuarios.query.filter_by(id_usuario=new_user.id_usuario).delete()
+                db.session.commit()
+            except Exception as ex:
+                logger.exception('Error eliminando usuario huérfano: %s', ex)
+                print(traceback.format_exc())
+                db.session.rollback()
+            if is_json:
+                return jsonify({'success': False, 'error': 'Error al crear perfil de usuario'}), 500
+            return render_template('login.html', error='Error al crear perfil de usuario', is_register=True, toggle=True)
     # Si acceden directamente a /register con GET, redirigir a login con toggle
     return render_template('login.html', toggle=True)
 
@@ -1249,6 +1308,15 @@ def mis_puestos_empresa():
 # SISTEMA DE BÚSQUEDA
 # ========================================
 
+@app.route('/publicar-oferta')
+def publicar_oferta():
+    """Página para publicar una nueva oferta laboral"""
+    # Verificar si el usuario está autenticado como empresa
+    empresa_id = session.get('empresa_id')
+    if not empresa_id:
+        return redirect(url_for('login_empresa'))
+    return render_template('publicar_oferta.html')
+
 @app.route('/api/buscar', methods=['GET', 'POST'])
 def buscar_ofertas():
     """Sistema de búsqueda de ofertas laborales"""
@@ -1321,7 +1389,8 @@ def buscar_ofertas():
                 }
             })
     
-    return jsonify({
+    # Preparar respuesta con mensaje específico si no hay resultados
+    response_data = {
         'success': True,
         'total_resultados': len(resultados),
         'filtros_aplicados': {
@@ -1330,8 +1399,16 @@ def buscar_ofertas():
             'modalidad': modalidad,
             'area': area
         },
-        'resultados': resultados
-    })
+        'resultados': resultados,
+        'mensaje': 'No hay ofertas disponibles' if len(resultados) == 0 else None
+    }
+
+    if request.headers.get('Accept') == 'text/html':
+        # Si es una solicitud de página web, renderizar template
+        return render_template('resultados_busqueda.html', **response_data)
+    
+    # Si es una solicitud API, devolver JSON
+    return jsonify(response_data)
 
 
 # Endpoint para ver estadísticas de IPs (solo para desarrollo/admin)

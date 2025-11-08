@@ -1,0 +1,147 @@
+document.addEventListener('DOMContentLoaded', () => {
+    // Referencias a elementos del DOM
+    const searchForm = document.querySelector('.search-form');
+    const resultsList = document.getElementById('results-container');
+    const loadingState = document.querySelector('.loading-state');
+    const emptyState = document.querySelector('.empty-state');
+    const resultsCount = document.getElementById('results-count');
+
+    // Función para mostrar las ofertas
+    const mostrarOfertas = (ofertas) => {
+        // Limpiar ofertas anteriores
+        const cards = resultsList.querySelectorAll('.oferta-card');
+        cards.forEach(card => card.remove());
+        
+        // Ocultar estados
+        loadingState.style.display = 'none';
+        emptyState.style.display = 'none';
+        
+        // Verificar si hay ofertas
+        if (!ofertas || ofertas.length === 0) {
+            emptyState.style.display = 'block';
+            resultsCount.textContent = 'No hay ofertas disponibles';
+            return;
+        }
+
+        // Mostrar número de resultados
+        resultsCount.textContent = `${ofertas.length} ofertas encontradas`;
+
+        // Crear y agregar tarjetas de ofertas
+        ofertas.forEach(oferta => {
+            const card = document.createElement('div');
+            card.className = 'oferta-card';
+            
+            card.innerHTML = `
+                <div class="oferta-header">
+                    <h3>${oferta.area_trabajo}</h3>
+                    <span class="badge ${oferta.modalidad_trabajo.toLowerCase()}">${oferta.modalidad_trabajo}</span>
+                </div>
+                <div class="oferta-empresa">
+                    <i class="fas fa-building"></i>
+                    <span>${oferta.empresa.nombre_empresa}</span>
+                </div>
+                <div class="oferta-ubicacion">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>${oferta.comuna_trabajo}, ${oferta.region_trabajo}</span>
+                </div>
+                <div class="oferta-industria">
+                    <i class="fas fa-industry"></i>
+                    <span>${oferta.tipo_industria}</span>
+                </div>
+                <p class="oferta-descripcion">${oferta.descripcion_trabajo}</p>
+                <div class="oferta-actions">
+                    <button class="btn-outline btn-detalles">Ver Detalles</button>
+                    <button class="btn-primary btn-postular">Postular</button>
+                </div>
+            `;
+
+            // Agregar eventos a los botones
+            card.querySelector('.btn-postular').addEventListener('click', () => postular(oferta.id_trabajo));
+            card.querySelector('.btn-detalles').addEventListener('click', () => verDetalles(oferta.id_trabajo));
+
+            resultsList.appendChild(card);
+        });
+    };
+
+    // Función para postular
+    const postular = async (idTrabajo) => {
+        try {
+            const response = await fetch(`/postular/${idTrabajo}`, {
+                method: 'POST'
+            });
+            const data = await response.json();
+            
+            if (response.ok) {
+                alert('Postulación enviada exitosamente');
+            } else {
+                alert(data.error || 'Error al postular');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al enviar la postulación');
+        }
+    };
+
+    // Función para ver detalles
+    const verDetalles = (idTrabajo) => {
+        window.location.href = `/oferta/${idTrabajo}`;
+    };
+
+    // Manejar búsqueda
+    if (searchForm) {
+        searchForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Mostrar estado de carga
+            loadingState.style.display = 'block';
+            emptyState.style.display = 'none';
+            resultsCount.textContent = 'Buscando...';
+            
+            try {
+                const formData = new FormData(searchForm);
+                const params = new URLSearchParams(formData);
+                
+                const response = await fetch(`/api/buscar?${params.toString()}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    mostrarOfertas(data.resultados);
+                } else {
+                    throw new Error(data.error || 'Error al buscar ofertas');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                loadingState.style.display = 'none';
+                emptyState.style.display = 'block';
+                resultsCount.textContent = 'No hay ofertas disponibles';
+            }
+        });
+    }
+
+    // Cargar ofertas iniciales
+    const cargarOfertasIniciales = async () => {
+        try {
+            // Mostrar estado de carga inicial
+            loadingState.style.display = 'block';
+            emptyState.style.display = 'none';
+            resultsCount.textContent = 'Cargando ofertas...';
+
+            const response = await fetch('/api/buscar');
+            const data = await response.json();
+            
+            if (response.ok) {
+                mostrarOfertas(data.resultados);
+            } else {
+                throw new Error('Error al cargar ofertas');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            loadingState.style.display = 'none';
+            emptyState.style.display = 'block';
+            resultsCount.textContent = 'No hay ofertas disponibles';
+        }
+    };
+
+    // Iniciar carga de ofertas
+    cargarOfertasIniciales();
+});

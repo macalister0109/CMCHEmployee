@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publicar Oferta Laboral</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/publicar_oferta.css">
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h2>Publicar Oferta Laboral</h2>
+            <form id="ofertaForm">
+                <div class="form-group">
+                    <label for="area_trabajo">Área de Trabajo</label>
+                    <input type="text" id="area_trabajo" name="area_trabajo" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="region_trabajo">Región</label>
+                    <select id="region_trabajo" name="region_trabajo" required>
+                        <option value="">Seleccione una región</option>
+                        <option value="Metropolitana">Región Metropolitana</option>
+                        <option value="Valparaíso">Valparaíso</option>
+                        <option value="Biobío">Biobío</option>
+                        <!-- Agregar más regiones según sea necesario -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="comuna_trabajo">Comuna</label>
+                    <input type="text" id="comuna_trabajo" name="comuna_trabajo" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="modalidad_trabajo">Modalidad de Trabajo</label>
+                    <select id="modalidad_trabajo" name="modalidad_trabajo" required>
+                        <option value="">Seleccione una modalidad</option>
+                        <option value="Presencial">Presencial</option>
+                        <option value="Remoto">Remoto</option>
+                        <option value="Híbrido">Híbrido</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="tipo_industria">Tipo de Industria</label>
+                    <input type="text" id="tipo_industria" name="tipo_industria" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="tamanio_empresa">Tamaño de la Empresa</label>
+                    <select id="tamanio_empresa" name="tamanio_empresa" required>
+                        <option value="">Seleccione el tamaño</option>
+                        <option value="Pequeña">Pequeña (1-49 empleados)</option>
+                        <option value="Mediana">Mediana (50-199 empleados)</option>
+                        <option value="Grande">Grande (200+ empleados)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="descripcion_trabajo">Descripción del Trabajo</label>
+                    <textarea id="descripcion_trabajo" name="descripcion_trabajo" rows="5" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="calificaciones">Requisitos y Calificaciones</label>
+                    <textarea id="calificaciones" name="calificaciones" rows="5" required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">Publicar Oferta</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="assets/js/publicar_oferta.js"></script>
+</body>
+</html>
