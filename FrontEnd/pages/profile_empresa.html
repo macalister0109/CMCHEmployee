@@ -11,14 +11,14 @@
       <div class="container-form">
         <form method="post" action="/profile-empresa">
           <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:12px;">
-            <h2 style="margin:0;">Perfil Empresa</h2>
+            <h2 style="margin:0;">Company profile</h2>
             <a href="{{ url_for('main') }}" class="button" style="width:auto; height:36px; padding:6px 12px;">Inicio</a>
           </div>
           {% if error %}
           <div class="error">{{ error }}</div>
           {% endif %}
           {% if success %}
-          <div class="error" style="background: rgba(0,255,0,0.08); border-color: rgba(0,255,0,0.2); color: #eaffea;">Guardado correctamente</div>
+          <div class="error" style="background: rgba(0,255,0,0.08); border-color: rgba(0,255,0,0.2); color: #eaffea;">Saved successfully</div>
           {% endif %}
 
           <div class="container-input">
@@ -46,7 +46,7 @@
             <input type="text" name="tipo_empresa" value="{{ empresa.tipo_empresa }}" placeholder="Tipo (Nacional/Internacional)" />
           </div>
 
-          <button class="button" type="submit">Guardar perfil</button>
+          <button class="button" type="submit">Save profile</button>
         </form>
       </div>
     </div>
